@@ -1,8 +1,8 @@
 import "jest"
-import * as library from "./index"
+import * as isly from "./index"
 
-describe("library", () => {
-	it("a", () => {
-		expect(library.a).toEqual(42)
+describe("isly", () => {
+	it("is", () => {
+		expect(new isly.String().is("42")).toEqual(true)
 	})
 })
