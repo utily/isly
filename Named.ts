@@ -8,14 +8,12 @@ export class NamedClass<T> extends Type<T> {
 	is(value: any | T): value is T {
 		return this.backend.is(value)
 	}
-	flaw(value: any | T): true | Flaw {
+	flaw(value: any | T): Flaw {
 		const result = this.backend.flaw(value)
-		return (
-			result == true || {
-				...result,
-				type: this.name,
-			}
-		)
+		return {
+			...result,
+			type: this.name,
+		}
 	}
 }
 export type Named<T> = NamedClass<T>
