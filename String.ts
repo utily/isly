@@ -1,3 +1,4 @@
+import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 class StringClass extends Type<string> {
@@ -7,6 +8,9 @@ class StringClass extends Type<string> {
 	}
 	is(value: any | string): value is string {
 		return typeof value == "string" && (!this.strings || this.strings.includes(value))
+	}
+	flaw(value: any): true | Flaw {
+		return this.is(value) || { type: this.name }
 	}
 }
 
