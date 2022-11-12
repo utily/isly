@@ -1,3 +1,4 @@
+import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 class TupleClass<T> extends Type<T[]> {
@@ -11,6 +12,17 @@ class TupleClass<T> extends Type<T[]> {
 			globalThis.Array.isArray(value) &&
 			value.length == this.item.length &&
 			this.item.every((item, index) => item.is(value[index]))
+		)
+	}
+	flaw(value: any): true | Flaw {
+		return (
+			this.is(value) || {
+				type: this.name,
+				flaws: this.item
+					.map<[number, true | Flaw]>((type, property) => [property, type.flaw(value[property])])
+					.map(([property, flaw]) => flaw == true || { property, ...flaw })
+					.filter(f => f != true) as Flaw[],
+			}
 		)
 	}
 }

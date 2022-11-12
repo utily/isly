@@ -1,5 +1,5 @@
 export interface Flaw {
-	property?: string
+	property?: string | number
 	type: string
 	flaws?: Flaw[]
 	condition?: string
