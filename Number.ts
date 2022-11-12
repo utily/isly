@@ -22,20 +22,26 @@ export function number(
 ) {
 	function fromCriteria(
 		criteria: number | Number.Criteria | Number.Criteria[] | number[] | ((value: number) => boolean)
-	): (value: number) => boolean {
+	): [(value: number) => boolean, string] {
 		return typeof criteria == "number"
-			? value => value == criteria
+			? [value => value == criteria, " == " + criteria.toString()]
 			: criteria == "positive"
-			? value => value > 0
+			? [value => value > 0, "> 0"]
 			: criteria == "negative"
-			? value => value < 0
+			? [value => value < 0, "< 0"]
 			: criteria == "integer"
-			? Number.isInteger
+			? [Number.isInteger, "Number.isInteger"]
 			: ((c: any): c is number[] => Array.isArray(c) && c.every(c => typeof c == "number"))(criteria)
-			? value => criteria.map(fromCriteria).some(c => c(value))
+			? [value => criteria.map(fromCriteria).some(c => c[0](value)), criteria.join(" | ")]
 			: ((c: any): c is Number.Criteria[] => Array.isArray(c) && c.every(c => typeof c == "string"))(criteria)
-			? value => criteria.map(fromCriteria).every(c => c(value))
-			: criteria
+			? [
+					value => criteria.map(fromCriteria).every(c => c[0](value)),
+					criteria
+						.map(fromCriteria)
+						.map(c => c[1])
+						.join(" & "),
+			  ]
+			: [criteria, "custom"]
 	}
-	return new NumberClass(criteria == undefined ? undefined : fromCriteria(criteria))
+	return criteria == undefined ? new NumberClass() : new NumberClass(...fromCriteria(criteria))
 }
