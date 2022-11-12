@@ -1,3 +1,4 @@
+import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 class UnionClass<T> extends Type<T> {
@@ -8,6 +9,14 @@ class UnionClass<T> extends Type<T> {
 	}
 	is(value: any | T): value is T {
 		return this.types.some(type => type.is(value))
+	}
+	flaw(value: any): true | Flaw {
+		return (
+			this.is(value) || {
+				type: this.name,
+				flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw != true) as Flaw[],
+			}
+		)
 	}
 }
 export type Union<T> = UnionClass<T>
