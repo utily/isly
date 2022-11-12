@@ -1,12 +1,12 @@
 {
-	"name": "@utily/library-template",
-	"version": "0.0.17",
-	"description": "Template library for Typescript.",
+	"name": "isly",
+	"version": "0.0.0",
+	"description": "Library for type checking.",
 	"author": "Utily Contributors",
 	"license": "MIT",
-	"repository": "https://github.com/utily/library-template",
+	"repository": "https://github.com/utily/isly",
 	"bugs": {
-		"url": "https://github.com/utily/library-template/issues"
+		"url": "https://github.com/utily/isly/issues"
 	},
 	"homepage": "https://github.com/utily",
 	"private": false,
