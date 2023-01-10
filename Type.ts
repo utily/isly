@@ -4,11 +4,11 @@ export interface Type<T> {
 	readonly name: string
 	readonly condition?: string
 	is(value: any | T): value is T
-	flaw(value: any): true | Flaw
+	flaw(value: any): undefined | Flaw
 }
 export namespace Type {
 	export type IsFunction<T> = (value: any | T) => value is T
-	export type FlawFunction = (value: any) => true | Flaw
+	export type FlawFunction = (value: any) => undefined | Flaw
 	export function create<T>(
 		name: string | (() => string),
 		is: IsFunction<T>,

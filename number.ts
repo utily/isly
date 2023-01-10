@@ -53,8 +53,8 @@ export function number<N extends number = number>(criteria?: Parameters<typeof f
 	function is(value: any | number): value is N {
 		return typeof value == "number" && !Number.isNaN(value) && (!isFunction || isFunction(value))
 	}
-	function flaw(value: any): true | Flaw {
-		return is(value) || { type: name, ...(condition ? { condition } : undefined) }
+	function flaw(value: any): undefined | Flaw {
+		return is(value) ? undefined : { type: name, ...(condition ? { condition } : undefined) }
 	}
 	return {
 		name,

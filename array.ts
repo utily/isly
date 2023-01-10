@@ -39,15 +39,14 @@ export function array<T>(itemType: Type<T>, ...options: array.Option[]): Type<T[
 		options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
 		value.every(item => itemType.is(item))) as Type.IsFunction<T[]>
 
-	return Type.create<T[]>(
-		name,
-		is,
-		value =>
-			is(value) || {
-				type: name(),
-				...(options.length > 0
-					? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
-					: undefined),
-			}
+	return Type.create<T[]>(name, is, value =>
+		is(value)
+			? undefined
+			: {
+					type: name(),
+					...(options.length > 0
+						? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
+						: undefined),
+			  }
 	)
 }
