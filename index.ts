@@ -1,10 +1,14 @@
-import { Array, array } from "./Array"
+import { array } from "./array"
+import { boolean } from "./boolean"
 import { Flaw } from "./Flaw"
-import { Number, number } from "./Number"
-import { Object, object } from "./Object"
-import { String, string } from "./String"
-import { Tuple, tuple } from "./Tuple"
+import { lazy } from "./lazy"
+import { named } from "./named"
+import { number } from "./number"
+import { object } from "./object"
+import { optional } from "./optional"
+import { string } from "./string"
+import { tuple } from "./tuple"
 import { Type } from "./Type"
-import { Union, union } from "./Union"
+import { union } from "./union"
 
-export { Array, array, Flaw, Number, number, Object, object, String, string, Tuple, tuple, Type, Union, union }
+export { array, boolean, Flaw, lazy, named, number, object, optional, string, tuple, Type, union }
