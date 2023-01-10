@@ -2,10 +2,9 @@ import "jest"
 import * as isly from "./index"
 
 describe("boolean", () => {
+	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const booleanType = isly.boolean()
-
-		// Test TypeScript Narrowing (compile error if not working)
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
 		if (booleanType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -2,14 +2,13 @@ import "jest"
 import * as isly from "./index"
 
 describe("isly.Object", () => {
+	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		interface TestObject {
 			amount: number
 			currency: string
 		}
 		const testObjectType = isly.object<TestObject>({ amount: isly.number(), currency: isly.string("SEK", "EUR") })
-
-		// Test TypeScript Narrowing (compile error if not working)
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
 		if (testObjectType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,9 +22,7 @@ describe("isly.Object", () => {
 			currency: string
 		}
 		const type = isly.object<Test>({ amount: isly.number(), currency: isly.string("SEK", "EUR") })
-		// const is = type.is.bind(type)
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
-		// const flaw = type.flaw.bind(type)
 		expect(type.flaw({ currency: "SEK" })).toEqual({
 			type: '{"amount":"number","currency":"string"}',
 			flaws: [{ property: "amount", type: "number" }],

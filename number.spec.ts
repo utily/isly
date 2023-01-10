@@ -2,10 +2,9 @@ import "jest"
 import * as isly from "./index"
 
 describe("isly.Number", () => {
+	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const numberType = isly.number()
-
-		// Test TypeScript Narrowing (compile error if not working)
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
 		if (numberType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

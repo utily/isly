@@ -2,10 +2,9 @@ import "jest"
 import * as isly from "./index"
 
 describe("isly.named", () => {
+	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const namedStringType = isly.named("myName", isly.string())
-
-		// Test TypeScript Narrowing (compile error if not working)
 		const isNarrowingWorking: boolean | string | any = 0 as any
 		if (namedStringType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

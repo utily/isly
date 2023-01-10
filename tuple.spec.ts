@@ -2,13 +2,13 @@ import "jest"
 import * as isly from "./index"
 
 describe("Tuple", () => {
+	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		type TestTuple = [string, number]
 		// With generic provided
 		isly.tuple<TestTuple>(isly.string(), isly.number())
 		// without:
 		const testTupleType = isly.tuple(isly.string(), isly.number())
-		// Test TypeScript Narrowing (compile error if not working)
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
 		if (testTupleType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars

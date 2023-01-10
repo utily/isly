@@ -2,10 +2,10 @@ import "jest"
 import * as isly from "./index"
 
 describe("isly.union", () => {
+	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		type TestUnion = string | number
 		const testTupleType = isly.union<TestUnion>(isly.string(), isly.number())
-		// Test TypeScript Narrowing (compile error if not working)
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
 		if (testTupleType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
