@@ -26,7 +26,7 @@ export function object<T>(properties: object.Properties<T>, type?: string): Type
 			: {
 					type: name(),
 					flaws: globalThis.Object.entries<Type<any>>(p)
-						.map<[string, undefined | Flaw]>(([property, type]) => [property, type.flaw(value[property])])
+						.map<[string, undefined | Flaw]>(([property, type]) => [property, type.flaw(value?.[property])])
 						.map(([property, flaw]) => flaw && { property, ...flaw })
 						.filter(flaw => flaw) as Flaw[],
 			  }

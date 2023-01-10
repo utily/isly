@@ -23,6 +23,7 @@ describe("isly.Object", () => {
 		}
 		const type = isly.object<Test>({ amount: isly.number(), currency: isly.string("SEK", "EUR") })
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
+		expect(type.is(undefined)).toBeFalsy()
 		expect(type.flaw({ currency: "SEK" })).toEqual({
 			type: '{"amount":"number","currency":"string"}',
 			flaws: [{ property: "amount", type: "number" }],
