@@ -51,7 +51,7 @@ export function number<N extends number = number>(criteria?: Parameters<typeof f
 	const [isFunction, condition] = criteria == undefined ? [undefined, undefined] : fromCriteria(criteria)
 	const name = "number"
 	function is(value: any | number): value is N {
-		return typeof value == "number" && (!isFunction || isFunction(value))
+		return typeof value == "number" && !Number.isNaN(value) && (!isFunction || isFunction(value))
 	}
 	function flaw(value: any): true | Flaw {
 		return is(value) || { type: name, ...(condition ? { condition } : undefined) }
