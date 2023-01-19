@@ -13,7 +13,7 @@ export function tuple<T extends any[]>(...items: { [I in keyof T]: Type<T[I]> })
 			: {
 					type: name(),
 					flaws: items
-						.map<[number, undefined | Flaw]>((type, property) => [property, type.flaw(value[property])])
+						.map<[number, undefined | Flaw]>((type, property) => [property, type.flaw(value?.[property])])
 						.map(([property, flaw]) => flaw && { property, ...flaw })
 						.filter(flaw => flaw) as Flaw[],
 			  }
