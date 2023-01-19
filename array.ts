@@ -31,15 +31,20 @@ const criteriaFunctions: {
 	},
 }
 
-export function array<T>(itemType: Type<T>, ...options: array.Option[]): Type<T[]> {
+// The overloaded function is to avoid resulting in an Type<any[]>, but still be able to do array<number[]>(...) with only one generic!
+// Thanks to @jcalz at StackOverflow!
+// https://stackoverflow.com/questions/75128444/force-type-argument-inference-not-to-use-any-for-an-array-typescript?noredirect=1#comment132590506_75128444
+export function array<T extends any[] = never>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T>
+export function array<I>(itemType: Type<I>, ...options: array.Option[]): Type<I[]>
+export function array<T extends any[]>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T> {
 	const name = () => itemType.name + "[]"
 
 	const is = (value =>
 		globalThis.Array.isArray(value) &&
 		options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
-		value.every(item => itemType.is(item))) as Type.IsFunction<T[]>
+		value.every(item => itemType.is(item))) as Type.IsFunction<T>
 
-	return Type.create<T[]>(name, is, value =>
+	return Type.create<T>(name, is, value =>
 		is(value)
 			? undefined
 			: {
