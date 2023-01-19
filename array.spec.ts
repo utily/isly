@@ -5,6 +5,9 @@ describe("array", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const arrayNumberType = isly.array(isly.number())
+		// These are also working:
+		// const arrayNumberType2 = isly.array<number[]>(isly.number())
+		// const arrayNumberType3 = isly.array<number>(isly.number())
 
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
 		if (arrayNumberType.is(isNarrowingWorking)) {
