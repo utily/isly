@@ -10,6 +10,7 @@ import { optional } from "./optional"
 import { string } from "./string"
 import { tuple } from "./tuple"
 import { Type } from "./Type"
+import { typeFromIs } from "./typeFromIs"
 import { union } from "./union"
 
-export { any, array, boolean, Flaw, lazy, named, number, object, optional, string, tuple, Type, union }
+export { any, array, boolean, Flaw, lazy, named, number, object, optional, string, tuple, Type, typeFromIs, union }
