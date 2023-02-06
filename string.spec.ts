@@ -13,6 +13,14 @@ describe("string", () => {
 			}
 		}
 		{
+			const stringType = isly.string("A")
+			const isNarrowingWorking: boolean | string | any = true as any
+			if (stringType.is(isNarrowingWorking)) {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const myString: "A" = isNarrowingWorking
+			}
+		}
+		{
 			const stringType = isly.string(["A", "B"])
 			const isNarrowingWorking: boolean | string | any = true as any
 			if (stringType.is(isNarrowingWorking)) {
@@ -41,7 +49,7 @@ describe("string", () => {
 		expect(string42Type.is("42")).toBeTruthy()
 		expect(string42Type.is("43")).toBeFalsy()
 		expect(string42Type.is("")).toBeFalsy()
-		expect(string42Type.flaw(42)).toEqual({ type: "string", condition: '"42"' })
+		expect(string42Type.flaw(42)).toEqual({ type: '"42"', condition: '"42"' })
 		expect(isly.string(["42", "43"]).flaw("44")).toEqual({ type: "string", condition: '"42" | "43"' })
 	})
 	it("regexp", () => {

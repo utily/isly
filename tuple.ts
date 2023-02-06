@@ -7,15 +7,20 @@ export function tuple<T extends any[]>(...items: { [I in keyof T]: Type<T[I]> })
 		globalThis.Array.isArray(value) &&
 		value.length == items.length &&
 		items.every((item, index) => item.is(value[index]))) as Type.IsFunction<T>
-	return Type.create(name, is, value => {
+	const flaw = (value => {
 		return is(value)
 			? undefined
 			: {
 					type: name(),
 					flaws: items
-						.map<[number, undefined | Flaw]>((type, property) => [property, type.flaw(value?.[property])])
+						.map<[number, undefined | Flaw]>((type, property) => [
+							property,
+							type.flaw(globalThis.Array.isArray(value) ? value?.[property] : undefined),
+						])
 						.map(([property, flaw]) => flaw && { property, ...flaw })
 						.filter(flaw => flaw) as Flaw[],
 			  }
-	})
+	}) as Type.FlawFunction<T>
+
+	return Type.create(name, is, flaw)
 }

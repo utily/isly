@@ -18,6 +18,8 @@ describe("isly", () => {
 			myTuple: [string, number]
 			myUnion: string | number
 			children?: DemoType[]
+
+			testMethod: () => boolean
 		}
 
 		const type: isly.Type<DemoType> = isly.object({
@@ -34,12 +36,36 @@ describe("isly", () => {
 			fromServer: isly.boolean(true),
 
 			myTuple: isly.tuple(isly.string(), isly.number()),
-			myUnion: isly.union<DemoType["myUnion"]>(isly.string(), isly.number()),
+			myUnion: isly.union(isly.string(), isly.number()),
 			// Recursive
 			children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
+			// function
+			testMethod: isly.function<DemoType["testMethod"]>(),
 		})
 
-		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(false)
+		const value: DemoType = {
+			anyNumber: -12,
+			numberOf: 10,
+			temperature: 25,
+
+			message: "d",
+			email: "info@example.com",
+			currency: "SEK",
+
+			new: false,
+			fromServer: true,
+
+			myTuple: ["a", 1],
+			myUnion: "a",
+			//children?: DemoType[]
+
+			testMethod: () => true,
+		}
+		expect(type.flaw(value)).toBeUndefined()
+		expect(type.is(value)).toEqual(true)
+
+		expect(type.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false)
+
 		expect(type.flaw({ currency: "SEK" })).toEqual({
 			flaws: [
 				{ property: "anyNumber", type: "number" },
@@ -58,8 +84,9 @@ describe("isly", () => {
 					],
 				},
 				{ property: "myUnion", type: "string | number", flaws: [{ type: "string" }, { type: "number" }] },
+				{ property: "testMethod", type: "function" },
 			],
-			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","children":"DemoType[] | undefined"}',
+			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","children":"DemoType[] | undefined","testMethod":"function"}',
 		})
 	})
 })

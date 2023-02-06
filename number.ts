@@ -1,4 +1,4 @@
-import { Flaw } from "./Flaw"
+import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 export namespace number {
@@ -53,9 +53,9 @@ export function number<N extends number = number>(criteria?: Parameters<typeof f
 	function is(value: any | number): value is N {
 		return typeof value == "number" && !Number.isNaN(value) && (!isFunction || isFunction(value))
 	}
-	function flaw(value: any): undefined | Flaw {
+	const flaw = ((value: any) => {
 		return is(value) ? undefined : { type: name, ...(condition ? { condition } : undefined) }
-	}
+	}) as Type.FlawFunction<N>
 	return {
 		name,
 		is,

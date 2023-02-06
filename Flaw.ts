@@ -16,7 +16,7 @@ export interface Flaw {
 
 export namespace Flaw {
 	export const type: Type<Flaw> = object({
-		property: optional(union<string | number>(string(), number())),
+		property: optional(union(string(), number())),
 		type: string(),
 		flaws: optional(array(lazy(() => type))),
 		condition: optional(string()),

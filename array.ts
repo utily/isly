@@ -1,3 +1,4 @@
+import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 export namespace array {
@@ -44,14 +45,17 @@ export function array<T extends any[]>(itemType: Type<T[number]>, ...options: ar
 		options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
 		value.every(item => itemType.is(item))) as Type.IsFunction<T>
 
-	return Type.create<T>(name, is, value =>
-		is(value)
-			? undefined
-			: {
-					type: name(),
-					...(options.length > 0
-						? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
-						: undefined),
-			  }
+	return Type.create<T>(
+		name,
+		is,
+		<A>(value: A) =>
+			(is(value)
+				? undefined
+				: {
+						type: name(),
+						...(options.length > 0
+							? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
+							: undefined),
+				  }) as A extends T ? undefined : Flaw
 	)
 }

@@ -13,6 +13,6 @@ export function lazy<T>(factory: () => Type<T>, name?: string): Type<T> {
 	return Type.create(
 		name ?? (() => (type ??= factory()).name),
 		(value => (type ??= factory()).is(value)) as Type.IsFunction<T>,
-		(value => (type ??= factory()).flaw(value)) as Type.FlawFunction
+		(value => (type ??= factory()).flaw(value)) as Type.FlawFunction<T>
 	)
 }

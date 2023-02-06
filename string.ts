@@ -1,9 +1,12 @@
+import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
+export function string<T extends string>(condition?: T): Type<T>
+export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp): Type<T>
 export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp | string): Type<T> {
 	let conditionObject: Record<T, any> | RegExp | true
 
-	const name = "string"
+	const name = typeof condition == "string" ? `"${condition}"` : "string"
 	function createConditionObject(): typeof conditionObject {
 		return Array.isArray(condition)
 			? condition.reduce((result, current) => {
@@ -28,8 +31,8 @@ export function string<T extends string>(condition?: readonly T[] | Record<T, an
 				: conditionObject)
 		)
 	}
-	const flaw: Type.FlawFunction = value =>
-		is(value)
+	const flaw: Type.FlawFunction<T> = <A>(value: A) =>
+		(is(value)
 			? undefined
 			: {
 					type: name,
@@ -43,7 +46,7 @@ export function string<T extends string>(condition?: readonly T[] | Record<T, an
 												.join(" | "),
 						  }
 						: undefined),
-			  }
+			  }) as A extends T ? undefined : Flaw
 
 	return Type.create(name, is, flaw)
 }

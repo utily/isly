@@ -6,5 +6,6 @@ import { Type } from "./Type"
  * @param config
  */
 export function typeFromIs<T>(name: string, is: Type.IsFunction<T>): Type<T> {
-	return Type.create(name, is, value => (is(value) ? undefined : { type: name }))
+	const flaw = (value => (is(value) ? undefined : { type: name })) as Type.FlawFunction<T>
+	return Type.create(name, is, flaw)
 }
