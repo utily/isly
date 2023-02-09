@@ -5,7 +5,8 @@ type OptionalKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? K 
 type RequiredKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? never : K }[keyof T]>
 
 export namespace object {
-	export type Properties<T> = { [P in OptionalKeys<T>]?: Type<T[P]> } & { [P in RequiredKeys<T>]: Type<T[P]> }
+	export type Properties<T> = { [P in OptionalKeys<T>]: Type<T[P] | undefined> } &
+		{ [P in RequiredKeys<T>]: Type<T[P]> }
 }
 
 export function object<T>(properties: object.Properties<T>, type?: string): Type<T> {
