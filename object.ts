@@ -4,12 +4,38 @@ import { Type } from "./Type"
 type OptionalKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? K : never }[keyof T]>
 type RequiredKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? never : K }[keyof T]>
 
+export interface ExtendableType<T> extends Type<T> {
+	extend<T2 extends T>(
+		properties: object.Properties<Omit<T2, keyof T>> & Partial<object.Properties<Pick<T2, keyof T>>>,
+		type?: string
+	): ExtendableType<T2>
+}
+
 export namespace object {
 	export type Properties<T> = { [P in OptionalKeys<T>]: Type<T[P] | undefined> } &
 		{ [P in RequiredKeys<T>]: Type<T[P]> }
 }
 
-export function object<T>(properties: object.Properties<T>, type?: string): Type<T> {
+function withExtendFunction<T>(baseType: Type<T>): ExtendableType<T> {
+	const extend = ((moreProperties, type) => {
+		const types = [baseType, object(moreProperties)] as const
+		const name = () => type ?? types.map(type => type.name).join(" & ")
+		const is = (value => types.every(type => type.is(value))) as Type.IsFunction<T>
+		const flaw = (value =>
+			is(value)
+				? undefined
+				: {
+						type: name(),
+						flaws: (types.flatMap(type => (type.is(value) ? [] : type.flaw(value))) as Flaw[]).flatMap(
+							flaw => flaw.flaws
+						),
+				  }) as Type.FlawFunction<T>
+		return withExtendFunction(Type.create(name, is, flaw))
+	}) as ExtendableType<T>["extend"]
+	return Object.defineProperty(baseType, "extend", { value: extend }) as ExtendableType<T>
+}
+
+export function object<T>(properties: object.Properties<T>, type?: string): ExtendableType<T> {
 	const p = properties
 	const name = () =>
 		type ??
@@ -35,5 +61,5 @@ export function object<T>(properties: object.Properties<T>, type?: string): Type
 						.filter(flaw => flaw) as Flaw[],
 			  }) as Type.FlawFunction<T>
 
-	return Type.create(name, is, flaw)
+	return withExtendFunction(Type.create(name, is, flaw))
 }
