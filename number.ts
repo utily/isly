@@ -1,4 +1,3 @@
-import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 export namespace number {

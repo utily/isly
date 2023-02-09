@@ -21,6 +21,7 @@ describe("isly.Number", () => {
 	it("isly.number()", () => {
 		const numberType = isly.number()
 		expect(numberType.is(13.37)).toEqual(true)
+		expect(numberType.name).toEqual("number")
 		expect(numberType.flaw({})).toEqual({ type: "number" })
 	})
 	it('isly.number("positive")', () => {
