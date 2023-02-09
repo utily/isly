@@ -17,6 +17,8 @@ describe("isly", () => {
 
 			myTuple: [string, number]
 			myUnion: string | number
+			myArray: string[]
+
 			children?: DemoType[]
 
 			testMethod: () => boolean
@@ -37,6 +39,8 @@ describe("isly", () => {
 
 			myTuple: isly.tuple(isly.string(), isly.number()),
 			myUnion: isly.union(isly.string(), isly.number()),
+			myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
+
 			// Recursive
 			children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
 			// function
@@ -57,10 +61,12 @@ describe("isly", () => {
 
 			myTuple: ["a", 1],
 			myUnion: "a",
+			myArray: ["a"],
 			//children?: DemoType[]
 
 			testMethod: () => true,
 		}
+
 		expect(type.flaw(value)).toBeUndefined()
 		expect(type.is(value)).toEqual(true)
 
@@ -84,9 +90,14 @@ describe("isly", () => {
 					],
 				},
 				{ property: "myUnion", type: "string | number", flaws: [{ type: "string" }, { type: "number" }] },
+				{
+					property: "myArray",
+					condition: "minLength == 1",
+					type: "string[]",
+				},
 				{ property: "testMethod", type: "function" },
 			],
-			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","children":"DemoType[] | undefined","testMethod":"function"}',
+			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","testMethod":"function"}',
 		})
 	})
 })

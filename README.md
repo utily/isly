@@ -19,7 +19,11 @@ type DemoType = {
 
 	myTuple: [string, number]
 	myUnion: string | number
+	myArray: string[]
+
 	children?: DemoType[]
+
+	testMethod?: () => boolean
 }
 
 const type: isly.Type<DemoType> = isly.object({
@@ -37,12 +41,24 @@ const type: isly.Type<DemoType> = isly.object({
 
 	myTuple: isly.tuple(isly.string(), isly.number()),
 	myUnion: isly.union<DemoType["myUnion"]>(isly.string(), isly.number()),
-	// Recursive:
+	myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
+
+	// Recursive, optional:
 	children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
+
+	// function:
+	// This only validate if it is a function,
+	// not the signature of it.
+	// JSON do not support this type but exists for
+	// completeness.
+	testMethod: isly.optional(isly.function<DemoType["testMethod"]>()),
 })
+
 const data: DemoType | any = api.getMyExternalData()
 
-if (type.is(data)) {
-	// `data` is now DemoType
+if (!type.is(data)) {
+	const error = type.flaw(data)
+} else {
+	// `data` is for sure DemoType, use it!
 }
 ```
