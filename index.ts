@@ -3,6 +3,7 @@ import { array } from "./array"
 import { boolean } from "./boolean"
 import { Flaw } from "./Flaw"
 import { islyFunction } from "./function"
+import { intersection } from "./intersection"
 import { lazy } from "./lazy"
 import { named } from "./named"
 import { number } from "./number"
@@ -18,8 +19,9 @@ export {
 	any,
 	array,
 	boolean,
-	islyFunction as function,
 	Flaw,
+	islyFunction as function,
+	intersection,
 	lazy,
 	named,
 	number,
