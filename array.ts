@@ -1,4 +1,3 @@
-import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 export namespace array {
@@ -39,23 +38,30 @@ export function array<T extends any[] = never>(itemType: Type<T[number]>, ...opt
 export function array<I>(itemType: Type<I>, ...options: array.Option[]): Type<I[]>
 export function array<T extends any[]>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T> {
 	const name = () => itemType.name + "[]"
+	const itemName = (index: number) => `${itemType.name}[${index}]`
 
 	const is = (value =>
 		globalThis.Array.isArray(value) &&
 		options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
 		value.every(item => itemType.is(item))) as Type.IsFunction<T>
+	const flaw = (value => {
+		if (is(value))
+			return undefined
+		const flaws =
+			(globalThis.Array.isArray(value) &&
+				value.flatMap((item, index) => {
+					const subFlaw = itemType.flaw(item)
+					return subFlaw ? [{ ...subFlaw, type: itemName(index) }] : []
+				})) ||
+			[]
+		return {
+			type: name(),
+			...(options.length > 0
+				? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
+				: undefined),
+			...(flaws.length > 0 ? { flaws } : undefined),
+		}
+	}) as Type.FlawFunction<T>
 
-	return Type.create<T>(
-		name,
-		is,
-		<A>(value: A) =>
-			(is(value)
-				? undefined
-				: {
-						type: name(),
-						...(options.length > 0
-							? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
-							: undefined),
-				  }) as A extends T ? undefined : Flaw
-	)
+	return Type.create<T>(name, is, flaw)
 }
