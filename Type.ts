@@ -6,6 +6,7 @@ export interface Type<T> {
 	is(value: any | T): value is T
 	flaw<A>(value: A): A extends T ? undefined : Flaw
 }
+
 export namespace Type {
 	export type IsFunction<T> = Type<T>["is"]
 	export type FlawFunction<T> = Type<T>["flaw"]
@@ -26,9 +27,3 @@ export namespace Type {
 		) as Type<T>
 	}
 }
-// export interface Type<T> {
-// 	readonly name: string
-// 	readonly condition?: string
-// 	is(value: any | T): value is T
-// 	flaw(value: any): true | Flaw
-// }
