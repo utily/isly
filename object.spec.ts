@@ -58,21 +58,33 @@ describe("isly.Object", () => {
 	it("extend", () => {
 		interface Item1 {
 			i1: number
+			str: string
 		}
 		interface Item2 extends Item1 {
 			i2: number
 		}
-		const typeItem1 = isly.object<Item1>({ i1: isly.number() }, "Item1")
+		interface Item3 extends Item2 {
+			i3: number
+		}
+
+		const typeItem1 = isly.object<Item1>({ i1: isly.number(), str: isly.string() }, "Item1")
 		const typeItem2 = typeItem1.extend<Item2>({ i2: isly.number(), i1: isly.number(value => value >= 400) }, "Item2")
+		const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
 
-		expect(typeItem1.is({ i1: 200 })).toBeTruthy()
-		expect(typeItem1.is({ i1: 200, i2: 2 })).toBeTruthy()
+		expect(typeItem1.is({ i1: 200, str: "a" })).toBeTruthy()
+		expect(typeItem1.is({ i1: 200, i2: 2, str: "a" })).toBeTruthy()
 
-		expect(typeItem2.is({ i1: 400, i2: 2 })).toBeTruthy()
-		expect(typeItem2.is({ i1: 400 })).toBeFalsy()
-		expect(typeItem2.is({ i1: 300, i2: 2 })).toBeFalsy()
+		expect(typeItem2.is({ i1: 400, i2: 2, str: "a" })).toBeTruthy()
+		expect(typeItem2.is({ i1: 400, str: "a" })).toBeFalsy()
+		expect(typeItem2.is({ i1: 300, i2: 2, str: "a" })).toBeFalsy()
 
-		expect(typeItem2.flaw({})).toEqual({
+		expect(typeItem3.is({ i1: 400, i2: 2, i3: 42, str: "a" })).toBeTruthy()
+		expect(typeItem3.is({ i1: 400, i3: 42, str: "a" })).toBeFalsy()
+		expect(typeItem3.is({ i1: 400, i2: 42, str: "a" })).toBeFalsy()
+		expect(typeItem3.is({ i1: 400, i3: 42, str: "a" })).toBeFalsy()
+		expect(typeItem3.is({ i1: 200, i2: 2, i3: 42, str: "a" })).toBeFalsy()
+
+		expect(typeItem2.flaw({ str: "a" })).toEqual({
 			type: "Item2",
 			flaws: [
 				{
