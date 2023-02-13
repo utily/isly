@@ -32,6 +32,13 @@ describe("array", () => {
 			],
 		})
 	})
+	it("(number | string)[]", () => {
+		const arrayType = isly.array(isly.union(isly.string(), isly.number()))
+		expect(arrayType.flaw(undefined)).toEqual({
+			type: "(string | number)[]",
+		})
+	})
+
 	it("number[] with length criteria", () => {
 		const arrayType = isly.array(isly.number(), { criteria: "length", value: 3 })
 		expect(arrayType.is([3, 4, 5])).toBeTruthy()

@@ -37,7 +37,7 @@ const criteriaFunctions: {
 export function array<T extends any[] = never>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T>
 export function array<I>(itemType: Type<I>, ...options: array.Option[]): Type<I[]>
 export function array<T extends any[]>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T> {
-	const name = () => itemType.name + "[]"
+	const name = () => (itemType.name.includes(" ") ? `(${itemType.name})` : itemType.name) + "[]"
 	const itemName = (index: number) => `${itemType.name}[${index}]`
 
 	const is = (value =>
