@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("tuple", () => {
+describe("isly.tuple", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		type TestTuple = [string, number]

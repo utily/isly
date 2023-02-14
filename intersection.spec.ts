@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("intersection", () => {
+describe("isly.intersection", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		type A = { a?: number; shared: string }

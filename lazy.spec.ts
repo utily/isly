@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("lazy", () => {
+describe("isly.lazy", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const lazyStringType = isly.lazy(() => isly.string())

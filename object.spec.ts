@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("isly.Object", () => {
+describe("isly.object", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		interface TestObject {

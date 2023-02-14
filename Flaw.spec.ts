@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("Flaw", () => {
+describe("isly.Flaw", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const isNarrowingWorking: boolean | string | any = true as any

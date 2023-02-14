@@ -1,6 +1,7 @@
 import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
-
+// TODO: Use `const` with Typescript 5
+// https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#const-type-parameters
 export function string<T extends string>(condition?: T): Type<T>
 export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp): Type<T>
 export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp | string): Type<T> {

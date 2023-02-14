@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("array", () => {
+describe("isly.array", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const arrayNumberType = isly.array(isly.number())

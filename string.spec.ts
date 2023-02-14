@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("string", () => {
+describe("isly.string", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		{

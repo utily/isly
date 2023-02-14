@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("optional", () => {
+describe("isly.optional", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const optionalStringType = isly.optional(isly.string())

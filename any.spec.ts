@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("any", () => {
+describe("isly.any", () => {
 	it("generic", () => {
 		const anyType = isly.any()
 
