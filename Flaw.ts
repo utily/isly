@@ -18,30 +18,30 @@ export interface Flaw {
 }
 // Different alternatives for export of a type:
 
-// export const Flaw: Type<Flaw> = object<Flaw>(
-// 	{
-// 		message: optional(string()),
-// 		isFlaw: optional(boolean()),
-// 		property: optional(union(string(), number())),
-// 		type: string(),
-// 		flaws: optional(array(lazy(() => Flaw))),
-// 		condition: optional(string()),
-// 	},
-// 	"Flaw"
-// )
+export const Flaw: Type<Flaw> = object<Flaw>(
+	{
+		message: optional(string()),
+		isFlaw: optional(boolean()),
+		property: optional(union(string(), number())),
+		type: string(),
+		flaws: optional(array(lazy(() => Flaw))),
+		condition: optional(string()),
+	},
+	"Flaw"
+)
 
-export namespace Flaw {
-	export const type: Type<Flaw> = object<Flaw>(
-		{
-			message: optional(string()),
-			isFlaw: optional(boolean()),
-			property: optional(union(string(), number())),
-			type: string(),
-			flaws: optional(array(lazy(() => type))),
-			condition: optional(string()),
-		},
-		"Flaw"
-	)
-	export const is = type.is
-	export const flaw = type.flaw
-}
+// export namespace Flaw {
+// 	export const type: Type<Flaw> = object<Flaw>(
+// 		{
+// 			message: optional(string()),
+// 			isFlaw: optional(boolean()),
+// 			property: optional(union(string(), number())),
+// 			type: string(),
+// 			flaws: optional(array(lazy(() => type))),
+// 			condition: optional(string()),
+// 		},
+// 		"Flaw"
+// 	)
+// 	export const is = type.is
+// 	export const flaw = type.flaw
+// }

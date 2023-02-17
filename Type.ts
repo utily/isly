@@ -4,6 +4,22 @@ export interface Type<T> {
 	readonly name: string
 	readonly condition?: string
 	/**
+	 * This enables an instance of a type to behave as a namespace.
+	 *
+	 * ```
+	 * export namespace MyType {
+	 *   export const type = isly.object<MyType>(...)
+	 *   export is = type.is
+	 *   export flaw = type.flaw
+	 * }
+	 * ```
+	 * can be change to this
+	 * ```
+	 * export const MyType = isly.object<MyType>(...)
+	 * ```
+	 */
+	readonly type: Type<T>
+	/**
 	 * Type guard for the type.
 	 * [Typescript documentation: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
 	 *
@@ -31,22 +47,6 @@ export namespace Type {
 		get condition(): string | undefined {
 			return typeof this._condition == "function" ? this._condition() : this._condition
 		}
-		/**
-		 * This enables an instance of a type to behave as a namespace.
-		 *
-		 * ```
-		 * export namespace MyType {
-		 *   export const type = isly.object<MyType>(...)
-		 *   export is = type.is
-		 *   export flaw = type.flaw
-		 * }
-		 * ```
-		 * can be change to this.
-		 * ```
-		 * export const MyType = isly.object<MyType>(...)
-		 * ```
-		 */
-
 		get type(): Type<T> {
 			return this
 		}
