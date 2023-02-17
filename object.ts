@@ -66,24 +66,6 @@ class IslyObject<T extends B, B> extends Type.AbstractType<T> implements Extenda
 	}
 }
 
-// function withExtendFunction<T>(baseType: Type<T>): ExtendableType<T> {
-// 	const extend = ((moreProperties, type) => {
-// 		const types = [baseType, object(moreProperties)] as const
-// 		const name = () => type ?? types.map(type => type.name).join(" & ")
-// 		const is = (value => types.every(type => type.is(value))) as Type.IsFunction<T>
-// 		const flaw = (value =>
-// 			is(value)
-// 				? undefined
-// 				: {
-// 						type: name(),
-// 						flaws: (types.flatMap(type => (type.is(value) ? [] : type.flaw(value))) as Flaw[]).flatMap(
-// 							flaw => flaw.flaws
-// 						),
-// 				  }) as Type.FlawFunction<T>
-// 		return withExtendFunction(Type.create(name, is, flaw))
-// 	}) as ExtendableType<T>["extend"]
-// 	return Object.defineProperty(baseType, "extend", { value: extend }) as ExtendableType<T>
-// }
 export function object(): ExtendableType<object>
 export function object<T>(properties: object.Properties<T>, name?: string): ExtendableType<T>
 export function object<T>(properties?: object.Properties<T>, name?: string): ExtendableType<T> {
