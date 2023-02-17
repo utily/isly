@@ -5,9 +5,7 @@ class IslyOptional<T> extends Type.AbstractType<T | undefined> {
 	constructor(protected readonly backend: Type<T>) {
 		super(() => backend.name + " | undefined", backend.condition)
 	}
-	is(value: any): value is T {
-		return value == undefined || this.backend.is(value)
-	}
+	is = (value => value == undefined || this.backend.is(value)) as Type.IsFunction<T>
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}

@@ -4,9 +4,7 @@ class IslyFromIs<T> extends Type.AbstractType<T> {
 	constructor(name: string, protected readonly isFunction: (value: T) => boolean) {
 		super(name)
 	}
-	is(value: any): value is T {
-		return this.isFunction(value)
-	}
+	is = (value => this.isFunction(value)) as Type.IsFunction<T>
 }
 
 /**

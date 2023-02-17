@@ -7,13 +7,10 @@ class IslyTuple<T extends any[]> extends Type.AbstractType<T> {
 		super(() => "[" + items.map(e => e.name).join(", ") + "]")
 		this.items = items
 	}
-	is(value: any): value is T {
-		return (
-			globalThis.Array.isArray(value) &&
-			value.length == this.items.length &&
-			this.items.every((item, index) => item.is(value[index]))
-		)
-	}
+	is = (value =>
+		globalThis.Array.isArray(value) &&
+		value.length == this.items.length &&
+		this.items.every((item, index) => item.is(value[index]))) as Type.IsFunction<T>
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: this.items

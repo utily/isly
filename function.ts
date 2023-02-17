@@ -5,9 +5,7 @@ class IslyFunction<T extends Function> extends Type.AbstractType<T> {
 	constructor() {
 		super("function")
 	}
-	is(value: any): value is T {
-		return value && typeof value == "function"
-	}
+	is = (value => value && typeof value == "function") as Type.IsFunction<T>
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types

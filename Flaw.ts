@@ -16,6 +16,19 @@ export interface Flaw {
 	condition?: string
 	flaws?: Flaw[]
 }
+// Different alternatives for export of a type:
+
+// export const Flaw: Type<Flaw> = object<Flaw>(
+// 	{
+// 		message: optional(string()),
+// 		isFlaw: optional(boolean()),
+// 		property: optional(union(string(), number())),
+// 		type: string(),
+// 		flaws: optional(array(lazy(() => Flaw))),
+// 		condition: optional(string()),
+// 	},
+// 	"Flaw"
+// )
 
 export namespace Flaw {
 	export const type: Type<Flaw> = object<Flaw>(
@@ -29,6 +42,6 @@ export namespace Flaw {
 		},
 		"Flaw"
 	)
-	// export const is = type.is
-	// export const flaw = type.flaw
+	export const is = type.is
+	export const flaw = type.flaw
 }

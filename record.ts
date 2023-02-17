@@ -5,14 +5,13 @@ class IslyRecord<K extends string, V> extends Type.AbstractType<Record<K, V>> {
 	constructor(protected readonly keyType: Type<K>, protected readonly valueType: Type<V>) {
 		super(() => `Record<${keyType.name}, ${valueType.name}>`)
 	}
-	is(value: any): value is Record<K, V> {
-		return (
-			value &&
-			typeof value == "object" &&
-			!globalThis.Array.isArray(value) &&
-			globalThis.Object.entries(value).every(([key, value]) => this.keyType.is(key) && this.valueType.is(value))
-		)
-	}
+	is = (value =>
+		value &&
+		typeof value == "object" &&
+		!globalThis.Array.isArray(value) &&
+		globalThis.Object.entries(value).every(
+			([key, value]) => this.keyType.is(key) && this.valueType.is(value)
+		)) as Type.IsFunction<Record<K, V>>
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws:

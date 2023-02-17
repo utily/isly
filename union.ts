@@ -7,9 +7,8 @@ class IslyUnion<T> extends Type.AbstractType<T> {
 		super(() => types.map(type => type.name).join(" | "))
 		this.types = types
 	}
-	is(value: any): value is T {
-		return this.types.some(type => type.is(value))
-	}
+	is = (value => this.types.some(type => type.is(value))) as Type.IsFunction<T>
+
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],

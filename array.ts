@@ -45,13 +45,10 @@ class IslyArray<T extends any[]> extends Type.AbstractType<T> {
 	protected itemName(index: number) {
 		return `${this.baseName()}[${index}]`
 	}
-	is(value: any): value is T {
-		return (
-			globalThis.Array.isArray(value) &&
-			this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
-			value.every(item => this.itemType.is(item))
-		)
-	}
+	is = (value =>
+		globalThis.Array.isArray(value) &&
+		this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
+		value.every(item => this.itemType.is(item))) as Type.IsFunction<T>
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		const flaws =
 			(globalThis.Array.isArray(value) &&

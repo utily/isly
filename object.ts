@@ -44,15 +44,14 @@ class IslyObject<T extends B, B> extends Type.AbstractType<T> implements Extenda
 	): ExtendableType<T2> {
 		return new IslyObject<T2, T>(this, properties as any, name)
 	}
-	is(value: any): value is T {
-		return (
-			value &&
-			(this.baseType == undefined || this.baseType.is(value)) &&
-			typeof value == "object" &&
-			!globalThis.Array.isArray(value) &&
-			globalThis.Object.entries<Type<any>>(this.properties).every(([property, type]) => type.is(value[property]))
-		)
-	}
+	is = (value =>
+		value &&
+		(this.baseType == undefined || this.baseType.is(value)) &&
+		typeof value == "object" &&
+		!globalThis.Array.isArray(value) &&
+		globalThis.Object.entries<Type<any>>(this.properties).every(([property, type]) =>
+			type.is(value[property])
+		)) as Type.IsFunction<T>
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: [

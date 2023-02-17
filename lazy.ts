@@ -6,9 +6,7 @@ class IslyLazy<T> extends Type.AbstractType<T> {
 	constructor(protected readonly factory: () => Type<T>, name?: string) {
 		super(name ?? (() => (this.type ??= factory()).name), () => (this.type ??= factory()).condition)
 	}
-	is(value: any): value is T {
-		return (this.type ??= this.factory()).is(value)
-	}
+	is = (value => (this.type ??= this.factory()).is(value)) as Type.IsFunction<T>
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType((this.type ??= this.factory()), value)
 	}

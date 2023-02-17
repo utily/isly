@@ -7,9 +7,7 @@ class IslyIntersection<T extends A & B, A, B> extends Type.AbstractType<T> {
 		super(() => types.map(type => type.name).join(" & "))
 		this.types = types
 	}
-	is(value: any): value is T {
-		return this.types.every(type => type.is(value))
-	}
+	is = (value => this.types.every(type => type.is(value))) as Type.IsFunction<T>
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],

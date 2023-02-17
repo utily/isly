@@ -5,7 +5,7 @@ describe("isly.Flaw", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const isNarrowingWorking: boolean | string | any = true as any
-		if (isly.Flaw.type.is(isNarrowingWorking)) {
+		if (isly.Flaw.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const myFlaw: isly.Flaw = isNarrowingWorking
 		}
@@ -13,7 +13,8 @@ describe("isly.Flaw", () => {
 	it("is", () => {
 		const objectType = isly.object({ number: isly.number() })
 		const flaw = objectType.flaw(undefined)
+		expect(isly.Flaw.is(flaw)).toBeTruthy()
 		expect(isly.Flaw.type.is(flaw)).toBeTruthy()
-		expect(isly.Flaw.type.flaw(flaw)).toEqual({ isFlaw: false, message: "This type is correct.", type: "Flaw" })
+		expect(isly.Flaw.flaw(flaw)).toEqual({ isFlaw: false, message: "This type is correct.", type: "Flaw" })
 	})
 })

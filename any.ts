@@ -1,9 +1,7 @@
 import { Type } from "./Type"
 
 class IslyAny<T> extends Type.AbstractType<T> {
-	is(value: any): value is T {
-		return value != undefined
-	}
+	is = (value => value != undefined) as Type.IsFunction<T>
 }
 
 export function any<T>(name?: string): Type<T> {

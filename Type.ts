@@ -3,8 +3,21 @@ import { Flaw } from "./Flaw"
 export interface Type<T> {
 	readonly name: string
 	readonly condition?: string
-	is(value: any | T): value is T
-	flaw(value: any): Flaw
+	/**
+	 * Type guard for the type.
+	 * [Typescript documentation: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
+	 *
+	 * Implemented as a closure.
+	 */
+	is: (value: any | T) => value is T
+	/**
+	 * Return a flaw object, describing the flaws of the value compared to expected type.
+	 *
+	 * If it is a correct value, according to the type, it returns a Flaw with the message `{message:"This type is correct.", isFlaw: false, ... }`
+	 *
+	 * Implemented as a closure.
+	 */
+	flaw: (value: any) => Flaw
 }
 
 export namespace Type {
@@ -22,10 +35,17 @@ export namespace Type {
 			protected readonly _name: string | (() => string),
 			protected readonly _condition?: string | (() => string | undefined)
 		) {}
+		/**
+		 * Since it is implemented as a closure, it is possible to reexport this function.
+		 * ```
+		 * const type = isly.object()
+		 * const is = type.is
+		 * if (is({})) {... // This would not be possible with a class-function.
+		 * ```
+		 */
+		abstract is: IsFunction<T>
 
-		abstract is(value: any | T): value is T
-
-		public flaw<A>(value: A): Flaw {
+		public flaw: FlawFunction<T> = value => {
 			return this.is(value)
 				? {
 						type: this.name,

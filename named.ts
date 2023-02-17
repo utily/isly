@@ -5,9 +5,7 @@ class IslyNamed<T> extends Type.AbstractType<T> {
 	constructor(name: string, protected readonly backend: Type<T>) {
 		super(name, () => backend.condition)
 	}
-	is(value: any): value is T {
-		return this.backend.is(value)
-	}
+	is = (value => this.backend.is(value)) as Type.IsFunction<T>
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}

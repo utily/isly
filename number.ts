@@ -51,9 +51,10 @@ class IslyNumber<N extends number = number> extends Type.AbstractType<N> {
 	constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
 		super("number", condition)
 	}
-	is(value: any): value is N {
-		return typeof value == "number" && !Number.isNaN(value) && (!this.isFunction || this.isFunction(value))
-	}
+	is = (value =>
+		typeof value == "number" &&
+		!Number.isNaN(value) &&
+		(!this.isFunction || this.isFunction(value))) as Type.IsFunction<N>
 }
 
 export function number<N extends number = number>(criteria?: Parameters<typeof fromCriteria>[0]): Type<N> {

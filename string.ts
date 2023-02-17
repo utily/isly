@@ -12,7 +12,7 @@ class IslyString<T extends string> extends Type.AbstractType<T> {
 						.join(" | ")
 		})
 	}
-	is(value: any): value is T {
+	is = (value => {
 		const conditionObject = this.getConditionObject()
 
 		return (
@@ -23,7 +23,7 @@ class IslyString<T extends string> extends Type.AbstractType<T> {
 				? value in conditionObject //TODO, avoid "hasOwnProperty toString etc."
 				: conditionObject)
 		)
-	}
+	}) as Type.IsFunction<T>
 	protected getConditionObject(): NonNullable<IslyString<T>["conditionObject"]> {
 		return (this.conditionObject ??= Array.isArray(this.stringCondition)
 			? this.stringCondition.reduce((result, current) => {
