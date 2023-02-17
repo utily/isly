@@ -4,19 +4,18 @@ import { Type } from "./Type"
 type OptionalKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? K : never }[keyof T]>
 type RequiredKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? never : K }[keyof T]>
 
-export interface ExtendableType<T> extends Type<T> {
-	extend<T2 extends T>(
-		properties: object.Properties<Omit<T2, keyof T>> & Partial<object.Properties<Pick<T2, keyof T>>>,
-		name?: string
-	): ExtendableType<T2>
-}
-
 export namespace object {
 	export type Properties<T> = { [P in OptionalKeys<T>]: Type<T[P] | undefined> } &
 		{ [P in RequiredKeys<T>]: Type<T[P]> }
+	export interface ExtendableType<T> extends Type<T> {
+		extend<T2 extends T>(
+			properties: object.Properties<Omit<T2, keyof T>> & Partial<object.Properties<Pick<T2, keyof T>>>,
+			name?: string
+		): ExtendableType<T2>
+	}
 }
 
-class IslyObject<T extends B, B> extends Type.AbstractType<T> implements ExtendableType<T> {
+class IslyObject<T extends B, B> extends Type.AbstractType<T> implements object.ExtendableType<T> {
 	protected readonly properties: object.Properties<T>
 	constructor(protected readonly baseType: Type<B> | undefined, properties?: object.Properties<T>, name?: string) {
 		super(
@@ -41,7 +40,7 @@ class IslyObject<T extends B, B> extends Type.AbstractType<T> implements Extenda
 			} &
 			Partial<object.Properties<Pick<T2, keyof T>>>,
 		name?: string | undefined
-	): ExtendableType<T2> {
+	): object.ExtendableType<T2> {
 		return new IslyObject<T2, T>(this, properties as any, name)
 	}
 	is = (value =>
@@ -67,8 +66,8 @@ class IslyObject<T extends B, B> extends Type.AbstractType<T> implements Extenda
 	}
 }
 
-export function object(): ExtendableType<object>
-export function object<T>(properties: object.Properties<T>, name?: string): ExtendableType<T>
-export function object<T>(properties?: object.Properties<T>, name?: string): ExtendableType<T> {
+export function object(): object.ExtendableType<object>
+export function object<T>(properties: object.Properties<T>, name?: string): object.ExtendableType<T>
+export function object<T>(properties?: object.Properties<T>, name?: string): object.ExtendableType<T> {
 	return new IslyObject<T, T>(undefined, properties, name)
 }
