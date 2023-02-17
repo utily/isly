@@ -6,8 +6,17 @@ describe("isly.typeFromIs", () => {
 	const specificIsFunction = ((value: any) => value == "Specific") as isly.Type.IsFunction<Specific>
 
 	// TypeScript compile error if not working
-	it("TypeScript narrowing", () => {
+	it("TypeScript narrowing, without generic", () => {
 		const customType = isly.fromIs("test", specificIsFunction)
+		const isNarrowingWorking: boolean | string | any = "garbage" as any
+		if (customType.is(isNarrowingWorking)) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const myCustom: Specific = isNarrowingWorking
+		}
+	})
+	// TypeScript compile error if not working
+	it("TypeScript narrowing, with generic", () => {
+		const customType = isly.fromIs<Specific>("test", value => value == "Specific")
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
 		if (customType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
