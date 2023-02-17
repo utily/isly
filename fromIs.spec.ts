@@ -1,7 +1,7 @@
 import "jest"
 import * as isly from "./index"
 
-describe("isly.typeFromIs", () => {
+describe("isly.fromIs", () => {
 	type Specific = "Specific"
 	const specificIsFunction = ((value: any) => value == "Specific") as isly.Type.IsFunction<Specific>
 
@@ -23,13 +23,13 @@ describe("isly.typeFromIs", () => {
 			const myCustom: Specific = isNarrowingWorking
 		}
 	})
-	it("isly.typeFromIs(Specific)", () => {
+	it("isly.fromIs(Specific)", () => {
 		const customType = isly.fromIs("myName", specificIsFunction)
 		expect(customType.is("Specific")).toEqual(true)
 		expect(customType.is(13.37)).toEqual(false)
 		expect(customType.flaw({})).toEqual({ type: "myName" })
 	})
-	it("isly.typeFromIs(Specific[])", () => {
+	it("isly.fromIs(Specific[])", () => {
 		const customType = isly.array(isly.fromIs("myName", specificIsFunction))
 		expect(customType.is([])).toEqual(true)
 		expect(customType.is(["Specific", "Specific"])).toEqual(true)
