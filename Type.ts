@@ -10,26 +10,6 @@ export interface Type<T> {
 export namespace Type {
 	export type IsFunction<T> = Type<T>["is"]
 	export type FlawFunction<T> = Type<T>["flaw"]
-	// /**
-	//  * @deprecated Use AbstractType
-	//  */
-	// export function create<T>(
-	// 	name: string | (() => string),
-	// 	is: IsFunction<T>,
-	// 	flaw: FlawFunction<T>,
-	// 	condition?: string
-	// ): Type<T> {
-	// 	return Object.defineProperty(
-	// 		{
-	// 			is,
-	// 			// flaw: (value): FlawFunction => (is(value) ? {isFlaw: false, type: } satisfies Flaw : flaw(value)),
-	// 			flaw,
-	// 			condition,
-	// 		},
-	// 		"name",
-	// 		{ get: typeof name == "function" ? name : () => name }
-	// 	) as Type<T>
-	// }
 
 	export abstract class AbstractType<T> implements Type<T> {
 		get name(): string {
