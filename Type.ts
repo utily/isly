@@ -40,7 +40,7 @@ export namespace Type {
 		 * ```
 		 * const type = isly.object()
 		 * const is = type.is
-		 * if (is({})) {... // This would not be possible with a class-function.
+		 * if (is({})) {... // This would not be possible with a class-function, since the scope of `this` changes.
 		 * ```
 		 */
 		abstract is: IsFunction<T>
