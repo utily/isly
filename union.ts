@@ -1,8 +1,24 @@
 import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
+class IslyUnion<T> extends Type.AbstractType<T> {
+	protected readonly types: Type<T>[]
+	constructor(...types: Type<T>[]) {
+		super(() => types.map(type => type.name).join(" | "))
+		this.types = types
+	}
+	is(value: any): value is T {
+		return this.types.some(type => type.is(value))
+	}
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return {
+			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
+		}
+	}
+}
+
 /**
- * For unions with more than 4 types, provide the union type as the generic T.
+ * For unions with more than 6 types, provide the union type as the generic T.
  */
 export function union<T extends A | B, A, B>(...types: [Type<A>, Type<B>]): Type<T>
 export function union<T extends A | B | C, A, B, C>(...types: [Type<A>, Type<B>, Type<C>]): Type<T>
@@ -14,17 +30,5 @@ export function union<T extends A | B | C | D | E | F, A, B, C, D, E, F>(
 	...types: [Type<A>, Type<B>, Type<C>, Type<D>, Type<E>, Type<F>]
 ): Type<T>
 export function union<T>(...types: Type<T>[]): Type<T> {
-	const name = () => types.map(type => type.name).join(" | ")
-	const is = (value => types.some(type => type.is(value))) as Type.IsFunction<T>
-	return Type.create(
-		name,
-		is,
-		<A>(value: A) =>
-			(is(value)
-				? undefined
-				: {
-						type: name(),
-						flaws: types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
-				  }) as A extends T ? undefined : Flaw
-	)
+	return new IslyUnion(...types)
 }

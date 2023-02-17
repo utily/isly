@@ -46,18 +46,17 @@ function fromCriteria(
 		: // Eg: criteria is unknown
 		  [() => false, "Unknown criteria"]
 }
+
+class IslyNumber<N extends number = number> extends Type.AbstractType<N> {
+	constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
+		super("number", condition)
+	}
+	is(value: any): value is N {
+		return typeof value == "number" && !Number.isNaN(value) && (!this.isFunction || this.isFunction(value))
+	}
+}
+
 export function number<N extends number = number>(criteria?: Parameters<typeof fromCriteria>[0]): Type<N> {
 	const [isFunction, condition] = criteria == undefined ? [undefined, undefined] : fromCriteria(criteria)
-	const name = "number"
-	function is(value: any | number): value is N {
-		return typeof value == "number" && !Number.isNaN(value) && (!isFunction || isFunction(value))
-	}
-	const flaw = ((value: any) => {
-		return is(value) ? undefined : { type: name, ...(condition ? { condition } : undefined) }
-	}) as Type.FlawFunction<N>
-	return {
-		name,
-		is,
-		flaw,
-	}
+	return new IslyNumber<N>(isFunction, condition)
 }

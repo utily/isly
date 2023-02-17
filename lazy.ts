@@ -1,4 +1,18 @@
+import { Flaw } from "./Flaw"
 import { Type } from "./Type"
+
+class IslyLazy<T> extends Type.AbstractType<T> {
+	protected type: Type<T>
+	constructor(protected readonly factory: () => Type<T>, name?: string) {
+		super(name ?? (() => (this.type ??= factory()).name), () => (this.type ??= factory()).condition)
+	}
+	is(value: any): value is T {
+		return (this.type ??= this.factory()).is(value)
+	}
+	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType((this.type ??= this.factory()), value)
+	}
+}
 
 /**
  * Late evaluation of a type
@@ -9,10 +23,5 @@ import { Type } from "./Type"
  * @returns
  */
 export function lazy<T>(factory: () => Type<T>, name?: string): Type<T> {
-	let type: Type<T>
-	return Type.create(
-		name ?? (() => (type ??= factory()).name),
-		(value => (type ??= factory()).is(value)) as Type.IsFunction<T>,
-		(value => (type ??= factory()).flaw(value)) as Type.FlawFunction<T>
-	)
+	return new IslyLazy<T>(factory, name)
 }

@@ -1,15 +1,22 @@
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
+class IslyIntersection<T extends A & B, A, B> extends Type.AbstractType<T> {
+	protected readonly types: [Type<A>, Type<B>]
+	constructor(...types: [Type<A>, Type<B>]) {
+		super(() => types.map(type => type.name).join(" & "))
+		this.types = types
+	}
+	is(value: any): value is T {
+		return this.types.every(type => type.is(value))
+	}
+	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return {
+			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
+		}
+	}
+}
+
 export function intersection<T extends A & B, A, B>(...types: [Type<A>, Type<B>]): Type<T> {
-	const name = () => types.map(type => type.name).join(" & ")
-	const is = (value => types.every(type => type.is(value))) as Type.IsFunction<T>
-	const flaw = (value =>
-		is(value)
-			? undefined
-			: {
-					type: name(),
-					flaws: types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
-			  }) as Type.FlawFunction<T>
-	return Type.create(name, is, flaw)
+	return new IslyIntersection<T, A, B>(...types)
 }

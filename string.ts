@@ -1,28 +1,20 @@
-import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
-// TODO: Use `const` with Typescript 5
-// https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#const-type-parameters
-export function string<T extends string>(condition?: T): Type<T>
-export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp): Type<T>
-export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp | string): Type<T> {
-	let conditionObject: Record<T, any> | RegExp | true
 
-	const name = typeof condition == "string" ? `"${condition}"` : "string"
-	function createConditionObject(): typeof conditionObject {
-		return Array.isArray(condition)
-			? condition.reduce((result, current) => {
-					result[current] = true
-					return result
-			  }, Object.create(null))
-			: typeof condition == "string"
-			? { [condition]: true }
-			: typeof condition == "object" // Record or RegExp!
-			? condition
-			: true
+class IslyString<T extends string> extends Type.AbstractType<T> {
+	protected conditionObject: Record<T, any> | RegExp | true | undefined
+	constructor(protected readonly stringCondition?: readonly T[] | Record<T, any> | RegExp | string) {
+		super(typeof stringCondition == "string" ? `"${stringCondition}"` : "string", () => {
+			const conditionObject = this.getConditionObject()
+			return conditionObject instanceof RegExp
+				? `/${conditionObject.source}/${conditionObject.flags}`
+				: Object.keys(conditionObject)
+						.map(key => `"${key}"`)
+						.join(" | ")
+		})
 	}
+	is(value: any): value is T {
+		const conditionObject = this.getConditionObject()
 
-	function is(value: any | string): value is T {
-		conditionObject ??= createConditionObject()
 		return (
 			typeof value == "string" &&
 			(conditionObject instanceof RegExp
@@ -32,22 +24,28 @@ export function string<T extends string>(condition?: readonly T[] | Record<T, an
 				: conditionObject)
 		)
 	}
-	const flaw: Type.FlawFunction<T> = <A>(value: A) =>
-		(is(value)
-			? undefined
-			: {
-					type: name,
-					...(typeof (conditionObject ??= createConditionObject()) == "object"
-						? {
-								condition:
-									conditionObject instanceof RegExp
-										? `/${conditionObject.source}/${conditionObject.flags}`
-										: Object.keys(conditionObject)
-												.map(key => `"${key}"`)
-												.join(" | "),
-						  }
-						: undefined),
-			  }) as A extends T ? undefined : Flaw
+	protected getConditionObject(): NonNullable<IslyString<T>["conditionObject"]> {
+		return (this.conditionObject ??= Array.isArray(this.stringCondition)
+			? this.stringCondition.reduce((result, current) => {
+					result[current] = true
+					return result
+			  }, Object.create(null))
+			: typeof this.stringCondition == "string"
+			? { [this.stringCondition]: true }
+			: typeof this.stringCondition == "object" // Record or RegExp!
+			? this.stringCondition
+			: true)
+	}
+}
 
-	return Type.create(name, is, flaw)
+// TODO: Use `const` with Typescript 5
+// https://devblogs.microsoft.com/typescript/announcing-typescript-5-0-beta/#const-type-parameters
+/**
+ * Then using RegExp, don't use the /g-flag. (It makes .test() statefull)
+ * @param condition
+ */
+export function string<T extends string>(condition?: T): Type<T>
+export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp): Type<T>
+export function string<T extends string>(condition?: readonly T[] | Record<T, any> | RegExp | string): Type<T> {
+	return new IslyString<T>(condition)
 }

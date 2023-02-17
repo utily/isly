@@ -30,18 +30,27 @@ describe("isly.object", () => {
 			flaws: [{ property: "amount", type: "number" }],
 		})
 	})
+	it("{}", () => {
+		const type = isly.object()
+		expect(type.name).toBe("{}")
+		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
+		expect(type.is(undefined)).toBeFalsy()
+		expect(type.flaw(1)).toEqual({
+			type: "{}",
+			flaws: [],
+		})
+	})
+
 	it("Item", () => {
 		interface Item {
 			id: string
 			number: number
 		}
 		const type = isly.object<Item>({ id: isly.string(), number: isly.number() }, "Item")
-		const is = type.is
-		const flaw = type.flaw
 
-		expect(is({ id: "abc001", number: 1337 })).toEqual(true)
+		expect(type.is({ id: "abc001", number: 1337 })).toEqual(true)
 
-		expect(flaw({})).toEqual({
+		expect(type.flaw({})).toEqual({
 			type: "Item",
 			flaws: [
 				{

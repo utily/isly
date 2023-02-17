@@ -1,19 +1,16 @@
-import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function islyFunction<T extends Function>(): Type<T> {
-	const name = "function"
-	const is = (value => value && typeof value == "function") as Type.IsFunction<T>
+class IslyFunction<T extends Function> extends Type.AbstractType<T> {
+	constructor() {
+		super("function")
+	}
+	is(value: any): value is T {
+		return value && typeof value == "function"
+	}
+}
 
-	return Type.create<T>(
-		name,
-		is,
-		<A>(value: A) =>
-			(is(value)
-				? undefined
-				: {
-						type: name,
-				  }) as A extends T ? undefined : Flaw
-	)
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function islyFunction<T extends Function>(): Type<T> {
+	return new IslyFunction()
 }

@@ -7,7 +7,7 @@ type RequiredKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? ne
 export interface ExtendableType<T> extends Type<T> {
 	extend<T2 extends T>(
 		properties: object.Properties<Omit<T2, keyof T>> & Partial<object.Properties<Pick<T2, keyof T>>>,
-		type?: string
+		name?: string
 	): ExtendableType<T2>
 }
 
@@ -16,50 +16,76 @@ export namespace object {
 		{ [P in RequiredKeys<T>]: Type<T[P]> }
 }
 
-function withExtendFunction<T>(baseType: Type<T>): ExtendableType<T> {
-	const extend = ((moreProperties, type) => {
-		const types = [baseType, object(moreProperties)] as const
-		const name = () => type ?? types.map(type => type.name).join(" & ")
-		const is = (value => types.every(type => type.is(value))) as Type.IsFunction<T>
-		const flaw = (value =>
-			is(value)
-				? undefined
-				: {
-						type: name(),
-						flaws: (types.flatMap(type => (type.is(value) ? [] : type.flaw(value))) as Flaw[]).flatMap(
-							flaw => flaw.flaws
-						),
-				  }) as Type.FlawFunction<T>
-		return withExtendFunction(Type.create(name, is, flaw))
-	}) as ExtendableType<T>["extend"]
-	return Object.defineProperty(baseType, "extend", { value: extend }) as ExtendableType<T>
+class IslyObject<T extends B, B> extends Type.AbstractType<T> implements ExtendableType<T> {
+	protected readonly properties: object.Properties<T>
+	constructor(protected readonly baseType: Type<B> | undefined, properties?: object.Properties<T>, name?: string) {
+		super(
+			() =>
+				name ??
+				(this.baseType ? `${this.baseType.name} & ` : "") +
+					JSON.stringify(
+						globalThis.Object.fromEntries(
+							globalThis.Object.entries(this.properties).map(([property, type]: [string, Type<any>]) => [
+								property,
+								type.name,
+							])
+						)
+					)
+		)
+		this.properties = properties ?? ({} as object.Properties<T>)
+	}
+	extend<T2 extends T>(
+		properties: { [P in OptionalKeys<Omit<T2, keyof T>>]: Type<Omit<T2, keyof T>[P] | undefined> } &
+			{
+				[P in RequiredKeys<Omit<T2, keyof T>>]: Type<Omit<T2, keyof T>[P]>
+			} &
+			Partial<object.Properties<Pick<T2, keyof T>>>,
+		name?: string | undefined
+	): ExtendableType<T2> {
+		return new IslyObject<T2, T>(this, properties as any, name)
+	}
+	is(value: any): value is T {
+		return (
+			value &&
+			(this.baseType == undefined || this.baseType.is(value)) &&
+			typeof value == "object" &&
+			!globalThis.Array.isArray(value) &&
+			globalThis.Object.entries<Type<any>>(this.properties).every(([property, type]) => type.is(value[property]))
+		)
+	}
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return {
+			flaws: [
+				this.baseType ? this.baseType.flaw(value)?.flaws ?? [] : [],
+				globalThis.Object.entries<Type<any>>(this.properties)
+					.map<[string, undefined | Flaw]>(([property, type]) => [property, type.flaw((value as any)?.[property])])
+					.map(([property, flaw]) => flaw && { property, ...flaw })
+					.filter(flaw => flaw) as Flaw[],
+			].flat(),
+		}
+	}
 }
 
-export function object<T>(properties: object.Properties<T>, type?: string): ExtendableType<T> {
-	const p = properties
-	const name = () =>
-		type ??
-		JSON.stringify(
-			globalThis.Object.fromEntries(
-				globalThis.Object.entries(properties).map(([property, type]: [string, Type<any>]) => [property, type.name])
-			)
-		)
-	const is = (value =>
-		value &&
-		typeof value == "object" &&
-		!globalThis.Array.isArray(value) &&
-		globalThis.Object.entries<Type<any>>(p).every(([property, type]) => type.is(value[property]))) as Type.IsFunction<T>
-
-	const flaw = (value =>
-		is(value)
-			? undefined
-			: {
-					type: name(),
-					flaws: globalThis.Object.entries<Type<any>>(p)
-						.map<[string, undefined | Flaw]>(([property, type]) => [property, type.flaw((value as any)?.[property])])
-						.map(([property, flaw]) => flaw && { property, ...flaw })
-						.filter(flaw => flaw) as Flaw[],
-			  }) as Type.FlawFunction<T>
-
-	return withExtendFunction(Type.create(name, is, flaw))
+// function withExtendFunction<T>(baseType: Type<T>): ExtendableType<T> {
+// 	const extend = ((moreProperties, type) => {
+// 		const types = [baseType, object(moreProperties)] as const
+// 		const name = () => type ?? types.map(type => type.name).join(" & ")
+// 		const is = (value => types.every(type => type.is(value))) as Type.IsFunction<T>
+// 		const flaw = (value =>
+// 			is(value)
+// 				? undefined
+// 				: {
+// 						type: name(),
+// 						flaws: (types.flatMap(type => (type.is(value) ? [] : type.flaw(value))) as Flaw[]).flatMap(
+// 							flaw => flaw.flaws
+// 						),
+// 				  }) as Type.FlawFunction<T>
+// 		return withExtendFunction(Type.create(name, is, flaw))
+// 	}) as ExtendableType<T>["extend"]
+// 	return Object.defineProperty(baseType, "extend", { value: extend }) as ExtendableType<T>
+// }
+export function object(): ExtendableType<object>
+export function object<T>(properties: object.Properties<T>, name?: string): ExtendableType<T>
+export function object<T>(properties?: object.Properties<T>, name?: string): ExtendableType<T> {
+	return new IslyObject<T, T>(undefined, properties, name)
 }

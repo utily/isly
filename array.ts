@@ -1,3 +1,4 @@
+import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 export namespace array {
@@ -31,39 +32,45 @@ const criteriaFunctions: {
 	},
 }
 
+class IslyArray<T extends any[]> extends Type.AbstractType<T> {
+	constructor(protected readonly itemType: Type<T[number]>, protected readonly options: array.Option[]) {
+		super(
+			() => this.baseName() + "[]",
+			options.length > 0 ? options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") : undefined
+		)
+	}
+	protected baseName() {
+		return this.itemType.name.includes(" ") ? `(${this.itemType.name})` : this.itemType.name
+	}
+	protected itemName(index: number) {
+		return `${this.baseName()}[${index}]`
+	}
+	is(value: any): value is T {
+		return (
+			globalThis.Array.isArray(value) &&
+			this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
+			value.every(item => this.itemType.is(item))
+		)
+	}
+	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		const flaws =
+			(globalThis.Array.isArray(value) &&
+				value.flatMap((item, index) => {
+					const subFlaw = this.itemType.flaw(item)
+					return subFlaw ? [{ ...subFlaw, type: this.itemName(index) }] : []
+				})) ||
+			[]
+		return {
+			...(flaws.length > 0 ? { flaws } : undefined),
+		}
+	}
+}
+
 // The overloaded function is to avoid resulting in an Type<any[]>, but still be able to do array<number[]>(...) with only one generic!
 // Thanks to @jcalz at StackOverflow!
 // https://stackoverflow.com/questions/75128444/force-type-argument-inference-not-to-use-any-for-an-array-typescript?noredirect=1#comment132590506_75128444
 export function array<T extends any[] = never>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T>
 export function array<I>(itemType: Type<I>, ...options: array.Option[]): Type<I[]>
 export function array<T extends any[]>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T> {
-	const baseName = () => (itemType.name.includes(" ") ? `(${itemType.name})` : itemType.name)
-
-	const name = () => baseName() + "[]"
-	const itemName = (index: number) => `${baseName()}[${index}]`
-
-	const is = (value =>
-		globalThis.Array.isArray(value) &&
-		options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
-		value.every(item => itemType.is(item))) as Type.IsFunction<T>
-	const flaw = (value => {
-		if (is(value))
-			return undefined
-		const flaws =
-			(globalThis.Array.isArray(value) &&
-				value.flatMap((item, index) => {
-					const subFlaw = itemType.flaw(item)
-					return subFlaw ? [{ ...subFlaw, type: itemName(index) }] : []
-				})) ||
-			[]
-		return {
-			type: name(),
-			...(options.length > 0
-				? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
-				: undefined),
-			...(flaws.length > 0 ? { flaws } : undefined),
-		}
-	}) as Type.FlawFunction<T>
-
-	return Type.create<T>(name, is, flaw)
+	return new IslyArray(itemType, options)
 }

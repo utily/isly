@@ -52,11 +52,23 @@ describe("isly.string", () => {
 		expect(string42Type.flaw(42)).toEqual({ type: '"42"', condition: '"42"' })
 		expect(isly.string(["42", "43"]).flaw("44")).toEqual({ type: "string", condition: '"42" | "43"' })
 	})
-	it("regexp", () => {
+	it("regexp-simple", () => {
 		const stringRegexpType = isly.string(/^'.*'$/)
 		expect(stringRegexpType.is("'42'")).toBeTruthy()
 		expect(stringRegexpType.is("42")).toBeFalsy()
 
 		expect(stringRegexpType.flaw(42)).toEqual({ type: "string", condition: "/^'.*'$/" })
+	})
+
+	it("regexp-selector", () => {
+		const stringRegexpType = isly.string(/^((^|(?<!^)\.)[a-zA-Z]\w*|(\[\d+\]))*$/)
+
+		expect(stringRegexpType.is("created")).toBeTruthy()
+		expect(stringRegexpType.is("created")).toBeTruthy()
+		expect(stringRegexpType.is("prop.subProp")).toBeTruthy()
+		expect(stringRegexpType.is("prop[1]")).toBeTruthy()
+		expect(stringRegexpType.is("prop[1]")).toBeTruthy()
+		expect(stringRegexpType.is("[12][45]")).toBeTruthy()
+		expect(stringRegexpType.is(".42")).toBeFalsy()
 	})
 })

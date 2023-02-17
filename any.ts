@@ -1,18 +1,11 @@
-import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-export function any<T>(name?: string): Type<T> {
-	const n = name ?? "any"
-	const is = (value => value != undefined) as Type.IsFunction<T>
+class IslyAny<T> extends Type.AbstractType<T> {
+	is(value: any): value is T {
+		return value != undefined
+	}
+}
 
-	return Type.create<T>(
-		n,
-		is,
-		<A>(value: A) =>
-			(is(value)
-				? undefined
-				: {
-						type: n,
-				  }) as A extends T ? undefined : Flaw
-	)
+export function any<T>(name?: string): Type<T> {
+	return new IslyAny<T>(name ?? "any")
 }
