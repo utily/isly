@@ -1,7 +1,7 @@
 import { Type } from "./Type"
 
 class IslyFromIs<T> extends Type.AbstractType<T> {
-	constructor(name: string, protected readonly isFunction: (value: T) => boolean) {
+	constructor(name: string, protected readonly isFunction: (value: any) => boolean) {
 		super(name)
 	}
 	is = (value => this.isFunction(value)) as Type.IsFunction<T>
@@ -12,6 +12,8 @@ class IslyFromIs<T> extends Type.AbstractType<T> {
  *
  * @param config
  */
-export function fromIs<T>(name: string, is: Type.IsFunction<T>): Type<T> {
+export function fromIs<T>(name: string, is: Type.IsFunction<T>): Type<T>
+export function fromIs<T>(name: string, is: (value: any) => boolean): Type<T>
+export function fromIs<T>(name: string, is: (value: any) => boolean): Type<T> {
 	return new IslyFromIs(name, is)
 }

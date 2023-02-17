@@ -43,7 +43,7 @@ describe("isly", () => {
 
 			// Recursive
 			children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
-			regExp: isly.fromIs<RegExp>("RegExp", (value => value instanceof RegExp) as isly.Type.IsFunction<RegExp>),
+			regExp: isly.fromIs<RegExp>("RegExp", value => value instanceof RegExp),
 			// function
 			testMethod: isly.function<DemoType["testMethod"]>(),
 		})

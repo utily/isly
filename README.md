@@ -49,7 +49,7 @@ const type: isly.Type<DemoType> = isly.object({
 	children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
 
 	// Instanceof-test is made with a custom is-function.
-	regExp: isly.fromIs<RegExp>("RegExp", (value => value instanceof RegExp) as isly.Type.IsFunction<RegExp>),
+	regExp: isly.fromIs<RegExp>("RegExp", value => value instanceof RegExp),
 
 	// function:
 	// This only validate if it is a function,
