@@ -4,7 +4,7 @@ export interface Type<T> {
 	readonly name: string
 	readonly condition?: string
 	is(value: any | T): value is T
-	flaw(value: any): undefined | Flaw
+	flaw(value: any): Flaw
 }
 
 export namespace Type {
@@ -25,18 +25,16 @@ export namespace Type {
 
 		abstract is(value: any | T): value is T
 
-		public flaw<A>(value: A): undefined | Flaw {
+		public flaw<A>(value: A): Flaw {
 			return this.is(value)
-				? undefined
-				: // {
-				  // 		type: this.name,
-				  // 		...(this.condition ? { condition: this.condition } : undefined),
-				  // 		isFlaw: false,
-				  // 		message: "This type is correct.",
-				  //   }
-				  {
+				? {
+						type: this.name,
 						...(this.condition ? { condition: this.condition } : undefined),
-						// isFlaw: true,
+						isFlaw: false,
+						message: "This type is correct.",
+				  }
+				: {
+						...(this.condition ? { condition: this.condition } : undefined),
 						...this.createFlaw(value),
 						type: this.name,
 				  }

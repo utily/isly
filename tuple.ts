@@ -21,7 +21,7 @@ class IslyTuple<T extends any[]> extends Type.AbstractType<T> {
 					property,
 					type.flaw(globalThis.Array.isArray(value) ? value?.[property] : undefined),
 				])
-				.map(([property, flaw]) => flaw && { property, ...flaw })
+				.map(([property, flaw]) => (flaw?.isFlaw ?? true) && { property, ...flaw })
 				.filter(flaw => flaw) as Flaw[],
 		}
 	}

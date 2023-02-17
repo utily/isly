@@ -57,7 +57,7 @@ class IslyArray<T extends any[]> extends Type.AbstractType<T> {
 			(globalThis.Array.isArray(value) &&
 				value.flatMap((item, index) => {
 					const subFlaw = this.itemType.flaw(item)
-					return subFlaw ? [{ ...subFlaw, type: this.itemName(index) }] : []
+					return subFlaw.isFlaw ?? true ? [{ ...subFlaw, type: this.itemName(index) }] : []
 				})) ||
 			[]
 		return {

@@ -21,7 +21,7 @@ class IslyRecord<K extends string, V> extends Type.AbstractType<Record<K, V>> {
 				!globalThis.Array.isArray(value) &&
 				globalThis.Object.entries(value).flatMap(([key, propertyValue]) =>
 					[this.keyType.flaw(key), this.valueType.flaw(propertyValue)]
-						.map((flaw, index) => flaw && { property: key + `(${["key", "value"][index]})`, ...flaw })
+						.map((flaw, index) => (flaw.isFlaw ?? true) && { property: key + `(${["key", "value"][index]})`, ...flaw })
 						.filter(Boolean)
 				),
 		}

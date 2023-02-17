@@ -67,7 +67,11 @@ describe("isly", () => {
 			testMethod: () => true,
 		}
 
-		expect(type.flaw(value)).toBeUndefined()
+		expect(type.flaw(value)).toEqual({
+			isFlaw: false,
+			message: "This type is correct.",
+			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","testMethod":"function"}',
+		})
 		expect(type.is(value)).toEqual(true)
 
 		expect(type.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false)

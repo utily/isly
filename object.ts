@@ -59,9 +59,11 @@ class IslyObject<T extends B, B> extends Type.AbstractType<T> implements Extenda
 				this.baseType ? this.baseType.flaw(value)?.flaws ?? [] : [],
 				globalThis.Object.entries<Type<any>>(this.properties)
 					.map<[string, undefined | Flaw]>(([property, type]) => [property, type.flaw((value as any)?.[property])])
-					.map(([property, flaw]) => flaw && { property, ...flaw })
+					.map(([property, flaw]) => (flaw?.isFlaw ?? true) && { property, ...flaw })
 					.filter(flaw => flaw) as Flaw[],
-			].flat(),
+			]
+				.flat()
+				.filter(flaw => flaw?.isFlaw ?? true),
 		}
 	}
 }

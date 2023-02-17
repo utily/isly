@@ -18,14 +18,17 @@ export interface Flaw {
 }
 
 export namespace Flaw {
-	export const type: Type<Flaw> = object<Flaw>({
-		message: optional(string()),
-		isFlaw: optional(boolean()),
-		property: optional(union(string(), number())),
-		type: string(),
-		flaws: optional(array(lazy(() => type))),
-		condition: optional(string()),
-	})
+	export const type: Type<Flaw> = object<Flaw>(
+		{
+			message: optional(string()),
+			isFlaw: optional(boolean()),
+			property: optional(union(string(), number())),
+			type: string(),
+			flaws: optional(array(lazy(() => type))),
+			condition: optional(string()),
+		},
+		"Flaw"
+	)
 	// export const is = type.is
 	// export const flaw = type.flaw
 }
