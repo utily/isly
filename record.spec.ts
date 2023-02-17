@@ -26,7 +26,7 @@ describe("isly.record", () => {
 
 		expect(type.flaw({ currency: "SEK", a: 1 })).toEqual({
 			type: "Record<string, string>",
-			flaws: [{ property: "a(value)", type: "string" }],
+			flaws: [{ property: "a (value)", type: "string" }],
 		})
 	})
 	it("record, union as key", () => {
@@ -40,9 +40,45 @@ describe("isly.record", () => {
 			type: "Record<string, string>",
 			flaws: [
 				{
-					property: "c(key)",
+					property: "c (key)",
 					type: "string",
 					condition: '"a" | "b"',
+				},
+			],
+		})
+	})
+	it("record, number as key", () => {
+		const type = isly.record(isly.number(), isly.string())
+
+		expect(type.is({ 1: "abc001", 2: "1337" })).toBeTruthy()
+		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBeTruthy()
+		expect(type.is({ 0.1: "abc001", "-12.2": "1337", "-100": "abc" })).toBeTruthy()
+		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBeFalsy()
+
+		expect(type.flaw({ c: "hej" })).toEqual({
+			type: "Record<number, string>",
+			flaws: [
+				{
+					property: "c (key)",
+					type: "number",
+				},
+			],
+		})
+	})
+	it("record, positive integer as key", () => {
+		const type = isly.record(isly.number(["positive", "integer"]), isly.string())
+
+		expect(type.is({ 1: "abc001", 2: "1337" })).toBeTruthy()
+		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBeFalsy()
+		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBeFalsy()
+
+		expect(type.flaw({ c: "hej" })).toEqual({
+			type: "Record<number, string>",
+			flaws: [
+				{
+					property: "c (key)",
+					type: "number",
+					condition: "> 0 & Number.isInteger",
 				},
 			],
 		})

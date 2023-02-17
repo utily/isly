@@ -3,7 +3,7 @@ import * as isly from "./index"
 
 describe("isly.fromIs", () => {
 	type Specific = "Specific"
-	const specificIsFunction = ((value: any) => value == "Specific") as isly.Type.IsFunction<Specific>
+	const specificIsFunction = (value => value == "Specific") as isly.Type.IsFunction<Specific>
 
 	// TypeScript compile error if not working
 	it("TypeScript narrowing, without generic", () => {
@@ -61,7 +61,7 @@ describe("isly.fromIs", () => {
 
 		expect(typeA.flaw(undefined)).toEqual({ type: "A" })
 	})
-	it("class - inherited", () => {
+	it("class, inherited", () => {
 		class A {
 			a: 1
 		}
