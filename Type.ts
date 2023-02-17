@@ -31,6 +31,25 @@ export namespace Type {
 		get condition(): string | undefined {
 			return typeof this._condition == "function" ? this._condition() : this._condition
 		}
+		/**
+		 * This enables an instance of a type to behave as a namespace.
+		 *
+		 * ```
+		 * export namespace MyType {
+		 *   export const type = isly.object<MyType>(...)
+		 *   export is = type.is
+		 *   export flaw = type.flaw
+		 * }
+		 * ```
+		 * can be change to this.
+		 * ```
+		 * export const MyType = isly.object<MyType>(...)
+		 * ```
+		 */
+
+		get type(): Type<T> {
+			return this
+		}
 		constructor(
 			protected readonly _name: string | (() => string),
 			protected readonly _condition?: string | (() => string | undefined)

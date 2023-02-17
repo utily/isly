@@ -2,13 +2,13 @@ import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 class IslyLazy<T> extends Type.AbstractType<T> {
-	protected type: Type<T>
+	protected backend: Type<T>
 	constructor(protected readonly factory: () => Type<T>, name?: string) {
-		super(name ?? (() => (this.type ??= factory()).name), () => (this.type ??= factory()).condition)
+		super(name ?? (() => (this.backend ??= factory()).name), () => (this.backend ??= factory()).condition)
 	}
-	is = (value => (this.type ??= this.factory()).is(value)) as Type.IsFunction<T>
+	is = (value => (this.backend ??= this.factory()).is(value)) as Type.IsFunction<T>
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
-		return this.createFlawFromType((this.type ??= this.factory()), value)
+		return this.createFlawFromType((this.backend ??= this.factory()), value)
 	}
 }
 
