@@ -12,6 +12,6 @@ class IslyFromIs<T> extends Type.AbstractType<T> {
  *
  * @param config
  */
-export function typeFromIs<T>(name: string, is: Type.IsFunction<T>): Type<T> {
+export function fromIs<T>(name: string, is: Type.IsFunction<T>): Type<T> {
 	return new IslyFromIs(name, is)
 }

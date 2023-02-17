@@ -20,7 +20,7 @@ describe("isly", () => {
 			myArray: string[]
 
 			children?: DemoType[]
-
+			regExp: RegExp
 			testMethod: () => boolean
 		}
 
@@ -43,6 +43,7 @@ describe("isly", () => {
 
 			// Recursive
 			children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
+			regExp: isly.fromIs<RegExp>("RegExp", (value => value instanceof RegExp) as isly.Type.IsFunction<RegExp>),
 			// function
 			testMethod: isly.function<DemoType["testMethod"]>(),
 		})
@@ -63,14 +64,14 @@ describe("isly", () => {
 			myUnion: "a",
 			myArray: ["a"],
 			//children?: DemoType[]
-
+			regExp: /abc/,
 			testMethod: () => true,
 		}
 
 		expect(type.flaw(value)).toEqual({
 			isFlaw: false,
 			message: "This type is correct.",
-			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","testMethod":"function"}',
+			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","regExp":"RegExp","testMethod":"function"}',
 		})
 		expect(type.is(value)).toEqual(true)
 
@@ -99,9 +100,10 @@ describe("isly", () => {
 					condition: "minLength == 1",
 					type: "string[]",
 				},
+				{ property: "regExp", type: "RegExp" },
 				{ property: "testMethod", type: "function" },
 			],
-			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","testMethod":"function"}',
+			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","regExp":"RegExp","testMethod":"function"}',
 		})
 	})
 })
