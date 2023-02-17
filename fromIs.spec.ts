@@ -49,9 +49,9 @@ describe("isly.fromIs", () => {
 		const a = new A()
 		const b = new B()
 
-		const typeA = isly.fromIs<A>("A", (value => value instanceof A) as isly.Type.IsFunction<A>)
+		const typeA = isly.fromIs<A>("A", value => value instanceof A)
 
-		const typeB = isly.fromIs<B>("B", (value => value instanceof B) as isly.Type.IsFunction<A>)
+		const typeB = isly.fromIs<B>("B", value => value instanceof B)
 
 		expect(typeA.is(a)).toEqual(true)
 		expect(typeA.is(b)).toEqual(false)
@@ -60,5 +60,26 @@ describe("isly.fromIs", () => {
 		expect(typeB.is(a)).toEqual(false)
 
 		expect(typeA.flaw(undefined)).toEqual({ type: "A" })
+	})
+	it("class - inherited", () => {
+		class A {
+			a: 1
+		}
+		class B extends A {
+			b: 1
+		}
+		const a = new A()
+		const b = new B()
+
+		const typeA = isly.fromIs<A>("A", value => value instanceof A)
+		const typeB = isly.fromIs<B>("B", value => value instanceof B)
+
+		expect(typeA.is(a)).toEqual(true)
+		expect(typeA.is(b)).toEqual(true)
+
+		expect(typeB.is(b)).toEqual(true)
+		expect(typeB.is(a)).toEqual(false)
+
+		expect(typeB.flaw(undefined)).toEqual({ type: "B" })
 	})
 })
