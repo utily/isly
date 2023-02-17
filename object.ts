@@ -5,19 +5,28 @@ type OptionalKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? K 
 type RequiredKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? never : K }[keyof T]>
 
 export namespace object {
-	export type Properties<T> = { [P in OptionalKeys<T>]: Type<T[P] | undefined> } &
+	export type BaseProperties<T> = { [P in OptionalKeys<T>]: Type<T[P] | undefined> } &
 		{ [P in RequiredKeys<T>]: Type<T[P]> }
+	export type ExtendedProperties<T2 extends T, T> = BaseProperties<Omit<T2, keyof T>> &
+		Partial<object.BaseProperties<Pick<T2, keyof T>>>
+	export type Properties<T extends B, B, TB extends Type<B> | undefined> = TB extends undefined
+		? object.BaseProperties<T>
+		: object.ExtendedProperties<T, B>
+
 	export interface ExtendableType<T> extends Type<T> {
-		extend<T2 extends T>(
-			properties: object.Properties<Omit<T2, keyof T>> & Partial<object.Properties<Pick<T2, keyof T>>>,
-			name?: string
-		): ExtendableType<T2>
+		extend<T2 extends T>(properties: ExtendedProperties<T2, T>, name?: string): ExtendableType<T2>
 	}
 }
 
-class IslyObject<T extends B, B> extends Type.AbstractType<T> implements object.ExtendableType<T> {
-	protected readonly properties: object.Properties<T>
-	constructor(protected readonly baseType: Type<B> | undefined, properties?: object.Properties<T>, name?: string) {
+class IslyObject<T extends B, B, TB extends Type<B> | undefined>
+	extends Type.AbstractType<T>
+	implements object.ExtendableType<T>
+{
+	constructor(
+		protected readonly baseType: TB,
+		protected readonly properties: object.Properties<T, B, TB>,
+		name?: string
+	) {
 		super(
 			() =>
 				name ??
@@ -31,17 +40,16 @@ class IslyObject<T extends B, B> extends Type.AbstractType<T> implements object.
 						)
 					)
 		)
-		this.properties = properties ?? ({} as object.Properties<T>)
 	}
 	extend<T2 extends T>(
 		properties: { [P in OptionalKeys<Omit<T2, keyof T>>]: Type<Omit<T2, keyof T>[P] | undefined> } &
 			{
 				[P in RequiredKeys<Omit<T2, keyof T>>]: Type<Omit<T2, keyof T>[P]>
 			} &
-			Partial<object.Properties<Pick<T2, keyof T>>>,
+			Partial<object.BaseProperties<Pick<T2, keyof T>>>,
 		name?: string | undefined
 	): object.ExtendableType<T2> {
-		return new IslyObject<T2, T>(this, properties as any, name)
+		return new IslyObject<T2, T, Type<T>>(this, properties, name)
 	}
 	is = (value =>
 		value &&
@@ -67,7 +75,14 @@ class IslyObject<T extends B, B> extends Type.AbstractType<T> implements object.
 }
 
 export function object(): object.ExtendableType<object>
-export function object<T>(properties: object.Properties<T>, name?: string): object.ExtendableType<T>
-export function object<T>(properties?: object.Properties<T>, name?: string): object.ExtendableType<T> {
-	return new IslyObject<T, T>(undefined, properties, name)
+export function object<T extends object>(properties: object.BaseProperties<T>, name?: string): object.ExtendableType<T>
+export function object<T extends object>(
+	properties?: object.BaseProperties<T>,
+	name?: string
+): object.ExtendableType<T> {
+	return new IslyObject<T, object, undefined>(
+		undefined,
+		properties ?? ({} as object.Properties<T, object, undefined>),
+		name
+	)
 }
