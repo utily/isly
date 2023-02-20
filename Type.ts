@@ -18,7 +18,7 @@ export interface Type<T> {
 	 * export const MyType = isly.object<MyType>(...)
 	 * ```
 	 */
-	readonly type: Type<T>
+	readonly type: this
 	/**
 	 * Type guard for the type.
 	 * [Typescript documentation: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
@@ -47,7 +47,7 @@ export namespace Type {
 		get condition(): string | undefined {
 			return typeof this._condition == "function" ? this._condition() : this._condition
 		}
-		get type(): Type<T> {
+		get type(): this {
 			return this
 		}
 		constructor(
