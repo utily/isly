@@ -85,3 +85,12 @@ const typeItem1 = isly.object<Item1>({ i1: isly.number() }, "Item1")
 const typeItem2 = typeItem1.extend<Item2>({ i2: isly.number(), i1: isly.number(value => value >= 400) }, "Item2")
 const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
 ```
+
+## type.value()
+
+Returns the value only if it fits the type, otherwise undefined.
+
+```typescript
+const myNumber = 234 / 0 // Infinity
+console.log(isly.number(myNumber).value ?? "(No number)") // Outputs (No number)
+```

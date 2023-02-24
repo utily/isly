@@ -27,6 +27,13 @@ describe("isly.number", () => {
 		expect(numberType.is(Infinity)).toEqual(false)
 		expect(numberType.is(-Infinity)).toEqual(false)
 
+		expect(numberType.value(NaN)).toBeUndefined()
+		expect(numberType.value({})).toBeUndefined()
+		expect(numberType.value("")).toBeUndefined()
+		expect(numberType.value(undefined)).toBeUndefined()
+		expect(numberType.value(false)).toBeUndefined()
+		expect(numberType.value(0)).toEqual(0)
+
 		expect(numberType.name).toEqual("number")
 		expect(numberType.flaw({})).toEqual({ type: "number" })
 	})
