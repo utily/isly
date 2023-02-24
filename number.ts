@@ -53,10 +53,16 @@ class IslyNumber<N extends number = number> extends Type.AbstractType<N> {
 	}
 	is = (value =>
 		typeof value == "number" &&
-		!Number.isNaN(value) &&
+		!Number.isNaN(value - value) && // NaN-NaN==NaN && Infinity-Infinity==NaN &&  (-Infinity)-(-Infinity)==NaN
 		(!this.isFunction || this.isFunction(value))) as Type.IsFunction<N>
 }
-
+/**
+ * NaN, Infinite and -Infinite is not considered to be numbers by this type,
+ * since that it is hardly ever desirable when validating input data.
+ *
+ * @param criteria
+ * @returns
+ */
 export function number<N extends number = number>(criteria?: Parameters<typeof fromCriteria>[0]): Type<N> {
 	const [isFunction, condition] = criteria == undefined ? [undefined, undefined] : fromCriteria(criteria)
 	return new IslyNumber<N>(isFunction, condition)

@@ -12,6 +12,7 @@ describe("isly.number", () => {
 		}
 	})
 	it("isly.number().is.bind (Deprecated)", () => {
+		// This was needed before functions where implemented with closures.
 		const type = isly.number()
 		const is = type.is.bind(type)
 		expect(is(13.37)).toEqual(true)
@@ -21,6 +22,11 @@ describe("isly.number", () => {
 	it("isly.number()", () => {
 		const numberType = isly.number()
 		expect(numberType.is(13.37)).toEqual(true)
+
+		expect(numberType.is(NaN)).toEqual(false)
+		expect(numberType.is(Infinity)).toEqual(false)
+		expect(numberType.is(-Infinity)).toEqual(false)
+
 		expect(numberType.name).toEqual("number")
 		expect(numberType.flaw({})).toEqual({ type: "number" })
 	})

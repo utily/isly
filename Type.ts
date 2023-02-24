@@ -34,11 +34,18 @@ export interface Type<T> {
 	 * Implemented as a closure.
 	 */
 	flaw: (value: any) => Flaw
+	/**
+	 * Return the value if the value is valid for the type, otherwise undefined.
+	 *
+	 * Eg: isly.number().value(NaN) returns undefined
+	 */
+	value: (value: any) => T | undefined
 }
 
 export namespace Type {
 	export type IsFunction<T> = Type<T>["is"]
 	export type FlawFunction<T> = Type<T>["flaw"]
+	export type ValueFunction<T> = Type<T>["value"]
 
 	export abstract class AbstractType<T> implements Type<T> {
 		get name(): string {
@@ -63,6 +70,8 @@ export namespace Type {
 		 * ```
 		 */
 		abstract is: IsFunction<T>
+
+		public value: ValueFunction<T> = value => (this.is(value) ? value : undefined)
 
 		public flaw: FlawFunction<T> = value => {
 			return this.is(value)
