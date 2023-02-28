@@ -70,6 +70,8 @@ if (!type.is(data)) {
 
 ## Extending types
 
+`isly.object()` returns a type which is extendable.
+
 ```typescript
 interface Item1 {
 	i1: number
@@ -82,15 +84,85 @@ interface Item3 extends Item2 {
 }
 
 const typeItem1 = isly.object<Item1>({ i1: isly.number() }, "Item1")
+// It is possible (but optional) to add conditions to properties in the base-type:
 const typeItem2 = typeItem1.extend<Item2>({ i2: isly.number(), i1: isly.number(value => value >= 400) }, "Item2")
 const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
 ```
 
 ## type.value()
 
-Returns the value only if it fits the type, otherwise undefined.
+Returns the value only if it fits the type, otherwise undefined. Make it easy to use with the _Nullish coalescing operator_ (`??`).
 
 ```typescript
 const myNumber = 234 / 0 // Infinity
 console.log(isly.number(myNumber).value ?? "(No number)") // Outputs (No number)
+console.log(isly.number(0).value ?? "(No number)") // Outputs 0
+```
+
+## Usage patterns:
+
+This is a possible usage pattern.
+
+Start with:
+
+`Event` is acting like a namespace here, but less boilerplate code to write.
+
+```typescript
+// model/Event.ts
+import * as isly from "isly"
+
+export interface Event {
+	name: string
+	description?: string
+}
+
+export const Event = isly.object<Event>(
+	{
+		name: isly.string(),
+		description: isly.optional(isly.string()),
+	},
+	"Event"
+)
+```
+
+Which is used like:
+
+```typescript
+import { Event } from "model/Event"
+
+...
+if (!Event.type.is(myValue)) {
+	return Event.type.flaw(myValue)
+} else {
+	// use myValue here!
+	...
+}
+...
+
+```
+
+When a namespace is needed, change the model to:
+
+```typescript
+// model/Event.ts
+import * as isly from "isly"
+
+export interface Event {
+	name: string
+	description?: string
+}
+export namespace Event {
+	export const type = isly.object<Event>(
+		{
+			name: isly.string(),
+			description: isly.optional(isly.string()),
+		},
+		"Event"
+	)
+
+	export const is = type.is
+	export const flaw = type.flaw
+	// More stuff goes here:
+	...
+}
 ```
