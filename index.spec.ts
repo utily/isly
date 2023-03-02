@@ -42,7 +42,7 @@ describe("isly", () => {
 			myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
 
 			// Recursive
-			children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
+			children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
 			regExp: isly.fromIs<RegExp>("RegExp", value => value instanceof RegExp),
 			// function
 			testMethod: isly.function<DemoType["testMethod"]>(),

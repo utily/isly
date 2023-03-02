@@ -12,11 +12,11 @@ describe("isly.intersection", () => {
 		{
 			const testIntersectionType = isly.intersection<TestIntersection, A, B>(
 				isly.object<A>({
-					a: isly.optional(isly.number()),
+					a: isly.number().optional(),
 					shared: isly.string(),
 				}),
 				isly.object<B>({
-					b: isly.optional(isly.number()),
+					b: isly.number().optional(),
 					shared: isly.string(),
 				})
 			)
@@ -30,11 +30,11 @@ describe("isly.intersection", () => {
 		{
 			const testIntersectionType = isly.intersection(
 				isly.object<A>({
-					a: isly.optional(isly.number()),
+					a: isly.number().optional(),
 					shared: isly.string(),
 				}),
 				isly.object<B>({
-					b: isly.optional(isly.number()),
+					b: isly.number().optional(),
 					shared: isly.string(),
 				})
 			)
@@ -50,11 +50,11 @@ describe("isly.intersection", () => {
 		type B = { b?: number; shared: string }
 		const intersection = isly.intersection(
 			isly.object<A>({
-				a: isly.optional(isly.number()),
+				a: isly.number().optional(),
 				shared: isly.string(),
 			}),
 			isly.object<B>({
-				b: isly.optional(isly.number()),
+				b: isly.number().optional(),
 				shared: isly.string(),
 			})
 		)

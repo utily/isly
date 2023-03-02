@@ -3,22 +3,7 @@ import { Flaw } from "./Flaw"
 export interface Type<T> {
 	readonly name: string
 	readonly condition?: string
-	/**
-	 * This enables an instance of a type to behave as a namespace.
-	 *
-	 * ```
-	 * export namespace MyType {
-	 *   export const type = isly.object<MyType>(...)
-	 *   export is = type.is
-	 *   export flaw = type.flaw
-	 * }
-	 * ```
-	 * can be change to this
-	 * ```
-	 * export const MyType = isly.object<MyType>(...)
-	 * ```
-	 */
-	readonly type: this
+	optional: () => Type<T | undefined>
 	/**
 	 * Type guard for the type.
 	 * [Typescript documentation: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
@@ -39,13 +24,13 @@ export interface Type<T> {
 	 *
 	 * Eg: isly.number().value(NaN) returns undefined
 	 */
-	value: (value: any) => T | undefined
+	get: (value: any) => T | undefined
 }
 
 export namespace Type {
 	export type IsFunction<T> = Type<T>["is"]
 	export type FlawFunction<T> = Type<T>["flaw"]
-	export type ValueFunction<T> = Type<T>["value"]
+	export type GetFunction<T> = Type<T>["get"]
 
 	export abstract class AbstractType<T> implements Type<T> {
 		get name(): string {
@@ -54,8 +39,8 @@ export namespace Type {
 		get condition(): string | undefined {
 			return typeof this._condition == "function" ? this._condition() : this._condition
 		}
-		get type(): this {
-			return this
+		public optional(): Type<T | undefined> {
+			return new IslyOptional<T>(this)
 		}
 		constructor(
 			protected readonly _name: string | (() => string),
@@ -71,7 +56,7 @@ export namespace Type {
 		 */
 		abstract is: IsFunction<T>
 
-		public value: ValueFunction<T> = value => (this.is(value) ? value : undefined)
+		public get: GetFunction<T> = value => (this.is(value) ? value : undefined)
 
 		public flaw: FlawFunction<T> = value => {
 			return this.is(value)
@@ -102,5 +87,15 @@ export namespace Type {
 				? backend.createFlaw(value)
 				: backend.flaw(value)
 		}
+	}
+}
+
+class IslyOptional<T> extends Type.AbstractType<T | undefined> {
+	constructor(protected readonly backend: Type<T>) {
+		super(() => backend.name + " | undefined", backend.condition)
+	}
+	is = (value => value == undefined || this.backend.is(value)) as Type.IsFunction<T>
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType(this.backend, value)
 	}
 }

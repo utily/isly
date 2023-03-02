@@ -9,7 +9,6 @@ import { lazy } from "./lazy"
 import { named } from "./named"
 import { number } from "./number"
 import { object } from "./object"
-import { optional } from "./optional"
 import { record } from "./record"
 import { string } from "./string"
 import { tuple } from "./tuple"
@@ -27,7 +26,6 @@ export {
 	named,
 	number,
 	object,
-	optional,
 	record,
 	string,
 	tuple,
