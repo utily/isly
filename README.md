@@ -46,7 +46,7 @@ const type: isly.Type<DemoType> = isly.object({
 	myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
 
 	// Recursive, optional:
-	children: isly.optional(isly.array(isly.lazy(() => type, "DemoType"))),
+	children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
 
 	// Instanceof-test is made with a custom is-function.
 	regExp: isly.fromIs<RegExp>("RegExp", value => value instanceof RegExp),
@@ -56,7 +56,7 @@ const type: isly.Type<DemoType> = isly.object({
 	// not the signature of it.
 	// JSON do not support this type but exists for
 	// completeness.
-	testMethod: isly.optional(isly.function<DemoType["testMethod"]>()),
+	testMethod: isly.function<DemoType["testMethod"]>().optional(),
 })
 
 const data: DemoType | any = api.getMyExternalData()
@@ -89,23 +89,19 @@ const typeItem2 = typeItem1.extend<Item2>({ i2: isly.number(), i1: isly.number(v
 const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
 ```
 
-## type.value()
+## type.get()
 
 Returns the value only if it fits the type, otherwise undefined. Make it easy to use with the _Nullish coalescing operator_ (`??`).
 
 ```typescript
 const myNumber = 234 / 0 // Infinity
-console.log(isly.number().value(myNumber) ?? "(No number)") // Outputs (No number)
-console.log(isly.number().value(0) ?? "(No number)") // Outputs 0
+console.log(isly.number().get(myNumber) ?? "(No number)") // Outputs (No number)
+console.log(isly.number().get(0) ?? "(No number)") // Outputs 0
 ```
 
 ## Usage patterns:
 
 This is a possible usage pattern.
-
-Start with:
-
-`Event` is acting like a namespace here, but less boilerplate code to write.
 
 ```typescript
 // model/Event.ts
@@ -115,14 +111,20 @@ export interface Event {
 	name: string
 	description?: string
 }
+export namespace Event {
+	export const type = isly.object<Event>(
+		{
+			name: isly.string(),
+			description: isly.string().optional(),
+		},
+		"Event"
+	)
 
-export const Event = isly.object<Event>(
-	{
-		name: isly.string(),
-		description: isly.optional(isly.string()),
-	},
-	"Event"
-)
+	export const is = type.is
+	export const flaw = type.flaw
+	// You can put more stuff here:
+	...
+}
 ```
 
 Which is used like:
@@ -139,30 +141,4 @@ if (!Event.type.is(myValue)) {
 }
 ...
 
-```
-
-When a namespace is needed, change the model to:
-
-```typescript
-// model/Event.ts
-import * as isly from "isly"
-
-export interface Event {
-	name: string
-	description?: string
-}
-export namespace Event {
-	export const type = isly.object<Event>(
-		{
-			name: isly.string(),
-			description: isly.optional(isly.string()),
-		},
-		"Event"
-	)
-
-	export const is = type.is
-	export const flaw = type.flaw
-	// More stuff goes here:
-	...
-}
 ```
