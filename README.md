@@ -89,7 +89,7 @@ const typeItem2 = typeItem1.extend<Item2>({ i2: isly.number(), i1: isly.number(v
 const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
 ```
 
-## type.get()
+## type.get(value: any)
 
 Returns the value only if it fits the type, otherwise undefined. Make it easy to use with the _Nullish coalescing operator_ (`??`).
 
@@ -133,8 +133,8 @@ Which is used like:
 import { Event } from "model/Event"
 
 ...
-if (!Event.type.is(myValue)) {
-	return Event.type.flaw(myValue)
+if (!Event.is(myValue)) {
+	return Event.flaw(myValue)
 } else {
 	// use myValue here!
 	...
