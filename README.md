@@ -95,8 +95,8 @@ Returns the value only if it fits the type, otherwise undefined. Make it easy to
 
 ```typescript
 const myNumber = 234 / 0 // Infinity
-console.log(isly.number(myNumber).value ?? "(No number)") // Outputs (No number)
-console.log(isly.number(0).value ?? "(No number)") // Outputs 0
+console.log(isly.number().value(myNumber) ?? "(No number)") // Outputs (No number)
+console.log(isly.number().value(0) ?? "(No number)") // Outputs 0
 ```
 
 ## Usage patterns:
