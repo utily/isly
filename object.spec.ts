@@ -1,5 +1,5 @@
 import "jest"
-import * as isly from "./index"
+import { isly } from "./index"
 
 describe("isly.object", () => {
 	// TypeScript compile error if not working
