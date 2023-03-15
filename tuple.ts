@@ -1,21 +1,29 @@
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-export function tuple<T extends any[]>(...items: { [I in keyof T]: Type<T[I]> }): Type<T> {
-	const name = () => "[" + items.map(e => e.name).join(", ") + "]"
-	const is = (value =>
+class IslyTuple<T extends any[]> extends Type.AbstractType<T> {
+	protected readonly items: { [I in keyof T]: Type<T[I]> }
+	constructor(...items: { [I in keyof T]: Type<T[I]> }) {
+		super(() => "[" + items.map(e => e.name).join(", ") + "]")
+		this.items = items
+	}
+	is = (value =>
 		globalThis.Array.isArray(value) &&
-		value.length == items.length &&
-		items.every((item, index) => item.is(value[index]))) as Type.IsFunction<T>
-	return Type.create(name, is, value => {
-		return is(value)
-			? undefined
-			: {
-					type: name(),
-					flaws: items
-						.map<[number, undefined | Flaw]>((type, property) => [property, type.flaw(value[property])])
-						.map(([property, flaw]) => flaw && { property, ...flaw })
-						.filter(flaw => flaw) as Flaw[],
-			  }
-	})
+		value.length == this.items.length &&
+		this.items.every((item, index) => item.is(value[index]))) as Type.IsFunction<T>
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return {
+			flaws: this.items
+				.map<[number, undefined | Flaw]>((type, property) => [
+					property,
+					type.flaw(globalThis.Array.isArray(value) ? value?.[property] : undefined),
+				])
+				.map(([property, flaw]) => (flaw?.isFlaw ?? true) && { property, ...flaw })
+				.filter(flaw => flaw) as Flaw[],
+		}
+	}
+}
+
+export function tuple<T extends any[]>(...items: { [I in keyof T]: Type<T[I]> }): Type<T> {
+	return new IslyTuple<T>(...items)
 }

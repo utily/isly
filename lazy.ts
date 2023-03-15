@@ -1,10 +1,25 @@
+import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-export function lazy<T>(factory: () => Type<T>): Type<T> {
-	let type: Type<T>
-	return Type.create(
-		() => (type ??= factory()).name,
-		(value => (type ??= factory()).is(value)) as Type.IsFunction<T>,
-		(value => (type ??= factory()).flaw(value)) as Type.FlawFunction
-	)
+class IslyLazy<T> extends Type.AbstractType<T> {
+	protected backend: Type<T>
+	constructor(protected readonly factory: () => Type<T>, name?: string) {
+		super(name ?? (() => (this.backend ??= factory()).name), () => (this.backend ??= factory()).condition)
+	}
+	is = (value => (this.backend ??= this.factory()).is(value)) as Type.IsFunction<T>
+	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType((this.backend ??= this.factory()), value)
+	}
+}
+
+/**
+ * Late evaluation of a type
+ * Can be used for for recursive types.
+ *
+ * @param factory
+ * @param name Provide a name, to avoid infinite loop if the type i recursive
+ * @returns
+ */
+export function lazy<T>(factory: () => Type<T>, name?: string): Type<T> {
+	return new IslyLazy<T>(factory, name)
 }

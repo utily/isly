@@ -1,3 +1,4 @@
+import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
 export namespace array {
@@ -31,22 +32,42 @@ const criteriaFunctions: {
 	},
 }
 
-export function array<T>(itemType: Type<T>, ...options: array.Option[]): Type<T[]> {
-	const name = () => itemType.name + "[]"
-
-	const is = (value =>
+class IslyArray<T extends any[]> extends Type.AbstractType<T> {
+	constructor(protected readonly itemType: Type<T[number]>, protected readonly options: array.Option[]) {
+		super(
+			() => this.baseName() + "[]",
+			options.length > 0 ? options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") : undefined
+		)
+	}
+	protected baseName() {
+		return this.itemType.name.includes(" ") ? `(${this.itemType.name})` : this.itemType.name
+	}
+	protected itemName(index: number) {
+		return `${this.baseName()}[${index}]`
+	}
+	is = (value =>
 		globalThis.Array.isArray(value) &&
-		options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
-		value.every(item => itemType.is(item))) as Type.IsFunction<T[]>
+		this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
+		value.every(item => this.itemType.is(item))) as Type.IsFunction<T>
+	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		const flaws =
+			(globalThis.Array.isArray(value) &&
+				value.flatMap((item, index) => {
+					const subFlaw = this.itemType.flaw(item)
+					return subFlaw.isFlaw ?? true ? [{ ...subFlaw, type: this.itemName(index) }] : []
+				})) ||
+			[]
+		return {
+			...(flaws.length > 0 ? { flaws } : undefined),
+		}
+	}
+}
 
-	return Type.create<T[]>(name, is, value =>
-		is(value)
-			? undefined
-			: {
-					type: name(),
-					...(options.length > 0
-						? { condition: options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") }
-						: undefined),
-			  }
-	)
+// The overloaded function is to avoid resulting in an Type<any[]>, but still be able to do array<number[]>(...) with only one generic!
+// Thanks to @jcalz at StackOverflow!
+// https://stackoverflow.com/questions/75128444/force-type-argument-inference-not-to-use-any-for-an-array-typescript?noredirect=1#comment132590506_75128444
+export function array<T extends any[] = never>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T>
+export function array<I>(itemType: Type<I>, ...options: array.Option[]): Type<I[]>
+export function array<T extends any[]>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T> {
+	return new IslyArray(itemType, options)
 }

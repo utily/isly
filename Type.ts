@@ -3,32 +3,99 @@ import { Flaw } from "./Flaw"
 export interface Type<T> {
 	readonly name: string
 	readonly condition?: string
-	is(value: any | T): value is T
-	flaw(value: any): undefined | Flaw
+	optional: () => Type<T | undefined>
+	/**
+	 * Type guard for the type.
+	 * [Typescript documentation: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
+	 *
+	 * Implemented as a closure.
+	 */
+	is: (value: any | T) => value is T
+	/**
+	 * Return a flaw object, describing the flaws of the value compared to expected type.
+	 *
+	 * If it is a correct value, according to the type, it returns a Flaw with the message `{message:"This type is correct.", isFlaw: false, ... }`
+	 *
+	 * Implemented as a closure.
+	 */
+	flaw: (value: any) => Flaw
+	/**
+	 * Return the value if the value is valid for the type, otherwise undefined.
+	 *
+	 * Eg: isly.number().value(NaN) returns undefined
+	 */
+	get: (value: any) => T | undefined
 }
+
 export namespace Type {
-	export type IsFunction<T> = (value: any | T) => value is T
-	export type FlawFunction = (value: any) => undefined | Flaw
-	export function create<T>(
-		name: string | (() => string),
-		is: IsFunction<T>,
-		flaw: FlawFunction,
-		condition?: string
-	): Type<T> {
-		return Object.defineProperty(
-			{
-				is,
-				flaw,
-				condition,
-			},
-			"name",
-			{ get: typeof name == "function" ? name : () => name }
-		) as Type<T>
+	export type IsFunction<T> = Type<T>["is"]
+	export type FlawFunction<T> = Type<T>["flaw"]
+	export type GetFunction<T> = Type<T>["get"]
+
+	export abstract class AbstractType<T> implements Type<T> {
+		get name(): string {
+			return typeof this._name == "function" ? this._name() : this._name
+		}
+		get condition(): string | undefined {
+			return typeof this._condition == "function" ? this._condition() : this._condition
+		}
+		public optional(): Type<T | undefined> {
+			return new IslyOptional<T>(this)
+		}
+		constructor(
+			protected readonly _name: string | (() => string),
+			protected readonly _condition?: string | (() => string | undefined)
+		) {}
+		/**
+		 * Since it is implemented as a closure, it is possible to reexport this function.
+		 * ```
+		 * const type = isly.object()
+		 * const is = type.is
+		 * if (is({})) {... // This would not be possible with a class-function, since the scope of `this` changes.
+		 * ```
+		 */
+		abstract is: IsFunction<T>
+
+		public get: GetFunction<T> = value => (this.is(value) ? value : undefined)
+
+		public flaw: FlawFunction<T> = value => {
+			return this.is(value)
+				? {
+						type: this.name,
+						...(this.condition ? { condition: this.condition } : undefined),
+						isFlaw: false,
+						message: "This type is correct.",
+				  }
+				: {
+						...(this.condition ? { condition: this.condition } : undefined),
+						...this.createFlaw(value),
+						type: this.name,
+				  }
+		}
+		/**
+		 * Override this to create custom Flaws.
+		 * Not necessary for simple types.
+		 */
+		protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+			return {}
+		}
+		/**
+		 * Used by types that use a backend type.
+		 */
+		protected createFlawFromType(backend: Type<any>, value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+			return "createFlaw" in backend && typeof backend.createFlaw == "function"
+				? backend.createFlaw(value)
+				: backend.flaw(value)
+		}
 	}
 }
-// export interface Type<T> {
-// 	readonly name: string
-// 	readonly condition?: string
-// 	is(value: any | T): value is T
-// 	flaw(value: any): true | Flaw
-// }
+
+class IslyOptional<T> extends Type.AbstractType<T | undefined> {
+	constructor(protected readonly backend: Type<T>) {
+		super(() => backend.name + " | undefined", backend.condition)
+	}
+	is = (value => value == undefined || this.backend.is(value)) as Type.IsFunction<T>
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType(this.backend, value)
+	}
+}

@@ -1,7 +1,7 @@
 import "jest"
-import * as isly from "./index"
+import { isly } from "./index"
 
-describe("boolean", () => {
+describe("isly.boolean", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const booleanType = isly.boolean()

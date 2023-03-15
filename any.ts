@@ -1,14 +1,9 @@
 import { Type } from "./Type"
 
-export function any<T>(name?: string): Type<T> {
-	const n = name ?? "any"
-	const is = (value => value != undefined) as Type.IsFunction<T>
+class IslyAny<T = any> extends Type.AbstractType<T> {
+	is = (value => value != undefined) as Type.IsFunction<T>
+}
 
-	return Type.create<T>(n, is, value =>
-		is(value)
-			? undefined
-			: {
-					type: n,
-			  }
-	)
+export function any<T = any>(name?: string): Type<T> {
+	return new IslyAny<T>(name ?? "any")
 }

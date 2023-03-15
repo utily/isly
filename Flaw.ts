@@ -1,26 +1,31 @@
 import { array } from "./array"
+import { boolean } from "./boolean"
 import { lazy } from "./lazy"
-import { number } from "./number"
 import { object } from "./object"
-import { optional } from "./optional"
 import { string } from "./string"
 import { Type } from "./Type"
-import { union } from "./union"
 
 export interface Flaw {
-	property?: string | number
+	message?: string
+	isFlaw?: boolean
+	property?: string
 	type: string
-	flaws?: Flaw[]
 	condition?: string
+	flaws?: Flaw[]
 }
 
 export namespace Flaw {
-	export const type: Type<Flaw> = object({
-		property: optional(union<string | number>(string(), number())),
-		type: string(),
-		flaws: optional(array(lazy(() => type))),
-		condition: optional(string()),
-	})
+	export const type: Type<Flaw> = object<Flaw>(
+		{
+			message: string().optional(),
+			isFlaw: boolean().optional(),
+			property: string().optional(),
+			type: string(),
+			flaws: array(lazy(() => type)).optional(),
+			condition: string().optional(),
+		},
+		"Flaw"
+	)
 	export const is = type.is
 	export const flaw = type.flaw
 }

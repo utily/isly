@@ -1,7 +1,7 @@
 import "jest"
-import * as isly from "./index"
+import { isly } from "./index"
 
-describe("isly.Number", () => {
+describe("isly.number", () => {
 	// TypeScript compile error if not working
 	it("TypeScript narrowing", () => {
 		const numberType = isly.number()
@@ -12,6 +12,7 @@ describe("isly.Number", () => {
 		}
 	})
 	it("isly.number().is.bind (Deprecated)", () => {
+		// This was needed before functions where implemented with closures.
 		const type = isly.number()
 		const is = type.is.bind(type)
 		expect(is(13.37)).toEqual(true)
@@ -21,6 +22,25 @@ describe("isly.Number", () => {
 	it("isly.number()", () => {
 		const numberType = isly.number()
 		expect(numberType.is(13.37)).toEqual(true)
+
+		expect(numberType.is(NaN)).toEqual(false)
+		expect(numberType.is(Infinity)).toEqual(false)
+		expect(numberType.is(-Infinity)).toEqual(false)
+
+		expect(numberType.get(0)).toEqual(0)
+		expect(numberType.get(42)).toEqual(42)
+
+		expect(numberType.get(NaN)).toBeUndefined()
+		expect(numberType.get([])).toBeUndefined()
+		expect(numberType.get(null)).toBeUndefined()
+		expect(numberType.get({})).toBeUndefined()
+		expect(numberType.get("")).toBeUndefined()
+		expect(numberType.get(undefined)).toBeUndefined()
+		expect(numberType.get(false)).toBeUndefined()
+		expect(numberType.get(Infinity)).toBeUndefined()
+		expect(numberType.get(-Infinity)).toBeUndefined()
+
+		expect(numberType.name).toEqual("number")
 		expect(numberType.flaw({})).toEqual({ type: "number" })
 	})
 	it('isly.number("positive")', () => {
