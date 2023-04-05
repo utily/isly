@@ -112,4 +112,41 @@ describe("isly.object", () => {
 			],
 		})
 	})
+	it("get", () => {
+		interface Item1 {
+			a: number
+			b: string
+		}
+		const typeItem1 = isly.object<Item1>({ a: isly.number(), b: isly.string() }, "Item1")
+
+		expect(typeItem1.get({ i1: 200, str: "a" })).toBeUndefined()
+		expect(typeItem1.get({ a: 200 })).toBeUndefined()
+		expect(typeItem1.get({ a: 200, b: "a" })).toEqual({ a: 200, b: "a" })
+		expect(typeItem1.get({ a: 200, b: "a", c: true })).toEqual({ a: 200, b: "a" })
+	})
+	it("get extends", () => {
+		interface Item1 {
+			a: number
+			b: string
+		}
+		interface Item2 extends Item1 {
+			c: boolean
+			d?: number
+		}
+		const typeItem1 = isly.object<Item1>({ a: isly.number(), b: isly.string() }, "Item1")
+		const typeItem2 = typeItem1.extend<Item2>({ c: isly.boolean(), d: isly.number().optional() }, "Item2")
+
+		expect(typeItem2.get({ c: true })).toBeUndefined()
+
+		expect(typeItem1.get({ a: 200, b: "a" })).toEqual({ a: 200, b: "a" })
+		expect(typeItem2.get({ a: 200, b: "a" })).toBeUndefined()
+		expect(typeItem2.get({ a: 200 })).toBeUndefined()
+		expect(typeItem2.get({ a: 200, b: "a" })).toBeUndefined()
+		expect(typeItem2.get({ a: 200, b: "a", c: true })).toEqual({ a: 200, b: "a", c: true })
+		expect(typeItem2.get({ a: 200, b: "a", c: true, d: 0.1 })).toEqual({ a: 200, b: "a", c: true, d: 0.1 })
+		expect(typeItem2.get({ a: 200, b: "a", c: true, e: "a" })).toEqual({ a: 200, b: "a", c: true })
+		expect(typeItem2.get({ a: 200, b: "a", c: true, d: undefined })).toEqual({ a: 200, b: "a", c: true })
+		expect(typeItem2.get({ a: 200, b: "a", c: true, d: undefined })).toHaveProperty("d", undefined)
+		expect(typeItem2.get({ a: 200, b: "a", c: true })).not.toHaveProperty("d")
+	})
 })

@@ -28,6 +28,7 @@ export abstract class Type<T> {
 	abstract is: Type.IsFunction<T>
 	/**
 	 * Return the value if the value is valid for the type, otherwise undefined.
+	 * For objects, unknown properties are filtered.
 	 *
 	 * Eg: isly.number().value(NaN) returns undefined
 	 */

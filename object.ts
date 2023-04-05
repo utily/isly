@@ -20,7 +20,10 @@ export namespace object {
 	}
 }
 
-class IslyObject<T extends B, B, TB extends Type<B> | undefined> extends Type<T> implements object.ExtendableType<T> {
+class IslyObject<T extends B, B extends object, TB extends Type<B> | undefined>
+	extends Type<T>
+	implements object.ExtendableType<T>
+{
 	constructor(
 		protected readonly baseType: TB,
 		protected readonly properties: object.Properties<T, B, TB>,
@@ -70,6 +73,20 @@ class IslyObject<T extends B, B, TB extends Type<B> | undefined> extends Type<T>
 				.flat()
 				.filter(flaw => flaw?.isFlaw ?? true),
 		}
+	}
+	/**
+	 * get-function on a object returns a object with only specified properties
+	 */
+	get: Type.GetFunction<T> = value => {
+		let result: undefined | Record<any, any> = undefined
+		if (this.is(value)) {
+			result = this.baseType ? this.baseType.get(value) : {}
+			if (result)
+				for (const key of globalThis.Object.keys(this.properties) as (keyof typeof value)[])
+					if (key in value)
+						result[key] = value[key]
+		}
+		return result as undefined | T
 	}
 }
 
