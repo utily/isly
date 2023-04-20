@@ -1,7 +1,7 @@
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-class IslyIntersection<T extends A & B, A, B> extends Type.AbstractType<T> {
+class IslyIntersection<T extends A & B, A, B> extends Type<T> {
 	protected readonly types: [Type<A>, Type<B>]
 	constructor(...types: [Type<A>, Type<B>]) {
 		super(() => types.map(type => type.name).join(" & "))

@@ -32,7 +32,7 @@ const criteriaFunctions: {
 	},
 }
 
-class IslyArray<T extends any[]> extends Type.AbstractType<T> {
+class IslyArray<T extends any[]> extends Type<T> {
 	constructor(protected readonly itemType: Type<T[number]>, protected readonly options: array.Option[]) {
 		super(
 			() => this.baseName() + "[]",

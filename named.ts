@@ -1,7 +1,7 @@
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-class IslyNamed<T> extends Type.AbstractType<T> {
+class IslyNamed<T> extends Type<T> {
 	constructor(name: string, protected readonly backend: Type<T>) {
 		super(name, () => backend.condition)
 	}

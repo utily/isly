@@ -1,7 +1,7 @@
 import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-class IslyUnion<T> extends Type.AbstractType<T> {
+class IslyUnion<T> extends Type<T> {
 	protected readonly types: Type<T>[]
 	constructor(...types: Type<T>[]) {
 		super(() => types.map(type => type.name).join(" | "))

@@ -1,6 +1,6 @@
 import { Type } from "./Type"
 
-class IslyString<T extends string> extends Type.AbstractType<T> {
+class IslyString<T extends string> extends Type<T> {
 	protected conditionObject: Record<T, any> | RegExp | true | undefined
 	constructor(protected readonly stringCondition?: readonly T[] | Record<T, any> | RegExp | string) {
 		super(typeof stringCondition == "string" ? `"${stringCondition}"` : "string", () => {

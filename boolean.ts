@@ -1,6 +1,6 @@
 import { Type } from "./Type"
 
-class IslyBoolean<B extends boolean = boolean> extends Type.AbstractType<B> {
+class IslyBoolean<B extends boolean = boolean> extends Type<B> {
 	constructor(protected readonly booleanValue?: B) {
 		super(booleanValue == undefined ? "boolean" : booleanValue ? "true" : "false")
 	}

@@ -1,7 +1,7 @@
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-class IslyRecord<K extends string | number, V> extends Type.AbstractType<Record<K, V>> {
+class IslyRecord<K extends string | number, V> extends Type<Record<K, V>> {
 	constructor(protected readonly keyType: Type<K>, protected readonly valueType: Type<V>) {
 		super(() => `Record<${keyType.name}, ${valueType.name}>`)
 	}
