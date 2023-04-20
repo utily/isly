@@ -11,6 +11,23 @@ describe("isly.Type", () => {
 			const myOptionalString: undefined | string = isNarrowingWorking
 		}
 	})
+	it("TypeScript narrowing for .readonly()", () => {
+		type Item = { a: number }
+
+		const readonlyItemType = isly.object<Item>({ a: isly.number() }).readonly()
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		function test(itemOrNumber: Readonly<Item> | number) {
+			if (readonlyItemType.is(itemOrNumber)) {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const myItem: Item = itemOrNumber
+			} else {
+				// This will not work if not readonly() is applied and working.
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const myNumber: number = itemOrNumber
+			}
+		}
+	})
 	it("string.optional()", () => {
 		const optionalStringType = isly.string().optional()
 		expect(optionalStringType.is("42")).toBeTruthy()
