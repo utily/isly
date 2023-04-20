@@ -77,16 +77,14 @@ class IslyObject<T extends B, B extends object, TB extends Type<B> | undefined>
 	/**
 	 * get-function on a object returns a object with only specified properties
 	 */
-	get: Type.GetFunction<T> = value => {
-		let result: undefined | Record<any, any> = undefined
-		if (this.is(value)) {
-			result = this.baseType ? this.baseType.get(value) : {}
+	protected function getValue(value: T) {
+		const result: Record<any, any> = this.baseType ? this.baseType.getValue(value) : {}
 			if (result)
-				for (const key of globalThis.Object.keys(this.properties) as (keyof typeof value)[])
+				for (const [key, type] of globalThis.Object.entries(this.properties) as [keyof typeof value, Type<any>][])
 					if (key in value)
-						result[key] = value[key]
-		}
-		return result as undefined | T
+						result[key] = type.get(value[key])
+		
+		return result as T
 	}
 }
 

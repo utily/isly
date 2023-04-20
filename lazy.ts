@@ -10,6 +10,7 @@ class IslyLazy<T> extends Type<T> {
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType((this.backend ??= this.factory()), value)
 	}
+	get: Type.GetFunction<T> = value => this.backend.get(value)
 }
 
 /**

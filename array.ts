@@ -61,6 +61,9 @@ class IslyArray<T extends any[]> extends Type<T> {
 			...(flaws.length > 0 ? { flaws } : undefined),
 		}
 	}
+	get: Type.GetFunction<T> = value => {
+		return this.is(value) ? (value.map(item => this.itemType.get(item)) as T) : undefined
+	}
 }
 
 // The overloaded function is to avoid resulting in an Type<any[]>, but still be able to do array<number[]>(...) with only one generic!

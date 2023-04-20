@@ -9,6 +9,7 @@ class IslyNamed<T> extends Type<T> {
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}
+	get: Type.GetFunction<T> = value => this.backend.get(value)
 }
 
 export function named<T>(name: string, backend: Type<T>): Type<T> {

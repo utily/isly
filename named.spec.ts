@@ -8,7 +8,7 @@ describe("isly.named", () => {
 		const isNarrowingWorking: boolean | string | any = 0 as any
 		if (namedStringType.is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myBoolean: string = isNarrowingWorking
+			const myString: string = isNarrowingWorking
 		}
 	})
 
