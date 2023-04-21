@@ -29,6 +29,12 @@ class IslyRecord<K extends string | number, V> extends Type<Record<K, V>> {
 				),
 		}
 	}
+	protected getValue(value: Record<K, V>): Record<K, V> {
+		return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, this.valueType.get(value)])) as Record<
+			K,
+			V
+		>
+	}
 }
 
 export function record<R extends Record<string | number, any>>(
