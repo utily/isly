@@ -61,8 +61,8 @@ class IslyArray<T extends any[]> extends Type<T> {
 			...(flaws.length > 0 ? { flaws } : undefined),
 		}
 	}
-	get: Type.GetFunction<T> = value => {
-		return this.is(value) ? (value.map(item => this.itemType.get(item)) as T) : undefined
+	protected getValue(value: T) {
+		return value.map(item => this.itemType.get(item)) as T
 	}
 }
 
