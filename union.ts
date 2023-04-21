@@ -14,6 +14,7 @@ class IslyUnion<T> extends Type<T> {
 			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
 		}
 	}
+	//TODO: handle getValue(value)
 }
 
 /**
