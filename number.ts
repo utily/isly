@@ -47,7 +47,7 @@ function fromCriteria(
 		  [() => false, "Unknown criteria"]
 }
 
-class IslyNumber<N extends number = number> extends Type.AbstractType<N> {
+class IslyNumber<N extends number = number> extends Type<N> {
 	constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
 		super("number", condition)
 	}

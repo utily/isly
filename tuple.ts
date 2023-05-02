@@ -1,7 +1,7 @@
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-class IslyTuple<T extends any[]> extends Type.AbstractType<T> {
+class IslyTuple<T extends any[]> extends Type<T> {
 	protected readonly items: { [I in keyof T]: Type<T[I]> }
 	constructor(...items: { [I in keyof T]: Type<T[I]> }) {
 		super(() => "[" + items.map(e => e.name).join(", ") + "]")

@@ -6,7 +6,9 @@ type RequiredKeys<T> = NonNullable<{ [K in keyof T]: undefined extends T[K] ? ne
 
 export namespace object {
 	export type BaseProperties<T> = { [P in OptionalKeys<T>]: Type<T[P] | undefined> } &
-		{ [P in RequiredKeys<T>]: Type<T[P]> }
+		{
+			[P in RequiredKeys<T>]: Type<T[P]>
+		}
 	export type ExtendedProperties<T2 extends T, T> = BaseProperties<Omit<T2, keyof T>> &
 		Partial<object.BaseProperties<Pick<T2, keyof T>>>
 	export type Properties<T extends B, B, TB extends Type<B> | undefined> = TB extends undefined
@@ -18,10 +20,7 @@ export namespace object {
 	}
 }
 
-class IslyObject<T extends B, B, TB extends Type<B> | undefined>
-	extends Type.AbstractType<T>
-	implements object.ExtendableType<T>
-{
+class IslyObject<T extends B, B, TB extends Type<B> | undefined> extends Type<T> implements object.ExtendableType<T> {
 	constructor(
 		protected readonly baseType: TB,
 		protected readonly properties: object.Properties<T, B, TB>,

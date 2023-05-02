@@ -1,7 +1,7 @@
 import { Type } from "./Type"
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-class IslyFunction<T extends Function> extends Type.AbstractType<T> {
+class IslyFunction<T extends Function> extends Type<T> {
 	constructor() {
 		super("function")
 	}

@@ -1,7 +1,7 @@
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
-class IslyLazy<T> extends Type.AbstractType<T> {
+class IslyLazy<T> extends Type<T> {
 	protected backend: Type<T>
 	constructor(protected readonly factory: () => Type<T>, name?: string) {
 		super(name ?? (() => (this.backend ??= factory()).name), () => (this.backend ??= factory()).condition)

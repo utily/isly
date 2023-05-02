@@ -1,6 +1,6 @@
 import { Type } from "./Type"
 
-class IslyFromIs<T> extends Type.AbstractType<T> {
+class IslyFromIs<T> extends Type<T> {
 	constructor(name: string, protected readonly isFunction: (value: any) => boolean) {
 		super(name)
 	}

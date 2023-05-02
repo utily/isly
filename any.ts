@@ -1,6 +1,6 @@
 import { Type } from "./Type"
 
-class IslyAny<T = any> extends Type.AbstractType<T> {
+class IslyAny<T = any> extends Type<T> {
 	is = (value => value != undefined) as Type.IsFunction<T>
 }
 
