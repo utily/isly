@@ -22,6 +22,9 @@ class IslyTuple<T extends any[]> extends Type<T> {
 				.filter(flaw => flaw) as Flaw[],
 		}
 	}
+	protected getValue(value: T): T {
+		return this.items.map((item, index) => item.get(value[index])) as T
+	}
 }
 
 export function tuple<T extends any[]>(...items: { [I in keyof T]: Type<T[I]> }): Type<T> {

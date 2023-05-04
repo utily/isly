@@ -93,6 +93,8 @@ const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
 
 Returns the value only if it fits the type, otherwise undefined. Make it easy to use with the _Nullish coalescing operator_ (`??`).
 
+For object, a filtered object is returned, with only known properties.
+
 ```typescript
 const myNumber = 234 / 0 // Infinity
 console.log(isly.number().get(myNumber) ?? "(No number)") // Outputs (No number)

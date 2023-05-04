@@ -83,4 +83,30 @@ describe("isly.record", () => {
 			],
 		})
 	})
+	it("record.get", () => {
+		type User = {
+			email: string
+		}
+		const userRecordType = isly.record(isly.string(), isly.object<User>({ email: isly.string() }))
+		const usersRecords: Record<string, User> = Object.fromEntries(
+			[...Array(5).keys()].map(id => [
+				`${id}`,
+				{
+					email: `${id}@example.com`,
+					password: "shouldBeSecret",
+				},
+			])
+		)
+		expect(userRecordType.is(usersRecords)).toBe(true)
+		expect(usersRecords["2"]).toHaveProperty("email")
+		expect(usersRecords["2"]).toHaveProperty("password")
+
+		const pureUserRecord = userRecordType.get(usersRecords)
+		expect(pureUserRecord).toBeTruthy()
+		if (pureUserRecord) {
+			expect(userRecordType.is(pureUserRecord)).toBe(true)
+			expect(pureUserRecord["2"]).toHaveProperty("email")
+			expect(pureUserRecord["2"]).not.toHaveProperty("password")
+		}
+	})
 })

@@ -73,4 +73,19 @@ describe("isly.array", () => {
 
 		expect(arrayType.flaw(42)).toEqual({ type: "number[]", condition: "minLength == 1 & maxLength == 3" })
 	})
+	it("object[] get", () => {
+		type User = {
+			email: string
+		}
+		const userArrayType = isly.array(isly.object<User>({ email: isly.string() }))
+		const usersWithPassord: (User & { password: string })[] = [...Array(5).keys()].map(id => ({
+			email: `${id}@example.com`,
+			password: "shouldBeSecret",
+		}))
+
+		const users: User[] | undefined = userArrayType.get(usersWithPassord)
+		expect(users).not.toBeUndefined()
+		expect(users?.[2]).toHaveProperty("email")
+		expect(users?.[2]).not.toHaveProperty("password")
+	})
 })

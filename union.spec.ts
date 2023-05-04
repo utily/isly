@@ -87,4 +87,29 @@ describe("isly.union", () => {
 			],
 		})
 	})
+	it("union.get", () => {
+		type User = {
+			email: string
+		}
+		type Error = {
+			message: string
+		}
+		type MyUnion = User | Error
+		const userType = isly.object<User>({ email: isly.string() })
+		const errorType = isly.object<Error>({ message: isly.string() })
+		const unionType = isly.union(userType, errorType)
+		const userWithPassord: User & { password: string } = {
+			email: `test@example.com`,
+			password: "shouldBeSecret",
+		}
+		const testData: MyUnion[] = [userWithPassord, { message: "Failed" }]
+		testData.forEach(data => {
+			const pureValue = unionType.get(data)
+			expect(pureValue).not.toBeFalsy()
+			if (pureValue) {
+				expect(data).toMatchObject(pureValue)
+				expect(pureValue).not.toHaveProperty("password")
+			}
+		})
+	})
 })

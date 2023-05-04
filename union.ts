@@ -14,10 +14,16 @@ class IslyUnion<T> extends Type<T> {
 			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
 		}
 	}
+	protected getValue(value: T): T {
+		return this.types.find(type => type.is(value))?.get(value) as T
+	}
 }
 
 /**
  * For unions with more than 6 types, provide the union type as the generic T.
+ *
+ * union.get(value) depends on the Order of types.
+ * First matching type will be used.
  */
 export function union<T extends A | B, A, B>(...types: [Type<A>, Type<B>]): Type<T>
 export function union<T extends A | B | C, A, B, C>(...types: [Type<A>, Type<B>, Type<C>]): Type<T>
