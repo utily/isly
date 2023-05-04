@@ -15,9 +15,9 @@ describe("isly.any", () => {
 	it("generic", () => {
 		const anyType = isly.any()
 
-		expect(anyType.is("42")).toBeTruthy()
-		expect(anyType.is(null)).toBeFalsy()
-		expect(anyType.is(undefined)).toBeFalsy
+		expect(anyType.is("42")).toBe(true)
+		expect(anyType.is(null)).toBe(false)
+		expect(anyType.is(undefined)).toBe(false)
 		expect(anyType.flaw(undefined)).toEqual({ type: "any" })
 	})
 })

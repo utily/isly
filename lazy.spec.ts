@@ -14,7 +14,7 @@ describe("isly.lazy", () => {
 	it("generic", () => {
 		const lazyStringType = isly.lazy(() => isly.string())
 
-		expect(lazyStringType.is("42")).toBeTruthy()
+		expect(lazyStringType.is("42")).toBe(true)
 		expect(lazyStringType.flaw(42)).toEqual({ type: "string" })
 	})
 	it("recursive", () => {

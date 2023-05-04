@@ -58,12 +58,12 @@ describe("isly.intersection", () => {
 				shared: isly.string(),
 			})
 		)
-		expect(intersection.is({ shared: "shared string" })).toBeTruthy()
-		expect(intersection.is({ shared: "shared string", a: 12 })).toBeTruthy()
+		expect(intersection.is({ shared: "shared string" })).toBe(true)
+		expect(intersection.is({ shared: "shared string", a: 12 })).toBe(true)
 		expect(intersection.name).toEqual(
 			'{"a":"number | undefined","shared":"string"} & {"b":"number | undefined","shared":"string"}'
 		)
-		expect(intersection.is({ a: 42 })).toBeFalsy()
+		expect(intersection.is({ a: 42 })).toBe(false)
 		expect(intersection.flaw({ a: 42, b: 43 })).toBeTruthy()
 	})
 })

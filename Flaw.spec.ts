@@ -13,8 +13,8 @@ describe("isly.Flaw", () => {
 	it("is", () => {
 		const objectType = isly.object({ number: isly.number() })
 		const flaw = objectType.flaw(undefined)
-		expect(isly.Flaw.is(flaw)).toBeTruthy()
-		expect(isly.Flaw.type.is(flaw)).toBeTruthy()
+		expect(isly.Flaw.is(flaw)).toBe(true)
+		expect(isly.Flaw.type.is(flaw)).toBe(true)
 		expect(isly.Flaw.flaw(flaw)).toEqual({ isFlaw: false, message: "This type is correct.", type: "Flaw" })
 	})
 })

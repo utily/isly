@@ -14,29 +14,29 @@ describe("isly.boolean", () => {
 	it("generic", () => {
 		const booleanType = isly.boolean()
 
-		expect(booleanType.is(true)).toBeTruthy()
-		expect(booleanType.is(false)).toBeTruthy()
+		expect(booleanType.is(true)).toBe(true)
+		expect(booleanType.is(false)).toBe(true)
 
-		expect(booleanType.is(0)).toBeFalsy()
+		expect(booleanType.is(0)).toBe(false)
 
 		expect(booleanType.flaw(42)).toEqual({ type: "boolean" })
 	})
 	it("true", () => {
 		const booleanType = isly.boolean(true)
-		expect(booleanType.is(true)).toBeTruthy()
+		expect(booleanType.is(true)).toBe(true)
 
-		expect(booleanType.is(false)).toBeFalsy()
-		expect(booleanType.is(0)).toBeFalsy()
+		expect(booleanType.is(false)).toBe(false)
+		expect(booleanType.is(0)).toBe(false)
 
 		expect(booleanType.flaw(false)).toEqual({ type: "true" })
 	})
 	it("false", () => {
 		const booleanType = isly.boolean(false)
 
-		expect(booleanType.is(false)).toBeTruthy()
+		expect(booleanType.is(false)).toBe(true)
 
-		expect(booleanType.is(true)).toBeFalsy()
-		expect(booleanType.is(0)).toBeFalsy()
+		expect(booleanType.is(true)).toBe(false)
+		expect(booleanType.is(0)).toBe(false)
 
 		expect(booleanType.flaw(0)).toEqual({ type: "false" })
 	})

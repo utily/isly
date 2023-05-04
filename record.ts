@@ -6,12 +6,14 @@ class IslyRecord<K extends string | number, V> extends Type<Record<K, V>> {
 		super(() => `Record<${keyType.name}, ${valueType.name}>`)
 	}
 	is = (value =>
-		value &&
-		typeof value == "object" &&
-		!globalThis.Array.isArray(value) &&
-		globalThis.Object.entries(value).every(
-			([key, value]) =>
-				this.keyType.is(this.keyType.name == "number" && `${+key}` == key ? +key : key) && this.valueType.is(value)
+		!!(
+			value &&
+			typeof value == "object" &&
+			!globalThis.Array.isArray(value) &&
+			globalThis.Object.entries(value).every(
+				([key, value]) =>
+					this.keyType.is(this.keyType.name == "number" && `${+key}` == key ? +key : key) && this.valueType.is(value)
+			)
 		)) as Type.IsFunction<Record<K, V>>
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {

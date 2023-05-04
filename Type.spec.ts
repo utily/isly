@@ -30,10 +30,10 @@ describe("isly.Type", () => {
 	})
 	it("string.optional()", () => {
 		const optionalStringType = isly.string().optional()
-		expect(optionalStringType.is("42")).toBeTruthy()
-		expect(optionalStringType.is(undefined)).toBeTruthy()
+		expect(optionalStringType.is("42")).toBe(true)
+		expect(optionalStringType.is(undefined)).toBe(true)
 
-		expect(optionalStringType.is({})).toBeFalsy()
+		expect(optionalStringType.is({})).toBe(false)
 		expect(optionalStringType.flaw(42)).toEqual({ type: "string | undefined" })
 	})
 })
