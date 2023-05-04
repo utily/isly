@@ -10,6 +10,9 @@ export abstract class Type<T> {
 	public optional(): Type<T | undefined> {
 		return new IslyOptional<T>(this)
 	}
+	public readonly(): Type<Readonly<T>> {
+		return new IslyReadonly<T>(this)
+	}
 	constructor(
 		protected readonly _name: string | (() => string),
 		protected readonly _condition?: string | (() => string | undefined)
@@ -82,6 +85,16 @@ export namespace Type {
 class IslyOptional<T> extends Type<T | undefined> {
 	constructor(protected readonly backend: Type<T>) {
 		super(() => backend.name + " | undefined", backend.condition)
+	}
+	is = (value => value == undefined || this.backend.is(value)) as Type.IsFunction<T>
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType(this.backend, value)
+	}
+}
+
+class IslyReadonly<T> extends Type<Readonly<T>> {
+	constructor(protected readonly backend: Type<T>) {
+		super(() => `Readonly<${backend.name}>`, backend.condition)
 	}
 	is = (value => value == undefined || this.backend.is(value)) as Type.IsFunction<T>
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
