@@ -36,4 +36,13 @@ describe("isly.Type", () => {
 		expect(optionalStringType.is({})).toBe(false)
 		expect(optionalStringType.flaw(42)).toEqual({ type: "string | undefined" })
 	})
+	it("number.array()", () => {
+		const arrayNumberType = isly.number().array()
+		expect(arrayNumberType.is([42, 1337, 666])).toBe(true)
+		expect(arrayNumberType.is(undefined)).toBe(false)
+		expect(arrayNumberType.is(null)).toBe(false)
+
+		expect(arrayNumberType.is({})).toBe(false)
+		expect(arrayNumberType.flaw(42)).toEqual({ type: "number[]" })
+	})
 })
