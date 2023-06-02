@@ -38,24 +38,24 @@ describe("isly.string", () => {
 		}
 	})
 	it("generic", () => {
-		expect(isly.string().is("42")).toBeTruthy()
+		expect(isly.string().is("42")).toBe(true)
 		expect(isly.string().flaw(42)).toEqual({ type: "string" })
 	})
 	it("literal", () => {
-		expect(isly.string(["42", "43"]).is("43")).toBeTruthy()
+		expect(isly.string(["42", "43"]).is("43")).toBe(true)
 
 		const string42Type = isly.string("42")
 
-		expect(string42Type.is("42")).toBeTruthy()
-		expect(string42Type.is("43")).toBeFalsy()
-		expect(string42Type.is("")).toBeFalsy()
+		expect(string42Type.is("42")).toBe(true)
+		expect(string42Type.is("43")).toBe(false)
+		expect(string42Type.is("")).toBe(false)
 		expect(string42Type.flaw(42)).toEqual({ type: '"42"', condition: '"42"' })
 		expect(isly.string(["42", "43"]).flaw("44")).toEqual({ type: "string", condition: '"42" | "43"' })
 	})
 	it("regexp-simple", () => {
 		const stringRegexpType = isly.string(/^'.*'$/)
-		expect(stringRegexpType.is("'42'")).toBeTruthy()
-		expect(stringRegexpType.is("42")).toBeFalsy()
+		expect(stringRegexpType.is("'42'")).toBe(true)
+		expect(stringRegexpType.is("42")).toBe(false)
 
 		expect(stringRegexpType.flaw(42)).toEqual({ type: "string", condition: "/^'.*'$/" })
 	})
@@ -63,12 +63,12 @@ describe("isly.string", () => {
 	it("regexp-selector", () => {
 		const stringRegexpType = isly.string(/^((^|(?<!^)\.)[a-zA-Z]\w*|(\[\d+\]))*$/)
 
-		expect(stringRegexpType.is("created")).toBeTruthy()
-		expect(stringRegexpType.is("created")).toBeTruthy()
-		expect(stringRegexpType.is("prop.subProp")).toBeTruthy()
-		expect(stringRegexpType.is("prop[1]")).toBeTruthy()
-		expect(stringRegexpType.is("prop[1]")).toBeTruthy()
-		expect(stringRegexpType.is("[12][45]")).toBeTruthy()
-		expect(stringRegexpType.is(".42")).toBeFalsy()
+		expect(stringRegexpType.is("created")).toBe(true)
+		expect(stringRegexpType.is("created")).toBe(true)
+		expect(stringRegexpType.is("prop.subProp")).toBe(true)
+		expect(stringRegexpType.is("prop[1]")).toBe(true)
+		expect(stringRegexpType.is("prop[1]")).toBe(true)
+		expect(stringRegexpType.is("[12][45]")).toBe(true)
+		expect(stringRegexpType.is(".42")).toBe(false)
 	})
 })
