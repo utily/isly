@@ -101,7 +101,44 @@ console.log(isly.number().get(myNumber) ?? "(No number)") // Outputs (No number)
 console.log(isly.number().get(0) ?? "(No number)") // Outputs 0
 ```
 
-## Usage patterns:
+```typescript
+interface User {
+	name: string
+}
+interface UserWithCredentials extends User {
+	password: string
+}
+
+const userType = isly.object<User>({ name: isly.string() })
+const userWithCredentialsType = userType.extend<UserWithCredentials>({ password: isly.string() })
+
+const myUser: UserWithCredentials = {
+	name: "Joe",
+	password: "12345678",
+}
+console.log(userType.get(myUser)) // Prints myUser without password.
+```
+
+## Modifiers
+
+### .array()
+
+Make an array type.
+
+It is possible to add restrictions to the type as parameters.
+```typescript
+isly.string().array({ criteria: "minLength", value: 3 })
+```
+
+### .optional()
+
+Add `| undefined`to type.
+
+### .readonly()
+
+Add `Readonly<...>` to type.
+
+## Usage patterns
 
 This is a possible usage pattern.
 

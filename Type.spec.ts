@@ -45,4 +45,15 @@ describe("isly.Type", () => {
 		expect(arrayNumberType.is({})).toBe(false)
 		expect(arrayNumberType.flaw(42)).toEqual({ type: "number[]" })
 	})
+	it("number.array() with criteria", () => {
+		const arrayNumberType = isly.number().array({ criteria: "length", value: 3 })
+		expect(arrayNumberType.is([42, 1337, 666])).toBe(true)
+		expect(arrayNumberType.is([42, 1337])).toBe(false)
+		expect(arrayNumberType.is([42, 1337, 666, 123])).toBe(false)
+		expect(arrayNumberType.is(undefined)).toBe(false)
+		expect(arrayNumberType.is(null)).toBe(false)
+
+		expect(arrayNumberType.is({})).toBe(false)
+		expect(arrayNumberType.flaw(42)).toEqual({ type: "number[]", condition: "length == 3" })
+	})
 })

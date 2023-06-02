@@ -39,6 +39,16 @@ describe("isly.fromIs", () => {
 		expect(customType.is(13.37)).toEqual(false)
 		expect(customType.flaw({})).toEqual({ type: "myName[]" })
 	})
+	it("isly.fromIs(Specific).array()", () => {
+		const customType = isly.fromIs("myName", specificIsFunction).array()
+		expect(customType.is([])).toEqual(true)
+		expect(customType.is(["Specific", "Specific"])).toEqual(true)
+
+		expect(customType.is(["Specific", 0, "Specific"])).toEqual(false)
+		expect(customType.is("Specific")).toEqual(false)
+		expect(customType.is(13.37)).toEqual(false)
+		expect(customType.flaw({})).toEqual({ type: "myName[]" })
+	})
 	it("class", () => {
 		class A {
 			ab: 1

@@ -149,4 +149,23 @@ describe("isly.object", () => {
 		expect(typeItem2.get({ a: 200, b: "a", c: true, d: undefined })).toHaveProperty("d", undefined)
 		expect(typeItem2.get({ a: 200, b: "a", c: true })).not.toHaveProperty("d")
 	})
+	it("get User-example", () => {
+		interface User {
+			name: string
+		}
+		interface UserWithCredentials extends User {
+			password: string
+		}
+
+		const userType = isly.object<User>({ name: isly.string() })
+		const userWithCredentialsType = userType.extend<UserWithCredentials>({ password: isly.string() })
+
+		const myUser: UserWithCredentials = {
+			name: "Joe",
+			password: "12345678",
+		}
+		expect(userType.get(myUser)).toEqual({
+			name: "Joe",
+		})
+	})
 })
