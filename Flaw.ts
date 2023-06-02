@@ -1,9 +1,8 @@
-import { array } from "./array"
 import { boolean } from "./boolean"
 import { lazy } from "./lazy"
 import { object } from "./object"
 import { string } from "./string"
-import { Type } from "./Type"
+import { array, Type } from "./Type"
 
 export interface Flaw {
 	message?: string
