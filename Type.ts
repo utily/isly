@@ -37,6 +37,7 @@ export abstract class Type<T> {
 	 * For objects, unknown properties are filtered.
 	 *
 	 * Eg: isly.number().value(NaN) returns undefined
+	 * `get<never>(myVariable)` same as `get(myVariable)!`
 	 */
 	// public get: Type.GetFunction<T> = (value: T) => (this.is(value) ? this.getValue(value) : undefined)
 	public get<U extends undefined = undefined>(value: T): T | U
