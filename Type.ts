@@ -38,7 +38,11 @@ export abstract class Type<T> {
 	 *
 	 * Eg: isly.number().value(NaN) returns undefined
 	 */
-	public get: Type.GetFunction<T> = value => (this.is(value) ? this.getValue(value) : undefined)
+	// public get: Type.GetFunction<T> = (value: T) => (this.is(value) ? this.getValue(value) : undefined)
+	public get<U extends undefined = undefined>(value: T): T | U
+	public get(value: T): T | undefined {
+		return this.is(value) ? this.getValue(value) : undefined
+	}
 	protected getValue(value: T) {
 		return value
 	}
