@@ -108,4 +108,16 @@ describe("isly.intersection", () => {
 		}
 		expect(intersectionType.get({ ...intersection, extra: "world" })).toEqual(intersection)
 	})
+	it("intersection.get", () => {
+		const positiveIntegerType = isly.intersection(isly.number("positive"), isly.number("integer"))
+
+		expect(positiveIntegerType.get(1)).toBe(1)
+		expect(positiveIntegerType.get(100)).toBe(100)
+
+		expect(positiveIntegerType.get(1.1)).toBeUndefined()
+		expect(positiveIntegerType.get(-1)).toBeUndefined()
+		expect(positiveIntegerType.get(0)).toBeUndefined()
+		expect(positiveIntegerType.get(NaN)).toBeUndefined()
+		expect(positiveIntegerType.get(Infinity)).toBeUndefined()
+	})
 })
