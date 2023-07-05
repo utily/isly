@@ -86,7 +86,7 @@ describe("isly.intersection", () => {
 		expect(intersection.is({ shared: "shared string" })).toBe(true)
 		expect(intersection.is({ shared: "shared string", a: 12 })).toBe(true)
 		expect(intersection.name).toEqual(
-			'{"a":"number | undefined","shared":"string"} & {"b":"number | undefined","shared":"string"}'
+			"{a: number | undefined, shared: string} & {b: number | undefined, shared: string}"
 		)
 		expect(intersection.is({ a: 42 })).toBe(false)
 		expect(intersection.flaw({ a: 42, b: 43 })).toBeTruthy()
@@ -149,5 +149,13 @@ describe("isly.intersection", () => {
 		expect(positiveIntegerType.get(0)).toBeUndefined()
 		expect(positiveIntegerType.get(NaN)).toBeUndefined()
 		expect(positiveIntegerType.get(Infinity)).toBeUndefined()
+	})
+	it("intersection name", () => {
+		const intersectionType = isly.intersection(
+			isly.object({ a: isly.string() }),
+			isly.object({ b: isly.string() }, "B")
+		)
+
+		expect(intersectionType.name).toBe(`{a: string} & B`)
 	})
 })
