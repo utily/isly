@@ -34,20 +34,19 @@ export function intersection<T extends A & B, A, B>(...types: [Type<A>, Type<B>]
 function merge<Source, Target>(target: Target, source: Source): Source & Target {
 	let result: Source & Target = target as Source & Target
 
-	if (!object().is(target) || !object().is(source))
-		result = source as Source & Target
-	else if (Array.isArray(target) && Array.isArray(source))
-		result = target.concat(source) as Source & Target
-	else
-		for (const key in source)
-			if (
-				Object.getOwnPropertyDescriptor(target, key) &&
-				object().is(source[key]) &&
-				object().is(target[key as string as keyof typeof target])
-			)
-				Object.assign(target, { [key]: merge(source[key], target[key as string as keyof typeof target]) })
-			else
-				Object.assign(target, { [key]: source[key] })
+	if (object().is(target) && object().is(source))
+		if (Array.isArray(target) && Array.isArray(source))
+			result = target.concat(source) as Source & Target
+		else
+			for (const key in source)
+				if (
+					Object.getOwnPropertyDescriptor(target, key) &&
+					object().is(source[key]) &&
+					object().is(target[key as string as keyof typeof target])
+				)
+					Object.assign(target, { [key]: merge(source[key], target[key as string as keyof typeof target]) })
+				else
+					Object.assign(target, { [key]: source[key] })
 
 	return result
 }
