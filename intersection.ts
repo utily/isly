@@ -1,10 +1,9 @@
 import { Flaw } from "./Flaw"
-import { object } from "./object"
 import { Type } from "./Type"
 
-class IslyIntersection<T extends A & B, A, B> extends Type<T> {
-	protected readonly types: [Type<A>, Type<B>]
-	constructor(...types: [Type<A>, Type<B>]) {
+class IslyIntersection<T> extends Type<T> {
+	protected readonly types: Type<unknown>[]
+	constructor(...types: Type<unknown>[]) {
 		super(() => types.map(type => type.name).join(" & "))
 		this.types = types
 	}
@@ -17,36 +16,59 @@ class IslyIntersection<T extends A & B, A, B> extends Type<T> {
 	// This seams to be the behavior users describe on stack overflow
 	// https://stackoverflow.com/questions/59722333/union-and-intersection-of-types
 	protected getValue(value: T): T {
-		let result: T = value
-		if (typeof value == "object") {
-			const first = this.types[0].get(value) ?? {}
-			const second = this.types[1].get(value) ?? {}
-			result = merge(first, second) as T
-		}
+		return value && typeof value == "object"
+			? (this.types
+					.slice(1)
+					.reduce((resolved, type) => this.merge(resolved, type.get(value)), this.types[0].get(value)) as T)
+			: value
+	}
+
+	private merge<Target, Source>(target: Target, source: Source): Target & Source {
+		let result = target as Target & Source
+
+		if (Array.isArray(target) && Array.isArray(source))
+			result = target.map((item, index) => this.merge(item, source[index])) as Source & Target
+		else if (target && typeof target == "object" && source && typeof source == "object")
+			for (const key in source)
+				if (
+					Object.getOwnPropertyDescriptor(target, key) &&
+					typeof target[key as string as keyof typeof target] == "object" &&
+					typeof source[key] == "object"
+				)
+					Object.assign(target, {
+						[key]: this.merge(target[key as string as keyof typeof target], source[key]),
+					})
+				else
+					Object.assign(target, { [key]: source[key] })
+
 		return result
 	}
 }
 
-export function intersection<T extends A & B, A, B>(...types: [Type<A>, Type<B>]): Type<T> {
-	return new IslyIntersection<T, A, B>(...types)
-}
-
-function merge<Source, Target>(target: Target, source: Source): Source & Target {
-	let result: Source & Target = target as Source & Target
-
-	if (object().is(target) && object().is(source))
-		if (Array.isArray(target) && Array.isArray(source))
-			result = target.concat(source) as Source & Target
-		else
-			for (const key in source)
-				if (
-					Object.getOwnPropertyDescriptor(target, key) &&
-					object().is(source[key]) &&
-					object().is(target[key as string as keyof typeof target])
-				)
-					Object.assign(target, { [key]: merge(source[key], target[key as string as keyof typeof target]) })
-				else
-					Object.assign(target, { [key]: source[key] })
-
-	return result
+export function intersection<T extends A & B, A, B>(typeA: Type<A>, typeB: Type<B>): Type<T>
+export function intersection<T extends A & B & C, A, B, C>(typeA: Type<A>, typeB: Type<B>, typeC: Type<C>): Type<T>
+export function intersection<T extends A & B & C, A, B, C>(typeA: Type<A>, typeB: Type<B>, typeC: Type<C>): Type<T>
+export function intersection<T extends A & B & C & D, A, B, C, D>(
+	typeA: Type<A>,
+	typeB: Type<B>,
+	typeC: Type<C>,
+	typeD: Type<D>
+): Type<T>
+export function intersection<T extends A & B & C & D & E, A, B, C, D, E>(
+	typeA: Type<A>,
+	typeB: Type<B>,
+	typeC: Type<C>,
+	typeD: Type<D>,
+	typeE: Type<E>
+): Type<T>
+export function intersection<T extends A & B & C & D & E & F, A, B, C, D, E, F>(
+	typeA: Type<A>,
+	typeB: Type<B>,
+	typeC: Type<C>,
+	typeD: Type<D>,
+	typeE: Type<E>,
+	typeF: Type<F>
+): Type<T>
+export function intersection<T>(...types: Type<unknown>[]): Type<T> {
+	return new IslyIntersection<T>(...types)
 }

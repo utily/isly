@@ -44,6 +44,31 @@ describe("isly.intersection", () => {
 				const myTestTuple: TestIntersection = isNarrowingWorking
 			}
 		}
+
+		type C = { c?: number; shared: string }
+		type TestIntersectionTriple = A & B & C
+		// With triple generic provided
+		{
+			const testIntersectionType = isly.intersection<TestIntersectionTriple, A, B, C>(
+				isly.object<A>({
+					a: isly.number().optional(),
+					shared: isly.string(),
+				}),
+				isly.object<B>({
+					b: isly.number().optional(),
+					shared: isly.string(),
+				}),
+				isly.object<C>({
+					c: isly.number().optional(),
+					shared: isly.string(),
+				})
+			)
+			const isNarrowingWorking: boolean | string | any = "garbage" as any
+			if (testIntersectionType.is(isNarrowingWorking)) {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const myTestTuple: TestIntersectionTriple = isNarrowingWorking
+			}
+		}
 	})
 	it("A & B", () => {
 		type A = { a?: number; shared: string }
@@ -73,13 +98,15 @@ describe("isly.intersection", () => {
 				foo: "foo"
 				array: number[]
 			}
+			array: { b: string }[]
 		}
 		const fooType = isly.object<Foo>({
 			foo: isly.string("foo"),
 			nesting: isly.object({
 				foo: isly.string("foo"),
-				array: isly.array(isly.number()),
+				array: isly.number().array(),
 			}),
+			array: isly.array(isly.object({ b: isly.string() })),
 		})
 		type Bar = {
 			bar: "bar"
@@ -87,13 +114,15 @@ describe("isly.intersection", () => {
 				bar: "bar"
 				array: number[]
 			}
+			array: { test: string }[]
 		}
 		const barType = isly.object<Bar>({
 			bar: isly.string("bar"),
 			nesting: isly.object({
 				bar: isly.string("bar"),
-				array: isly.array(isly.number()),
+				array: isly.number().array(),
 			}),
+			array: isly.array(isly.object({ test: isly.string() })),
 		})
 		type Intersection = Foo & Bar
 		const intersectionType = isly.intersection<Intersection, Foo, Bar>(fooType, barType)
@@ -105,10 +134,11 @@ describe("isly.intersection", () => {
 				bar: "bar",
 				array: [222],
 			},
+			array: [{ test: "a", b: "b" }],
 		}
 		expect(intersectionType.get({ ...intersection, extra: "world" })).toEqual(intersection)
 	})
-	it("intersection.get", () => {
+	it("intersection<number>.get", () => {
 		const positiveIntegerType = isly.intersection(isly.number("positive"), isly.number("integer"))
 
 		expect(positiveIntegerType.get(1)).toBe(1)
