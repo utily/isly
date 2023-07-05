@@ -66,4 +66,46 @@ describe("isly.intersection", () => {
 		expect(intersection.is({ a: 42 })).toBe(false)
 		expect(intersection.flaw({ a: 42, b: 43 })).toBeTruthy()
 	})
+	it("intersection.get", () => {
+		type Foo = {
+			foo: "foo"
+			nesting: {
+				foo: "foo"
+				array: number[]
+			}
+		}
+		const fooType = isly.object<Foo>({
+			foo: isly.string("foo"),
+			nesting: isly.object({
+				foo: isly.string("foo"),
+				array: isly.array(isly.number()),
+			}),
+		})
+		type Bar = {
+			bar: "bar"
+			nesting: {
+				bar: "bar"
+				array: number[]
+			}
+		}
+		const barType = isly.object<Bar>({
+			bar: isly.string("bar"),
+			nesting: isly.object({
+				bar: isly.string("bar"),
+				array: isly.array(isly.number()),
+			}),
+		})
+		type Intersection = Foo & Bar
+		const intersectionType = isly.intersection<Intersection, Foo, Bar>(fooType, barType)
+		const intersection: Intersection = {
+			foo: "foo",
+			bar: "bar",
+			nesting: {
+				foo: "foo",
+				bar: "bar",
+				array: [222],
+			},
+		}
+		expect(intersectionType.get({ ...intersection, extra: "world" })).toEqual(intersection)
+	})
 })
