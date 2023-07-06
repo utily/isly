@@ -20,7 +20,8 @@ type DemoType = {
 	myTuple: [string, number]
 	myUnion: string | number
 	myArray: string[]
-
+	myIntersection: { a: string } & { b: string }
+	
 	children?: DemoType[]
 
 	regExp: RegExp
@@ -44,6 +45,10 @@ const type: isly.Type<DemoType> = isly.object({
 	myTuple: isly.tuple(isly.string(), isly.number()),
 	myUnion: isly.union<DemoType["myUnion"]>(isly.string(), isly.number()),
 	myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
+	myIntersection: isly.intersection(
+		isly.object<{ a: string }>({ a: isly.string() }),
+		isly.object<{ b: string }>({ b: isly.string() })
+	),
 
 	// Recursive, optional:
 	children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
@@ -129,6 +134,13 @@ It is possible to add restrictions to the type as parameters.
 ```typescript
 isly.string().array({ criteria: "minLength", value: 3 })
 ```
+
+Note, in some circumstances type inference might not always be working the same for
+`isly.object({ a: isly.string() }).array()`
+and
+`isly.array(isly.object({ a: isly.string() }))`
+
+Try the second if the object isn't provided an generic type and the first doesn't work.
 
 ### .optional()
 

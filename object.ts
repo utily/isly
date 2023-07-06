@@ -33,14 +33,9 @@ class IslyObject<T extends B, B extends object, TB extends IslyObject<B, any, an
 			() =>
 				name ??
 				(this.baseType ? `${this.baseType.name} & ` : "") +
-					JSON.stringify(
-						globalThis.Object.fromEntries(
-							globalThis.Object.entries(this.properties).map(([property, type]: [string, Type<any>]) => [
-								property,
-								type.name,
-							])
-						)
-					)
+					`{${globalThis.Object.entries(this.properties)
+						.map(([property, type]: [string, Type<any>]) => `${property}: ${type.name}`)
+						.join(", ")}}`
 		)
 	}
 	extend<T2 extends T>(

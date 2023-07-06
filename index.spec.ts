@@ -18,6 +18,7 @@ describe("isly", () => {
 			myTuple: [string, number]
 			myUnion: string | number
 			myArray: string[]
+			myIntersection: { a: string } & { b: string }
 
 			children?: DemoType[]
 			regExp: RegExp
@@ -40,6 +41,10 @@ describe("isly", () => {
 			myTuple: isly.tuple(isly.string(), isly.number()),
 			myUnion: isly.union(isly.string(), isly.number()),
 			myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
+			myIntersection: isly.intersection(
+				isly.object<{ a: string }>({ a: isly.string() }),
+				isly.object<{ b: string }>({ b: isly.string() })
+			),
 
 			// Recursive
 			children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
@@ -63,15 +68,15 @@ describe("isly", () => {
 			myTuple: ["a", 1],
 			myUnion: "a",
 			myArray: ["a"],
+			myIntersection: { a: "A", b: "B" },
 			//children?: DemoType[]
 			regExp: /abc/,
 			testMethod: () => true,
 		}
-
 		expect(type.flaw(value)).toEqual({
 			isFlaw: false,
 			message: "This type is correct.",
-			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","regExp":"RegExp","testMethod":"function"}',
+			type: "{anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: string, new: boolean, fromServer: true, myTuple: [string, number], myUnion: string | number, myArray: string[], myIntersection: {a: string} & {b: string}, children: DemoType[] | undefined, regExp: RegExp, testMethod: function}",
 		})
 		expect(type.is(value)).toEqual(true)
 
@@ -100,10 +105,34 @@ describe("isly", () => {
 					condition: "minLength == 1",
 					type: "string[]",
 				},
+				{
+					property: "myIntersection",
+					flaws: [
+						{
+							flaws: [
+								{
+									property: "a",
+									type: "string",
+								},
+							],
+							type: "{a: string}",
+						},
+						{
+							flaws: [
+								{
+									property: "b",
+									type: "string",
+								},
+							],
+							type: "{b: string}",
+						},
+					],
+					type: "{a: string} & {b: string}",
+				},
 				{ property: "regExp", type: "RegExp" },
 				{ property: "testMethod", type: "function" },
 			],
-			type: '{"anyNumber":"number","numberOf":"number","temperature":"number","message":"string","email":"string","currency":"string","new":"boolean","fromServer":"true","myTuple":"[string, number]","myUnion":"string | number","myArray":"string[]","children":"DemoType[] | undefined","regExp":"RegExp","testMethod":"function"}',
+			type: "{anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: string, new: boolean, fromServer: true, myTuple: [string, number], myUnion: string | number, myArray: string[], myIntersection: {a: string} & {b: string}, children: DemoType[] | undefined, regExp: RegExp, testMethod: function}",
 		})
 	})
 })

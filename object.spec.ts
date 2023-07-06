@@ -22,11 +22,11 @@ describe("isly.object", () => {
 			currency: string
 		}
 		const type = isly.object<Test>({ amount: isly.number(), currency: isly.string(["SEK", "EUR"]) })
-		expect(type.name).toBe('{"amount":"number","currency":"string"}')
+		expect(type.name).toBe("{amount: number, currency: string}")
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flaw({ currency: "SEK" })).toEqual({
-			type: '{"amount":"number","currency":"string"}',
+			type: "{amount: number, currency: string}",
 			flaws: [{ property: "amount", type: "number" }],
 		})
 	})
@@ -167,5 +167,12 @@ describe("isly.object", () => {
 		expect(userType.get(myUser)).toEqual({
 			name: "Joe",
 		})
+	})
+	it("object", () => {
+		interface Test {
+			a: { b: string }
+		}
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }) })
+		expect(type.name).toBe("{a: {b: string}}")
 	})
 })
