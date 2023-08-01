@@ -14,4 +14,9 @@ describe("isly.undefined", () => {
 		expect(isly.undefined().is(42)).toEqual(false)
 		expect(isly.undefined().flaw(42)).toEqual({ type: "undefined" })
 	})
+	it("get", () => {
+		const undefinedType = isly.undefined()
+		expect(undefinedType.get("42")).toEqual(undefined)
+		expect(undefinedType.get(undefined)).toEqual(undefined)
+	})
 })
