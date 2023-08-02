@@ -10,9 +10,11 @@ describe("isly.undefined", () => {
 		}
 	})
 	it("generic", () => {
-		expect(isly.undefined().is(undefined)).toEqual(true)
-		expect(isly.undefined().is(42)).toEqual(false)
-		expect(isly.undefined().flaw(42)).toEqual({ type: "undefined" })
+		const undefinedType = isly.undefined()
+		expect(undefinedType.is(undefined)).toEqual(true)
+		expect(undefinedType.is(42)).toEqual(false)
+		expect(undefinedType.flaw(42)).toEqual({ type: "undefined" })
+		expect(undefinedType.is(null)).toEqual(false)
 	})
 	it("get", () => {
 		const undefinedType = isly.undefined()
