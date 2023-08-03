@@ -18,6 +18,14 @@ describe("isly.lazy", () => {
 		expect(lazyStringType.flaw(42)).toEqual({ type: "string" })
 	})
 	it("recursive", () => {
-		//TODO
+		type Recursive = { next: Recursive; value: boolean }
+		const type: isly.Type<Recursive> = isly.object<Recursive>({
+			next: isly.lazy(() => type, "Recursive"),
+			value: isly.boolean(),
+		})
+		// works
+		expect(type.is({})).toEqual(false)
+		// causes: RangeError: Maximum call stack size exceeded'
+		expect(type.flaw({})).toBeTruthy()
 	})
 })
