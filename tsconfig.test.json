@@ -16,7 +16,7 @@
 		"noImplicitThis": true,
 		"strictNullChecks": true,
 		"sourceMap": true,
-		"outDir": "dist",
+		"outDir": "dist/mjs",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"paths": {
@@ -24,7 +24,9 @@
 				"types/*"
 			]
 		},
-		"types": ["jest"]
+		"types": [
+			"jest"
+		]
 	},
 	"files": [
 		"index.ts"
