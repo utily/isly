@@ -50,15 +50,9 @@ class IslyObject<T extends B, B extends object, TB extends IslyObject<B, any, an
 		return new IslyObject<T2, T, IslyObject<T, any, any>>(this, properties, name)
 	}
 	omit<K extends keyof T>(omits: K[], name?: string): object.ExtendableType<Omit<T, K>> {
-		const properties: [
-			Extract<keyof object.Properties<T, B, TB>, string>,
-			object.Properties<T, B, TB>[Extract<keyof object.Properties<T, B, TB>, string>]
-		][] = []
-		for (const property in this.properties) {
-			!omits.includes(property as any) && properties.push([property, this.properties[property]])
-		}
-		const result = Object.fromEntries(properties) as object.BaseProperties<Omit<T, K>>
-		return new IslyObject<Omit<T, K>, Omit<T, K>, undefined>(undefined, result, name)
+		const result: Partial<typeof this.properties> = { ...this.properties }
+		omits.forEach(o => delete result[o as any])
+		return new IslyObject<Omit<T, K>, Omit<T, K>, undefined>(undefined, result as any, name)
 	}
 	is = (value =>
 		!!(
