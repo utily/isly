@@ -175,4 +175,34 @@ describe("isly.object", () => {
 		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }) })
 		expect(type.name).toBe("{a: {b: string}}")
 	})
+	it("omit", () => {
+		interface Test {
+			a: { b: string }
+			b: number
+			c: string
+		}
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
+		type OmittedTest = Omit<Test, "a">
+		const omittedType = type.omit<"a">(["a"])
+		const test: Test = { a: { b: "test" }, b: 42, c: "test 2" }
+		const omittedTest: OmittedTest = { b: 42, c: "test 2" }
+		expect(omittedType.is(omittedTest)).toBeTruthy()
+		expect(omittedType.get(test)).toEqual(omittedTest)
+		expect(omittedType.is(omittedType.get(test))).toBeTruthy()
+	})
+	it("extend omit", () => {
+		interface Test {
+			a: { b: string }
+			b: number
+			c: string
+		}
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
+		interface OmittedTest extends Omit<Test, "a"> {
+			a: boolean[]
+		}
+		const omittedType = type.omit<"a">(["a"]).extend<OmittedTest>({ a: isly.boolean().array() })
+		const omittedTest: OmittedTest = { a: [true, false, true], b: 42, c: "test 2" }
+		expect(omittedType.is(omittedTest)).toBeTruthy()
+		expect(omittedType.is(omittedType.get(omittedTest))).toBeTruthy()
+	})
 })
