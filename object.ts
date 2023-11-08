@@ -18,6 +18,7 @@ export namespace object {
 	export interface ExtendableType<T> extends Type<T> {
 		extend<T2 extends T>(properties: ExtendedProperties<T2, T>, name?: string): ExtendableType<T2>
 		omit<K extends keyof T>(omits: K[], name?: string): object.ExtendableType<Omit<T, K>>
+		omit<T2 extends Omit<T, K>, K extends keyof T>(omits: readonly K[], name?: string): object.ExtendableType<T2>
 	}
 }
 
