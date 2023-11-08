@@ -187,9 +187,9 @@ describe("isly.object", () => {
 
 		const test: Test = { a: { b: "test" }, b: 42, c: "test 2" }
 		const omittedTest: OmittedTest = { b: 42, c: "test 2" }
-		expect(omittedType.is(omittedTest)).toBeTruthy()
+		expect(omittedType.is(omittedTest)).toBe(true)
 		expect(omittedType.get(test)).toEqual(omittedTest)
-		expect(omittedType.is(omittedType.get(test))).toBeTruthy()
+		expect(omittedType.is(omittedType.get(test))).toBe(true)
 	})
 	it("extend omit", () => {
 		interface Test {
@@ -203,8 +203,8 @@ describe("isly.object", () => {
 		}
 		const omittedType = type.omit<"a">(["a"]).extend<OmittedTest>({ a: isly.boolean().array() })
 		const omittedTest: OmittedTest = { a: [true, false, true], b: 42, c: "test 2" }
-		expect(omittedType.is(omittedTest)).toBeTruthy()
-		expect(omittedType.is(omittedType.get(omittedTest))).toBeTruthy()
+		expect(omittedType.is(omittedTest)).toBe(true)
+		expect(omittedType.is(omittedType.get(omittedTest))).toBe(true)
 	})
 	it("get User-example with omit", () => {
 		interface User {
@@ -238,6 +238,41 @@ describe("isly.object", () => {
 		const errorResponseType = responseType.extend({ status: isly.number(value => value >= 400) }, "ErrorResponse")
 
 		const errorResponseWithoutBody = errorResponseType.omit(["body"], "ErrorResponseWithoutBody")
+
+		expect(responseType.is({ status: 200, body: "payload" })).toBe(true)
+		expect(responseType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		expect(errorResponseType.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseType.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		// Test if all conditions still is present:
+		expect(errorResponseWithoutBody.is({ status: 200 })).toBe(false)
+		expect(errorResponseWithoutBody.is({ status: 500 })).toBe(true)
+		expect(errorResponseWithoutBody.is({ status: 1000 })).toBe(false)
+
+		// Extra properties may still be present:
+		expect(errorResponseWithoutBody.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseWithoutBody.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseWithoutBody.is({ status: 1000, body: "payload" })).toBe(false)
+
+		// get should not return omited property and return undefined if all conditions isn't met:
+		expect(errorResponseWithoutBody.get({ status: 200, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBody.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
+		expect(errorResponseWithoutBody.get({ status: 1000, body: "payload" })).toBeUndefined()
+	})
+	it("Advanced extend & pick", () => {
+		interface Response {
+			status: number
+			body: string
+		}
+		const responseType = isly.object<Response>(
+			{ body: isly.string(), status: isly.number(value => value < 1000) },
+			"Response"
+		)
+		const errorResponseType = responseType.extend({ status: isly.number(value => value >= 400) }, "ErrorResponse")
+
+		const errorResponseWithoutBody = errorResponseType.pick(["status"], "ErrorResponseWithoutBody")
 
 		expect(responseType.is({ status: 200, body: "payload" })).toBe(true)
 		expect(responseType.is({ status: 1000, body: "payload" })).toBe(false)
