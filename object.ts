@@ -56,7 +56,7 @@ class IslyObject<T extends B, B extends object, TB extends IslyObject<B, any, an
 		return new IslyObject<Omit<T, K>, Omit<T, K>, any>(
 			this.baseType?.omit(omits as any),
 			globalThis.Object.fromEntries(
-				Object.entries(this.properties).filter(([key]) => !omits.includes(key as any))
+				globalThis.Object.entries(this.properties).filter(([key]) => !omits.includes(key as any))
 			) as any,
 			name ?? `Omit<${this.name}, ${omits.map(key => `"${String(key)}"`).join(" | ")}>`
 		)
@@ -65,7 +65,7 @@ class IslyObject<T extends B, B extends object, TB extends IslyObject<B, any, an
 		return new IslyObject<Pick<T, K>, Pick<T, K>, any>(
 			this.baseType?.pick(picks as any),
 			globalThis.Object.fromEntries(
-				Object.entries(this.properties).filter(([key]) => picks.includes(key as any))
+				globalThis.Object.entries(this.properties).filter(([key]) => picks.includes(key as any))
 			) as any,
 			name ?? `Pick<${this.name}, ${picks.map(key => `"${String(key)}"`).join(" | ")}>`
 		)

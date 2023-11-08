@@ -31,15 +31,15 @@ class IslyIntersection<T> extends Type<T> {
 		else if (target && typeof target == "object" && source && typeof source == "object")
 			for (const key in source)
 				if (
-					Object.getOwnPropertyDescriptor(target, key) &&
+					globalThis.Object.getOwnPropertyDescriptor(target, key) &&
 					typeof target[key as string as keyof typeof target] == "object" &&
 					typeof source[key] == "object"
 				)
-					Object.assign(target, {
+					globalThis.Object.assign(target, {
 						[key]: this.merge(target[key as string as keyof typeof target], source[key]),
 					})
 				else
-					Object.assign(target, { [key]: source[key] })
+					globalThis.Object.assign(target, { [key]: source[key] })
 
 		return result
 	}

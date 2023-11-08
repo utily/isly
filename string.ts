@@ -7,7 +7,7 @@ class IslyString<T extends string> extends Type<T> {
 			const conditionObject = this.getConditionObject()
 			return conditionObject instanceof RegExp
 				? `/${conditionObject.source}/${conditionObject.flags}`
-				: Object.keys(conditionObject)
+				: globalThis.Object.keys(conditionObject)
 						.map(key => `"${key}"`)
 						.join(" | ")
 		})
@@ -29,7 +29,7 @@ class IslyString<T extends string> extends Type<T> {
 			? this.stringCondition.reduce((result, current) => {
 					result[current] = true
 					return result
-			  }, Object.create(null))
+			  }, globalThis.Object.create(null))
 			: typeof this.stringCondition == "string"
 			? { [this.stringCondition]: true }
 			: typeof this.stringCondition == "object" // Record or RegExp!
