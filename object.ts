@@ -59,7 +59,7 @@ class IslyObject<T extends B, B extends object, TB extends IslyObject<B, any, an
 			!omits.includes(property as any) && properties.push([property, this.properties[property]])
 		}
 		const result = Object.fromEntries(properties) as object.BaseProperties<Omit<T, K>>
-		return new IslyObject<Omit<T, K>, Omit<T, K>, undefined>(undefined, result, name)
+		return new IslyObject<Omit<T, K>, Omit<T, K>, any>(this.baseType?.omit(omits as any), result, name)
 	}
 	is = (value =>
 		!!(
