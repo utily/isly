@@ -73,27 +73,6 @@ if (!type.is(data)) {
 }
 ```
 
-## Extending types
-
-`isly.object()` returns a type which is extendable.
-
-```typescript
-interface Item1 {
-	i1: number
-}
-interface Item2 extends Item1 {
-	i2: number
-}
-interface Item3 extends Item2 {
-	i3: number
-}
-
-const typeItem1 = isly.object<Item1>({ i1: isly.number() }, "Item1")
-// It is possible (but optional) to add conditions to properties in the base-type:
-const typeItem2 = typeItem1.extend<Item2>({ i2: isly.number(), i1: isly.number(value => value >= 400) }, "Item2")
-const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
-```
-
 ## type.get(value: any)
 
 Returns the value only if it fits the type, otherwise undefined. Make it easy to use with the _Nullish coalescing operator_ (`??`).
@@ -144,11 +123,64 @@ Try the second if the object isn't provided an generic type and the first doesn'
 
 ### .optional()
 
-Add `| undefined`to type.
+Add `| undefined` to type.
 
 ### .readonly()
 
 Add `Readonly<...>` to type.
+
+## Modifiers for isly.object
+
+`isly.object()` returns a type which has more modifiers.
+
+### .extend()
+
+```typescript
+interface Item1 {
+	i1: number
+}
+interface Item2 extends Item1 {
+	i2: number
+}
+interface Item3 extends Item2 {
+	i3: number
+}
+
+const typeItem1 = isly.object<Item1>({ i1: isly.number() }, "Item1")
+// It is possible (but optional) to add conditions to properties in the base-type:
+const typeItem2 = typeItem1.extend<Item2>({ i2: isly.number(), i1: isly.number(value => value >= 400) }, "Item2")
+const typeItem3 = typeItem2.extend<Item3>({ i3: isly.number() }, "Item3")
+```
+
+### .pick()
+
+```typescript
+interface User {
+	firstName: string
+	lastName: string
+	password: string
+}
+
+type UserWithoutCredentials = Pick<User, "firstName" | "lastName">
+
+const userType = isly.object<User>({ firstName: isly.string(), lastName: isly.string(), password: isly.string() })
+const UserWithoutCredentials = userType.pick(["firstName", "lastName"], "UserWithoutCredentials")
+```
+
+### .omit()
+
+```typescript
+interface User {
+	firstName: string
+	lastName: string
+	password: string
+}
+
+type UserWithoutCredentials = Omit<User, "password">
+
+const userType = isly.object<User>({ firstName: isly.string(), lastName: isly.string(), password: isly.string() })
+const UserWithoutCredentials = userType.omit(["password"], "UserWithoutCredentials")
+```
 
 ## Usage patterns
 
