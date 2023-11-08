@@ -186,9 +186,12 @@ describe("isly.object", () => {
 		const omittedType = type.omit<"a">(["a"])
 		const test: Test = { a: { b: "test" }, b: 42, c: "test 2" }
 		const omittedTest: OmittedTest = { b: 42, c: "test 2" }
+		const omittedWithoutGeneric = type.omit(["a"])
 		expect(omittedType.is(omittedTest)).toBeTruthy()
 		expect(omittedType.get(test)).toEqual(omittedTest)
 		expect(omittedType.is(omittedType.get(test))).toBeTruthy()
+		expect(omittedWithoutGeneric.is(omittedTest)).toBeTruthy()
+		expect(omittedType.is(omittedWithoutGeneric.get(test))).toBeTruthy()
 	})
 	it("extend omit", () => {
 		interface Test {
@@ -204,5 +207,45 @@ describe("isly.object", () => {
 		const omittedTest: OmittedTest = { a: [true, false, true], b: 42, c: "test 2" }
 		expect(omittedType.is(omittedTest)).toBeTruthy()
 		expect(omittedType.is(omittedType.get(omittedTest))).toBeTruthy()
+	})
+	it("omit from parent", () => {
+		interface TestParent {
+			b: number
+			c: string
+		}
+		interface Test extends TestParent {
+			a: { b: string }
+		}
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
+		interface OmittedFromParent extends Omit<Test, "b"> {
+			b: boolean[]
+		}
+		const test: Test = { a: { b: "test" }, b: 42, c: "test 2" }
+		const omittedFromParent = type.omit<"b">(["b"]).extend<OmittedFromParent>({ b: isly.boolean().array() })
+		const testOmitted: OmittedFromParent = { a: { b: "test" }, b: [true], c: "test2" }
+		expect(omittedFromParent.is(testOmitted)).toBeTruthy()
+		expect(omittedFromParent.is(test)).toBeFalsy()
+	})
+	it("omit from parent and grandparent", () => {
+		interface TestGrandParent {
+			b: number
+		}
+		interface TestParent extends TestGrandParent {
+			c: string
+		}
+		interface Test extends TestParent {
+			a: { b: string }
+		}
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
+		interface OmittedFromGrandParent extends Omit<Test, "b" | "c"> {
+			b: boolean[]
+		}
+		const test: Test = { a: { b: "test" }, b: 42, c: "test 2" }
+		const omittedFromParent = type
+			.omit<"b" | "c">(["b", "c"])
+			.extend<OmittedFromGrandParent>({ b: isly.boolean().array() })
+		const testOmitted: OmittedFromGrandParent = { a: { b: "test" }, b: [true] }
+		expect(omittedFromParent.is(testOmitted)).toBeTruthy()
+		expect(omittedFromParent.is(test)).toBeFalsy()
 	})
 })
