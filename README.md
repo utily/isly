@@ -43,7 +43,7 @@ const type: isly.Type<DemoType> = isly.object({
 	fromServer: isly.boolean(true),
 
 	myTuple: isly.tuple(isly.string(), isly.number()),
-	myUnion: isly.union<DemoType["myUnion"]>(isly.string(), isly.number()),
+	myUnion: isly.union(isly.string(), isly.number()),
 	myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
 	myIntersection: isly.intersection(
 		isly.object<{ a: string }>({ a: isly.string() }),
