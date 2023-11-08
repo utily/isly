@@ -237,7 +237,9 @@ describe("isly.object", () => {
 		)
 		const errorResponseType = responseType.extend({ status: isly.number(value => value >= 400) }, "ErrorResponse")
 
-		const errorResponseWithoutBody = errorResponseType.omit(["body"], "ErrorResponseWithoutBody")
+		const errorResponseWithoutBodyType = errorResponseType.omit(["body"])
+
+		expect(errorResponseWithoutBodyType.name).toBe('Omit<ErrorResponse, "body">')
 
 		expect(responseType.is({ status: 200, body: "payload" })).toBe(true)
 		expect(responseType.is({ status: 1000, body: "payload" })).toBe(false)
@@ -247,19 +249,19 @@ describe("isly.object", () => {
 		expect(errorResponseType.is({ status: 1000, body: "payload" })).toBe(false)
 
 		// Test if all conditions still is present:
-		expect(errorResponseWithoutBody.is({ status: 200 })).toBe(false)
-		expect(errorResponseWithoutBody.is({ status: 500 })).toBe(true)
-		expect(errorResponseWithoutBody.is({ status: 1000 })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 200 })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500 })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000 })).toBe(false)
 
 		// Extra properties may still be present:
-		expect(errorResponseWithoutBody.is({ status: 200, body: "payload" })).toBe(false)
-		expect(errorResponseWithoutBody.is({ status: 500, body: "payload" })).toBe(true)
-		expect(errorResponseWithoutBody.is({ status: 1000, body: "payload" })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000, body: "payload" })).toBe(false)
 
 		// get should not return omited property and return undefined if all conditions isn't met:
-		expect(errorResponseWithoutBody.get({ status: 200, body: "payload" })).toBeUndefined()
-		expect(errorResponseWithoutBody.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
-		expect(errorResponseWithoutBody.get({ status: 1000, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.get({ status: 200, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
+		expect(errorResponseWithoutBodyType.get({ status: 1000, body: "payload" })).toBeUndefined()
 	})
 	it("Advanced extend & pick", () => {
 		interface Response {
@@ -272,7 +274,9 @@ describe("isly.object", () => {
 		)
 		const errorResponseType = responseType.extend({ status: isly.number(value => value >= 400) }, "ErrorResponse")
 
-		const errorResponseWithoutBody = errorResponseType.pick(["status"], "ErrorResponseWithoutBody")
+		const errorResponseWithoutBodyType = errorResponseType.pick(["status"])
+
+		expect(errorResponseWithoutBodyType.name).toBe('Pick<ErrorResponse, "status">')
 
 		expect(responseType.is({ status: 200, body: "payload" })).toBe(true)
 		expect(responseType.is({ status: 1000, body: "payload" })).toBe(false)
@@ -282,18 +286,18 @@ describe("isly.object", () => {
 		expect(errorResponseType.is({ status: 1000, body: "payload" })).toBe(false)
 
 		// Test if all conditions still is present:
-		expect(errorResponseWithoutBody.is({ status: 200 })).toBe(false)
-		expect(errorResponseWithoutBody.is({ status: 500 })).toBe(true)
-		expect(errorResponseWithoutBody.is({ status: 1000 })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 200 })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500 })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000 })).toBe(false)
 
 		// Extra properties may still be present:
-		expect(errorResponseWithoutBody.is({ status: 200, body: "payload" })).toBe(false)
-		expect(errorResponseWithoutBody.is({ status: 500, body: "payload" })).toBe(true)
-		expect(errorResponseWithoutBody.is({ status: 1000, body: "payload" })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000, body: "payload" })).toBe(false)
 
 		// get should not return omited property and return undefined if all conditions isn't met:
-		expect(errorResponseWithoutBody.get({ status: 200, body: "payload" })).toBeUndefined()
-		expect(errorResponseWithoutBody.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
-		expect(errorResponseWithoutBody.get({ status: 1000, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.get({ status: 200, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
+		expect(errorResponseWithoutBodyType.get({ status: 1000, body: "payload" })).toBeUndefined()
 	})
 })
