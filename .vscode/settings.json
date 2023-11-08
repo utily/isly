@@ -5,7 +5,6 @@
 		"*.json": true,
 		"CODEOWNERS": true,
 		"dist": true,
-		"README.md": true,
 		"LICENSE": true,
 		"tsconfig.*": true,
 		"node_modules": true,
