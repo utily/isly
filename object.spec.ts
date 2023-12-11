@@ -175,4 +175,129 @@ describe("isly.object", () => {
 		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }) })
 		expect(type.name).toBe("{a: {b: string}}")
 	})
+	it("omit", () => {
+		interface Test {
+			a: { b: string }
+			b: number
+			c: string
+		}
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
+		type OmittedTest = Omit<Test, "a">
+		const omittedType = type.omit(["a"])
+
+		const test: Test = { a: { b: "test" }, b: 42, c: "test 2" }
+		const omittedTest: OmittedTest = { b: 42, c: "test 2" }
+		expect(omittedType.is(omittedTest)).toBe(true)
+		expect(omittedType.get(test)).toEqual(omittedTest)
+		expect(omittedType.is(omittedType.get(test))).toBe(true)
+	})
+	it("extend omit", () => {
+		interface Test {
+			a: { b: string }
+			b: number
+			c: string
+		}
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
+		interface OmittedTest extends Omit<Test, "a"> {
+			a: boolean[]
+		}
+		const omittedType = type.omit<"a">(["a"]).extend<OmittedTest>({ a: isly.boolean().array() })
+		const omittedTest: OmittedTest = { a: [true, false, true], b: 42, c: "test 2" }
+		expect(omittedType.is(omittedTest)).toBe(true)
+		expect(omittedType.is(omittedType.get(omittedTest))).toBe(true)
+	})
+	it("get User-example with omit", () => {
+		interface User {
+			name: string
+		}
+		interface UserWithCredentials extends User {
+			password: string
+		}
+		const userType = isly.object<User>({ name: isly.string() })
+		const userWithCredentialsType = userType.extend<UserWithCredentials>({ password: isly.string() })
+
+		const userWithoutCredentialsType = userWithCredentialsType.omit(["password"])
+
+		const myUser: UserWithCredentials = {
+			name: "Joe",
+			password: "12345678",
+		}
+		expect(userWithoutCredentialsType.get(myUser)).toEqual({
+			name: "Joe",
+		})
+	})
+	it("Advanced extend & omit", () => {
+		interface Response {
+			status: number
+			body: string
+		}
+		const responseType = isly.object<Response>(
+			{ body: isly.string(), status: isly.number(value => value < 1000) },
+			"Response"
+		)
+		const errorResponseType = responseType.extend({ status: isly.number(value => value >= 400) }, "ErrorResponse")
+
+		const errorResponseWithoutBodyType = errorResponseType.omit(["body"])
+
+		expect(errorResponseWithoutBodyType.name).toBe('Omit<ErrorResponse, "body">')
+
+		expect(responseType.is({ status: 200, body: "payload" })).toBe(true)
+		expect(responseType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		expect(errorResponseType.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseType.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		// Test if all conditions still is present:
+		expect(errorResponseWithoutBodyType.is({ status: 200 })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500 })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000 })).toBe(false)
+
+		// Extra properties may still be present:
+		expect(errorResponseWithoutBodyType.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		// get should not return omited property and return undefined if all conditions isn't met:
+		expect(errorResponseWithoutBodyType.get({ status: 200, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
+		expect(errorResponseWithoutBodyType.get({ status: 1000, body: "payload" })).toBeUndefined()
+	})
+	it("Advanced extend & pick", () => {
+		interface Response {
+			status: number
+			body: string
+		}
+		const responseType = isly.object<Response>(
+			{ body: isly.string(), status: isly.number(value => value < 1000) },
+			"Response"
+		)
+		const errorResponseType = responseType.extend({ status: isly.number(value => value >= 400) }, "ErrorResponse")
+
+		const errorResponseWithoutBodyType = errorResponseType.pick(["status"])
+
+		expect(errorResponseWithoutBodyType.name).toBe('Pick<ErrorResponse, "status">')
+
+		expect(responseType.is({ status: 200, body: "payload" })).toBe(true)
+		expect(responseType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		expect(errorResponseType.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseType.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		// Test if all conditions still is present:
+		expect(errorResponseWithoutBodyType.is({ status: 200 })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500 })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000 })).toBe(false)
+
+		// Extra properties may still be present:
+		expect(errorResponseWithoutBodyType.is({ status: 200, body: "payload" })).toBe(false)
+		expect(errorResponseWithoutBodyType.is({ status: 500, body: "payload" })).toBe(true)
+		expect(errorResponseWithoutBodyType.is({ status: 1000, body: "payload" })).toBe(false)
+
+		// get should not return omited property and return undefined if all conditions isn't met:
+		expect(errorResponseWithoutBodyType.get({ status: 200, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
+		expect(errorResponseWithoutBodyType.get({ status: 1000, body: "payload" })).toBeUndefined()
+	})
 })

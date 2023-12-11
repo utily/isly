@@ -88,7 +88,7 @@ describe("isly.record", () => {
 			email: string
 		}
 		const userRecordType = isly.record(isly.string(), isly.object<User>({ email: isly.string() }))
-		const usersRecords: Record<string, User> = Object.fromEntries(
+		const usersRecords: Record<string, User> = globalThis.Object.fromEntries(
 			[...Array(5).keys()].map(id => [
 				`${id}`,
 				{
