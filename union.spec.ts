@@ -87,6 +87,62 @@ describe("isly.union", () => {
 			],
 		})
 	})
+	it("union (7)", () => {
+		type A = "A"
+		type B = "B"
+		type C = "C"
+		type D = "D"
+		type E = "E"
+		type F = "F"
+		type G = "G"
+		type Letters = A | B | C | D | E | F | G
+		const Letters = isly.union<Letters>(
+			isly.string<A>("A"),
+			isly.string<B>("B"),
+			isly.string<C>("C"),
+			isly.string<D>("D"),
+			isly.string<E>("E"),
+			isly.string<F>("F"),
+			isly.string<G>("G")
+		)
+		expect(Letters.is("B")).toEqual(true)
+		expect(Letters.is(13.37)).toEqual(false)
+		expect(Letters.is(13.37)).toEqual(false)
+
+		expect(Letters.flaw({})).toEqual({
+			flaws: [
+				{
+					condition: '"A"',
+					type: '"A"',
+				},
+				{
+					condition: '"B"',
+					type: '"B"',
+				},
+				{
+					condition: '"C"',
+					type: '"C"',
+				},
+				{
+					condition: '"D"',
+					type: '"D"',
+				},
+				{
+					condition: '"E"',
+					type: '"E"',
+				},
+				{
+					condition: '"F"',
+					type: '"F"',
+				},
+				{
+					condition: '"G"',
+					type: '"G"',
+				},
+			],
+			type: '"A" | "B" | "C" | "D" | "E" | "F" | "G"',
+		})
+	})
 	it("union.get", () => {
 		type User = {
 			email: string
