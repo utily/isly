@@ -34,6 +34,7 @@ export function union<T extends A | B | C | D | E, A, B, C, D, E>(
 export function union<T extends A | B | C | D | E | F, A, B, C, D, E, F>(
 	...types: [Type<A>, Type<B>, Type<C>, Type<D>, Type<E>, Type<F>]
 ): Type<T>
+export function union<T>(...types: Type<T>[]): Type<T>
 export function union<T>(...types: Type<T>[]): Type<T> {
 	return new IslyUnion(...types)
 }
