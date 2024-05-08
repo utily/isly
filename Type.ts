@@ -83,6 +83,8 @@ export namespace Type {
 	export type IsFunction<T> = (value: any | T) => value is T
 	export type FlawFunction = (value: any) => Flaw
 	export type GetFunction<T> = (value: any) => T | undefined
+	/** Utility-type to get Value-Type from Type<Value>. */
+	export type Value<T extends Type<unknown>> = T["is"] extends (x: any) => x is infer U ? U : never
 }
 
 class IslyOptional<T> extends Type<T | undefined> {

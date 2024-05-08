@@ -28,6 +28,16 @@ describe("isly.Type", () => {
 			}
 		}
 	})
+	it("Type.Value", () => {
+		const stringType = isly.string()
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const shouldBeString: isly.Type.Value<typeof stringType> = "This is a string"
+
+		const numberType = isly.number()
+		// @ts-expect-error This should fail, since trying to assign string to number.
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const shouldBeNumber: isly.Type.Value<typeof numberType> = "This is not a number"
+	})
 	it("string.optional()", () => {
 		const optionalStringType = isly.string().optional()
 		expect(optionalStringType.is("42")).toBe(true)
