@@ -59,4 +59,8 @@ describe("isly.number", () => {
 
 		expect(numberType.flaw({})).toEqual({ type: "number", condition: "> 0 & Number.isInteger" })
 	})
+	it("isly.number([1, 2, 3]).is(2)", () => expect(isly.number([1, 2, 3]).is(2)).toEqual(true))
+	it("isly.number([1, 2, 3]).is(0)", () => expect(isly.number([1, 2, 3]).is(0)).toEqual(false))
+	it("isly.number<1, 2, 3>([1, 2, 3] as const).is(2)", () =>
+		expect(isly.number<1 | 2 | 3>([1, 2, 3] as const).is(2)).toEqual(true))
 })
