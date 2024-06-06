@@ -20,12 +20,12 @@ const criteriaFunctions: Record<number.Criteria, { is: (value: number) => boolea
 }
 
 function fromCriteria(
-	criteria: number | number.Criteria | number.Criteria[] | number[] | ((value: number) => boolean)
+	criteria: number | number.Criteria | number.Criteria[] | readonly number[] | ((value: number) => boolean)
 ): [(value: number) => boolean, string] {
 	return /* Eg: criteria == 42 */ typeof criteria == "number"
 		? [value => value == criteria, " == " + criteria.toString()]
 		: // Eg: criteria == [0,1,2]
-		((c: any): c is number[] => Array.isArray(c) && c.every(c => typeof c == "number"))(criteria)
+		((c: any): c is readonly number[] => Array.isArray(c) && c.every(c => typeof c == "number"))(criteria)
 		? [value => criteria.map(fromCriteria).some(c => c[0](value)), criteria.join(" | ")]
 		: // Eg: criteria ==  ["positive", "negative"]
 		((c: any): c is number.Criteria[] =>
