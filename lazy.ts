@@ -6,6 +6,7 @@ class IslyLazy<T> extends Type<T> {
 	constructor(protected readonly factory: () => Type<T>, name?: string) {
 		super(name ?? (() => (this.backend ??= factory()).name), () => (this.backend ??= factory()).condition)
 	}
+	template = () => this.backend.template()
 	is = (value => (this.backend ??= this.factory()).is(value)) as Type.IsFunction<T>
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType((this.backend ??= this.factory()), value)

@@ -1,3 +1,4 @@
+import { selectively } from "selectively"
 import { Type } from "./Type"
 
 class IslyString<T extends string> extends Type<T> {
@@ -12,6 +13,14 @@ class IslyString<T extends string> extends Type<T> {
 						.join(" | ")
 		})
 	}
+	template = () =>
+		globalThis.Array.isArray(this.stringCondition)
+			? new selectively.Type.Union(
+					this.stringCondition.map(
+						condition => new selectively.Type.String(typeof condition == "string" ? condition : undefined)
+					)
+			  )
+			: new selectively.Type.String(typeof this.stringCondition == "string" ? this.stringCondition : undefined)
 	is = (value => {
 		const conditionObject = this.getConditionObject()
 

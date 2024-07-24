@@ -1,3 +1,4 @@
+import { selectively } from "selectively"
 import { Type } from "./Type"
 
 export namespace number {
@@ -51,6 +52,7 @@ class IslyNumber<N extends number = number> extends Type<N> {
 	constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
 		super("number", condition)
 	}
+	template = () => new selectively.Type.Number()
 	is = (value =>
 		typeof value == "number" &&
 		!Number.isNaN(value - value) && // NaN-NaN==NaN && Infinity-Infinity==NaN &&  (-Infinity)-(-Infinity)==NaN

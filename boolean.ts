@@ -1,9 +1,11 @@
+import { selectively } from "selectively"
 import { Type } from "./Type"
 
 class IslyBoolean<B extends boolean = boolean> extends Type<B> {
 	constructor(protected readonly booleanValue?: B) {
 		super(booleanValue == undefined ? "boolean" : booleanValue ? "true" : "false")
 	}
+	template = () => new selectively.Type.Boolean()
 	is = (value =>
 		typeof value == "boolean" && (this.booleanValue == undefined || value == this.booleanValue)) as Type.IsFunction<B>
 }

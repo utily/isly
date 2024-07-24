@@ -118,7 +118,6 @@ describe("isly.object", () => {
 			b: string
 		}
 		const typeItem1 = isly.object<Item1>({ a: isly.number(), b: isly.string() }, "Item1")
-
 		expect(typeItem1.get({ i1: 200, str: "a" })).toBeUndefined()
 		expect(typeItem1.get({ a: 200 })).toBeUndefined()
 		expect(typeItem1.get({ a: 200, b: "a" })).toEqual({ a: 200, b: "a" })

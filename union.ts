@@ -1,3 +1,4 @@
+import { selectively } from "selectively"
 import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
@@ -7,6 +8,9 @@ class IslyUnion<T> extends Type<T> {
 		super(() => types.map(type => type.name).join(" | "))
 		this.types = types
 	}
+	template = () =>
+		new selectively.Type.Union(this.types.map(type => type.template()).filter((e): e is selectively.Type => !!e))
+
 	is = (value => this.types.some(type => type.is(value))) as Type.IsFunction<T>
 
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {

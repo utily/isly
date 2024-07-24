@@ -135,4 +135,71 @@ describe("isly", () => {
 			type: "{anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: string, new: boolean, fromServer: true, myTuple: [string, number], myUnion: string | number, myArray: string[], myIntersection: {a: string} & {b: string}, children: DemoType[] | undefined, regExp: RegExp, testMethod: function}",
 		})
 	})
+	it("template", () => {
+		const type: isly.Type<any> = isly.object({
+			// number
+			anyNumber: isly.number(),
+			numberOf: isly.number("positive"),
+			temperature: isly.number(value => value > -273.15),
+			// string
+			message: isly.string(),
+			email: isly.string(/\S+@\S+\.\S+/),
+			currency: isly.string(["SEK", "EUR"]),
+			// boolean
+			new: isly.boolean(),
+			fromServer: isly.boolean(true),
+
+			myTuple: isly.tuple(isly.string(), isly.number()),
+			myUnion: isly.union(isly.string(), isly.number()),
+			myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
+			myIntersection: isly.intersection(
+				isly.object<{ a: string }>({ a: isly.string() }),
+				isly.object<{ b: string }>({ b: isly.string() })
+			),
+
+			// Recursive
+			children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
+			regExp: isly.fromIs<RegExp>("RegExp", value => value instanceof RegExp),
+			// function
+			testMethod: isly.function(),
+		})
+		expect(
+			type
+				.template()
+				?.complete("")
+				.map(e => e.suggestion?.value)
+		).toMatchInlineSnapshot(`
+[
+  "anyNumber",
+  "numberOf",
+  "temperature",
+  "message",
+  "email",
+  "currency",
+  "new",
+  "fromServer",
+  "myUnion",
+  "myArray",
+  "myIntersection",
+  "!",
+]
+`)
+		expect(
+			type
+				.template()
+				?.complete("currency:")
+				.map(e => e.suggestion?.value)
+		).toMatchInlineSnapshot(`
+[
+  "SEK",
+  "*",
+  "**",
+  "//",
+  "!",
+  "within()",
+  "*",
+  "EUR",
+]
+`)
+	})
 })

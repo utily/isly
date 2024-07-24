@@ -1,3 +1,4 @@
+import { selectively } from "selectively"
 import { Flaw } from "./Flaw"
 
 export abstract class Type<T> {
@@ -20,6 +21,9 @@ export abstract class Type<T> {
 		protected readonly _name: string | (() => string),
 		protected readonly _condition?: string | (() => string | undefined)
 	) {}
+
+	template: () => selectively.Type | undefined = () => undefined
+
 	/**
 	 * Type guard for the type.
 	 * [Typescript documentation: Using type predicates](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates)
@@ -159,6 +163,9 @@ export class IslyArray<T extends any[]> extends Type<T> {
 	}
 	protected itemName(index: number) {
 		return `${this.baseName()}[${index}]`
+	}
+	template = () => {
+		return this.itemType.template()
 	}
 	is = (value =>
 		globalThis.Array.isArray(value) &&

@@ -1,3 +1,4 @@
+import { selectively } from "selectively"
 import { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
@@ -5,6 +6,8 @@ class IslyRecord<K extends string | number, V> extends Type<Record<K, V>> {
 	constructor(protected readonly keyType: Type<K>, protected readonly valueType: Type<V>) {
 		super(() => `Record<${keyType.name}, ${valueType.name}>`)
 	}
+	template = () => new selectively.Type.Object({})
+
 	is = (value =>
 		!!(
 			value &&

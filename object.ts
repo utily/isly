@@ -1,3 +1,4 @@
+import { selectively } from "selectively"
 import type { Flaw } from "./Flaw"
 import { Type } from "./Type"
 
@@ -41,6 +42,13 @@ class IslyObject<T extends B, B extends object, TB extends IslyObject<B, any, an
 						.map(([property, type]: [string, Type<any>]) => `${property}: ${type.name}`)
 						.join(", ")}}`
 		)
+	}
+	template = () => {
+		const properties = globalThis.Object.entries<Type<any>>(this.properties).reduce((r, [property, type]) => {
+			const template = type.template()
+			return template ? { ...r, [property]: template } : r
+		}, {})
+		return new selectively.Type.Object(properties)
 	}
 	extend<T2 extends T>(
 		properties: { [P in OptionalKeys<Omit<T2, keyof T>>]: Type<Omit<T2, keyof T>[P] | undefined> } &
