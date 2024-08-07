@@ -76,9 +76,12 @@ class IslyObject<T extends B, B extends object, TB extends IslyObject<B, any, an
 			(this.baseType == undefined || this.baseType.is(value)) &&
 			typeof value == "object" &&
 			!globalThis.Array.isArray(value) &&
-			globalThis.Object.entries<Type<any>>(this.properties).every(([property, type]) => type.is(value[property]))
+			globalThis.Object.entries<Type<any>>(this.properties).every(([property, type]) => type.is(value[property])) &&
+			this.restraints.every(r => r.check(value))
 		)) as Type.IsFunction<T>
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		this.baseType?._name
+		typeof this.baseType?._condition == "function" ? this.baseType._condition() : undefined
 		return {
 			flaws: [
 				this.baseType ? this.baseType.flaw(value)?.flaws ?? [] : [],

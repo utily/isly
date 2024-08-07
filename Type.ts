@@ -16,6 +16,11 @@ export abstract class Type<T> {
 	public array(...options: array.Option[]): Type<T[]> {
 		return array(this, ...options) as any
 	}
+	restraints: { condition: string; check: (v: T) => boolean }[] = []
+	public restraint(condition: string, check: (v: T) => boolean) {
+		this.restraints.push({ condition, check })
+		return this
+	}
 	constructor(
 		protected readonly _name: string | (() => string),
 		protected readonly _condition?: string | (() => string | undefined)

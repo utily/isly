@@ -300,4 +300,26 @@ describe("isly.object", () => {
 		expect(errorResponseWithoutBodyType.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
 		expect(errorResponseWithoutBodyType.get({ status: 1000, body: "payload" })).toBeUndefined()
 	})
+	it.only("restraint", () => {
+		interface Range {
+			start: number
+			end: number
+		}
+
+		const rangeType = isly
+			.object<Range>({ start: isly.number(), end: isly.number() })
+			.restraint("start <= end", v => v.start <= v.end)
+
+		const range = { start: 1, end: 2 }
+		expect(rangeType.is(range)).toBeTruthy()
+		console.log("range", rangeType.flaw(range))
+
+		const invalidRange = { start: 2, end: 1 }
+		expect(rangeType.is(invalidRange)).toBeFalsy()
+		console.log("invalidRange", rangeType.flaw(invalidRange))
+
+		const notRange = { start: "one", end: 1 }
+		expect(rangeType.is(notRange)).toBeFalsy()
+		console.log("notRange", rangeType.flaw(notRange))
+	})
 })
