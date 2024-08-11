@@ -12,8 +12,8 @@ class IslyFromIs<T> extends Type<T> {
  *
  * @param config
  */
-export function fromIs<T>(name: string, is: Type<T>["is"]): Type<T>
+export function fromIs<T>(name: string, is: (value: T | any) => value is T): Type<T>
 export function fromIs<T>(name: string, is: (value: any) => boolean): Type<T>
-export function fromIs<T>(name: string, is: (value: any) => boolean): Type<T> {
+export function fromIs<T>(name: string, is: ((value: T | any) => value is T) | ((value: any) => boolean)): Type<T> {
 	return new IslyFromIs(name, is)
 }
