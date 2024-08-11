@@ -12,9 +12,8 @@ class IslyString<T extends string> extends Type<T> {
 						.join(" | ")
 		})
 	}
-	is = (value => {
+	is = (value: T | any): value is T => {
 		const conditionObject = this.getConditionObject()
-
 		return (
 			typeof value == "string" &&
 			(conditionObject instanceof RegExp
@@ -23,7 +22,7 @@ class IslyString<T extends string> extends Type<T> {
 				? value in conditionObject //TODO, avoid "hasOwnProperty toString etc."
 				: conditionObject)
 		)
-	}) as Type.IsFunction<T>
+	}
 	protected getConditionObject(): NonNullable<IslyString<T>["conditionObject"]> {
 		return (this.conditionObject ??= Array.isArray(this.stringCondition)
 			? this.stringCondition.reduce((result, current) => {

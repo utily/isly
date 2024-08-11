@@ -3,7 +3,7 @@ import { isly } from "./index"
 
 describe("isly.fromIs", () => {
 	type Specific = "Specific"
-	const specificIsFunction = (value => value == "Specific") as isly.Type.IsFunction<Specific>
+	const specificIsFunction = (value: any): value is "Specific" => value == "Specific"
 
 	// TypeScript compile error if not working
 	it("TypeScript narrowing, without generic", () => {

@@ -5,7 +5,7 @@ class IslyRecord<K extends string | number, V> extends Type<Record<K, V>> {
 	constructor(protected readonly keyType: Type<K>, protected readonly valueType: Type<V>) {
 		super(() => `Record<${keyType.name}, ${valueType.name}>`)
 	}
-	is = (value =>
+	is = (value: Record<K, V> | any): value is Record<K, V> =>
 		!!(
 			value &&
 			typeof value == "object" &&
@@ -14,7 +14,7 @@ class IslyRecord<K extends string | number, V> extends Type<Record<K, V>> {
 				([key, value]) =>
 					this.keyType.is(this.keyType.name == "number" && `${+key}` == key ? +key : key) && this.valueType.is(value)
 			)
-		)) as Type.IsFunction<Record<K, V>>
+		)
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws:

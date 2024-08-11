@@ -6,11 +6,13 @@ class IslyLazy<T> extends Type<T> {
 	constructor(protected readonly factory: () => Type<T>, name?: string) {
 		super(name ?? (() => (this.backend ??= factory()).name), () => (this.backend ??= factory()).condition)
 	}
-	is = (value => (this.backend ??= this.factory()).is(value)) as Type.IsFunction<T>
+	is = (value: T | any): value is T => (this.backend ??= this.factory()).is(value)
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType((this.backend ??= this.factory()), value)
 	}
-	get: Type.GetFunction<T> = value => this.backend.get(value)
+	public get(value: any): T | undefined {
+		return this.backend.get(value)
+	}
 }
 
 /**

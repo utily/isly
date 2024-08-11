@@ -5,7 +5,7 @@ class IslyFunction<T extends Function> extends Type<T> {
 	constructor() {
 		super("function")
 	}
-	is = (value => !!(value && typeof value == "function")) as Type.IsFunction<T>
+	is = (value: T | any): value is T => !!(value && typeof value == "function")
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
