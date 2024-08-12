@@ -4,7 +4,7 @@ class IslyFromIs<T> extends Type<T> {
 	constructor(name: string, protected readonly isFunction: (value: any) => boolean) {
 		super(name)
 	}
-	is = (value => this.isFunction(value)) as Type.IsFunction<T>
+	is = (value: T | any): value is T => this.isFunction(value)
 }
 
 /**
@@ -12,8 +12,8 @@ class IslyFromIs<T> extends Type<T> {
  *
  * @param config
  */
-export function fromIs<T>(name: string, is: Type.IsFunction<T>): Type<T>
+export function fromIs<T>(name: string, is: (value: T | any) => value is T): Type<T>
 export function fromIs<T>(name: string, is: (value: any) => boolean): Type<T>
-export function fromIs<T>(name: string, is: (value: any) => boolean): Type<T> {
+export function fromIs<T>(name: string, is: ((value: T | any) => value is T) | ((value: any) => boolean)): Type<T> {
 	return new IslyFromIs(name, is)
 }

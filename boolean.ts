@@ -1,11 +1,11 @@
 import { Type } from "./Type"
 
-class IslyBoolean<B extends boolean = boolean> extends Type<B> {
-	constructor(protected readonly booleanValue?: B) {
+class IslyBoolean<T extends boolean = boolean> extends Type<T> {
+	constructor(protected readonly booleanValue?: T) {
 		super(booleanValue == undefined ? "boolean" : booleanValue ? "true" : "false")
 	}
-	is = (value =>
-		typeof value == "boolean" && (this.booleanValue == undefined || value == this.booleanValue)) as Type.IsFunction<B>
+	is = (value: T | any): value is T =>
+		typeof value == "boolean" && (this.booleanValue == undefined || value == this.booleanValue)
 }
 
 export function boolean<B extends boolean = boolean>(booleanValue?: B): Type<B> {

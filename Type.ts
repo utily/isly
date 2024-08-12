@@ -31,14 +31,16 @@ export abstract class Type<T> {
 	 * if (is({})) {... // This would not be possible with a class-function, since the scope of `this` changes.
 	 * ```
 	 */
-	abstract is: Type.IsFunction<T>
+	abstract is(value: any | T): value is T
 	/**
 	 * Return the value if the value is valid for the type, otherwise undefined.
 	 * For objects, unknown properties are filtered.
 	 *
 	 * Eg: isly.number().value(NaN) returns undefined
 	 */
-	public get: Type.GetFunction<T> = value => (this.is(value) ? this.getValue(value) : undefined)
+	public get(value: any): T | undefined {
+		return this.is(value) ? this.getValue(value) : undefined
+	}
 	protected getValue(value: T) {
 		return value
 	}
@@ -49,7 +51,7 @@ export abstract class Type<T> {
 	 *
 	 * Implemented as a closure.
 	 */
-	public flaw: Type.FlawFunction = value => {
+	public flaw = (value: T | any): Flaw => {
 		return this.is(value)
 			? {
 					type: this.name,
@@ -80,18 +82,15 @@ export abstract class Type<T> {
 	}
 }
 export namespace Type {
-	export type IsFunction<T> = (value: any | T) => value is T
-	export type FlawFunction = (value: any) => Flaw
-	export type GetFunction<T> = (value: any) => T | undefined
 	/** Utility-type to get Value-Type from Type<Value>. */
-	export type Value<T extends Type<unknown>> = T["is"] extends (x: any) => x is infer U ? U : never
+	export type Value<T extends Type<unknown>> = T extends Type<infer U> ? U : never
 }
 
 class IslyOptional<T> extends Type<T | undefined> {
 	constructor(protected readonly backend: Type<T>) {
 		super(() => backend.name + " | undefined", backend.condition)
 	}
-	is = (value => value == undefined || this.backend.is(value)) as Type.IsFunction<T>
+	is = (value: T | any): value is T => value == undefined || this.backend.is(value)
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}
@@ -101,7 +100,7 @@ class IslyReadonly<T> extends Type<Readonly<T>> {
 	constructor(protected readonly backend: Type<T>) {
 		super(() => `Readonly<${backend.name}>`, backend.condition)
 	}
-	is = (value => value == undefined || this.backend.is(value)) as Type.IsFunction<T>
+	is = (value: T | any): value is T => value == undefined || this.backend.is(value)
 	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}
@@ -160,10 +159,10 @@ export class IslyArray<T extends any[]> extends Type<T> {
 	protected itemName(index: number) {
 		return `${this.baseName()}[${index}]`
 	}
-	is = (value =>
+	is = (value: T | any): value is T =>
 		globalThis.Array.isArray(value) &&
 		this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
-		value.every(item => this.itemType.is(item))) as Type.IsFunction<T>
+		value.every(item => this.itemType.is(item))
 	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		const flaws =
 			(globalThis.Array.isArray(value) &&

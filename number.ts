@@ -47,14 +47,14 @@ function fromCriteria(
 		  [() => false, "Unknown criteria"]
 }
 
-class IslyNumber<N extends number = number> extends Type<N> {
+class IslyNumber<T extends number = number> extends Type<T> {
 	constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
 		super("number", condition)
 	}
-	is = (value =>
+	is = (value: T | any): value is T =>
 		typeof value == "number" &&
 		!Number.isNaN(value - value) && // NaN-NaN==NaN && Infinity-Infinity==NaN &&  (-Infinity)-(-Infinity)==NaN
-		(!this.isFunction || this.isFunction(value))) as Type.IsFunction<N>
+		(!this.isFunction || this.isFunction(value))
 }
 /**
  * NaN, Infinite and -Infinite is not considered to be numbers by this type,
