@@ -92,9 +92,7 @@ describe("isly.object", () => {
 		expect(typeItem3.is({ i1: 400, i2: 42, str: "a" })).toBe(false)
 		expect(typeItem3.is({ i1: 400, i3: 42, str: "a" })).toBe(false)
 		expect(typeItem3.is({ i1: 200, i2: 2, i3: 42, str: "a" })).toBe(false)
-
 		expect(typeItem2.flaw({ str: "a" })).toEqual({
-			type: "Item2",
 			flaws: [
 				{
 					property: "i1",
@@ -110,6 +108,7 @@ describe("isly.object", () => {
 					type: "number",
 				},
 			],
+			type: "Item2",
 		})
 	})
 	it("get", () => {
