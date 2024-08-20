@@ -1,9 +1,5 @@
 import { Type } from "./Type"
 
-export namespace number {
-	export type Criteria = "positive" | "negative" | "integer"
-}
-
 const criteriaFunctions: Record<number.Criteria, { is: (value: number) => boolean; condition: string }> = {
 	positive: {
 		is: (value: number) => value > 0,
@@ -18,7 +14,17 @@ const criteriaFunctions: Record<number.Criteria, { is: (value: number) => boolea
 		condition: "Number.isInteger",
 	},
 }
-
+/**
+ * NaN, Infinite and -Infinite is not considered to be numbers by this type,
+ * since that it is hardly ever desirable when validating input data.
+ *
+ * @param criteria
+ * @returns
+ */
+export function number<N extends number = number>(criteria?: Parameters<typeof fromCriteria>[0]): Type<N> {
+	const [isFunction, condition] = criteria == undefined ? [undefined, undefined] : fromCriteria(criteria)
+	return new number.Class<N>(isFunction, condition)
+}
 function fromCriteria(
 	criteria: number | number.Criteria | number.Criteria[] | readonly number[] | ((value: number) => boolean)
 ): [(value: number) => boolean, string] {
@@ -46,24 +52,15 @@ function fromCriteria(
 		: // Eg: criteria is unknown
 		  [() => false, "Unknown criteria"]
 }
-
-class IslyNumber<T extends number = number> extends Type<T> {
-	constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
-		super("number", condition)
+export namespace number {
+	export type Criteria = "positive" | "negative" | "integer"
+	export class Class<T extends number = number> extends Type<T> {
+		constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
+			super("number", condition)
+		}
+		is = (value: T | any): value is T =>
+			typeof value == "number" &&
+			!Number.isNaN(value - value) && // NaN-NaN==NaN && Infinity-Infinity==NaN &&  (-Infinity)-(-Infinity)==NaN
+			(!this.isFunction || this.isFunction(value))
 	}
-	is = (value: T | any): value is T =>
-		typeof value == "number" &&
-		!Number.isNaN(value - value) && // NaN-NaN==NaN && Infinity-Infinity==NaN &&  (-Infinity)-(-Infinity)==NaN
-		(!this.isFunction || this.isFunction(value))
-}
-/**
- * NaN, Infinite and -Infinite is not considered to be numbers by this type,
- * since that it is hardly ever desirable when validating input data.
- *
- * @param criteria
- * @returns
- */
-export function number<N extends number = number>(criteria?: Parameters<typeof fromCriteria>[0]): Type<N> {
-	const [isFunction, condition] = criteria == undefined ? [undefined, undefined] : fromCriteria(criteria)
-	return new IslyNumber<N>(isFunction, condition)
 }
