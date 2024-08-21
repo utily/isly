@@ -18,7 +18,6 @@ import { unknown } from "./unknown"
 export abstract class Transformer<T> {
 	transform(type: Transformer.Types, options?: Transformer.Options): T | undefined {
 		let result: T | undefined
-		type instanceof array.Class && type.class
 		if ("class" in type)
 			switch (type.class) {
 				case "any":
