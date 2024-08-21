@@ -5,6 +5,7 @@ export function islyUndefined<T = undefined>(name?: string): Type<T> {
 }
 export namespace islyUndefined {
 	export class Class<T = undefined> extends Type<T> {
+		readonly class = "undefined"
 		is = (value: T | any): value is T => value === undefined
 	}
 }

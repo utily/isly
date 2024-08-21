@@ -10,7 +10,8 @@ export function record<K extends string | number, V>(keyType: Type<K>, valueType
 	return new record.Class<K, V>(keyType, valueType)
 }
 export namespace record {
-	export class Class<K extends string | number, V> extends Type<Record<K, V>> {
+	export class Class<K extends string | number = string | number, V = unknown> extends Type<Record<K, V>> {
+		readonly class = "record"
 		constructor(protected readonly keyType: Type<K>, protected readonly valueType: Type<V>) {
 			super(() => `Record<${keyType.name}, ${valueType.name}>`)
 		}

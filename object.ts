@@ -10,7 +10,8 @@ export namespace object {
 	type TypedProperties<T> = { [P in keyof T]: Type<T[P]> }
 	export type Properties<T extends B, B extends object = object> = Required<TypedProperties<Omit<T, keyof B>>> &
 		Partial<TypedProperties<Pick<T, keyof B>>>
-	export class Class<T extends B, B extends object = object> extends Type<T> {
+	export class Class<T extends B = any, B extends object = object> extends Type<T> {
+		readonly class = "object"
 		constructor(
 			protected readonly properties: Properties<T, B>,
 			name?: string,
@@ -78,6 +79,9 @@ export namespace object {
 						result[key] = type.get(value[key])
 
 			return result as T
+		}
+		getProperties(): Properties<T, B> {
+			return { ...this.baseType?.getProperties(), ...this.properties }
 		}
 	}
 }

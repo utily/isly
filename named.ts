@@ -5,7 +5,8 @@ export function named<T>(name: string, backend: Type<T>): Type<T> {
 	return new named.Class<T>(name, backend)
 }
 export namespace named {
-	export class Class<T> extends Type<T> {
+	export class Class<T = unknown> extends Type<T> {
+		readonly class = "named"
 		constructor(name: string, protected readonly backend: Type<T>) {
 			super(name, () => backend.condition)
 		}

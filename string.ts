@@ -12,7 +12,8 @@ export function string<T extends string>(condition?: readonly T[] | Record<T, an
 	return new string.Class<T>(condition)
 }
 export namespace string {
-	export class Class<T extends string> extends Type<T> {
+	export class Class<T extends string = string> extends Type<T> {
+		readonly class = "string"
 		protected conditionObject: Record<T, any> | RegExp | true | undefined
 		constructor(protected readonly stringCondition?: readonly T[] | Record<T, any> | RegExp | string) {
 			super(typeof stringCondition == "string" ? `"${stringCondition}"` : "string", () => {

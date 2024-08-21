@@ -55,6 +55,7 @@ function fromCriteria(
 export namespace number {
 	export type Criteria = "positive" | "negative" | "integer"
 	export class Class<T extends number = number> extends Type<T> {
+		readonly class = "number"
 		constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
 			super("number", condition)
 		}

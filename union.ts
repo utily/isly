@@ -22,7 +22,8 @@ export function union<T>(...types: Type<T>[]): Type<T> {
 }
 
 export namespace union {
-	export class Class<T> extends Type<T> {
+	export class Class<T = unknown> extends Type<T> {
+		readonly class = "union"
 		protected readonly types: Type<T>[]
 		constructor(...types: Type<T>[]) {
 			super(() => types.map(type => type.name).join(" | "))

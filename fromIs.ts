@@ -11,7 +11,8 @@ export function fromIs<T>(name: string, is: ((value: T | any) => value is T) | (
 	return new fromIs.Class(name, is)
 }
 export namespace fromIs {
-	export class Class<T> extends Type<T> {
+	export class Class<T = unknown> extends Type<T> {
+		readonly class = "fromIs"
 		constructor(name: string, protected readonly isFunction: (value: any) => boolean) {
 			super(name)
 		}

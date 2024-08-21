@@ -5,7 +5,8 @@ export function tuple<T extends any[]>(...items: { [I in keyof T]: Type<T[I]> })
 	return new tuple.Class<T>(...items)
 }
 export namespace tuple {
-	export class Class<T extends any[]> extends Type<T> {
+	export class Class<T extends any[] = unknown[]> extends Type<T> {
+		readonly class = "tuple"
 		protected readonly items: { [I in keyof T]: Type<T[I]> }
 		constructor(...items: { [I in keyof T]: Type<T[I]> }) {
 			super(() => "[" + items.map(e => e.name).join(", ") + "]")

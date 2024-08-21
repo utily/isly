@@ -86,7 +86,8 @@ export namespace Type {
 	export type Value<T extends Type<unknown>> = T extends Type<infer U> ? U : never
 }
 export namespace optional {
-	export class Class<T> extends Type<T | undefined> {
+	export class Class<T = unknown> extends Type<T | undefined> {
+		readonly class = "optional"
 		constructor(readonly backend: Type<T>) {
 			super(() => backend.name + " | undefined", backend.condition)
 		}
@@ -97,7 +98,8 @@ export namespace optional {
 	}
 }
 export namespace readonly {
-	export class Class<T> extends Type<Readonly<T>> {
+	export class Class<T = unknown> extends Type<Readonly<T>> {
+		readonly class = "readonly"
 		constructor(readonly backend: Type<T>) {
 			super(() => `Readonly<${backend.name}>`, backend.condition)
 		}
@@ -147,7 +149,8 @@ const criteriaFunctions: {
 	},
 }
 export namespace array {
-	export class Class<T extends any[]> extends Type<T> {
+	export class Class<T extends any[] = unknown[]> extends Type<T> {
+		readonly class = "array"
 		constructor(protected readonly itemType: Type<T[number]>, protected readonly options: array.Option[]) {
 			super(
 				() => this.baseName() + "[]",

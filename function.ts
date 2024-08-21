@@ -6,7 +6,8 @@ export function islyFunction<T extends Function>(): Type<T> {
 }
 export namespace islyFunction {
 	// eslint-disable-next-line @typescript-eslint/ban-types
-	export class Class<T extends Function> extends Type<T> {
+	export class Class<T extends Function = Function> extends Type<T> {
+		readonly class = "function"
 		constructor() {
 			super("function")
 		}

@@ -29,7 +29,8 @@ export function intersection<T>(...types: Type<unknown>[]): Type<T> {
 	return new intersection.Class<T>(...types)
 }
 export namespace intersection {
-	export class Class<T> extends Type<T> {
+	export class Class<T = unknown> extends Type<T> {
+		readonly class = "intersection"
 		protected readonly types: Type<unknown>[]
 		constructor(...types: Type<unknown>[]) {
 			super(() => types.map(type => type.name).join(" & "))

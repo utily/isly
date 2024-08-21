@@ -13,7 +13,8 @@ export function lazy<T>(factory: () => Type<T>, name?: string): Type<T> {
 	return new lazy.Class<T>(factory, name)
 }
 export namespace lazy {
-	export class Class<T> extends Type<T> {
+	export class Class<T = unknown> extends Type<T> {
+		readonly class = "lazy"
 		protected backend: Type<T>
 		constructor(protected readonly factory: () => Type<T>, name?: string) {
 			super(name ?? (() => (this.backend ??= factory()).name), () => (this.backend ??= factory()).condition)
