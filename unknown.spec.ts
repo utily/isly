@@ -26,4 +26,7 @@ describe("isly.unknown", () => {
 		const unknown = isly.unknown()
 		expect(unknown.get(42)).toEqual(42)
 	})
+	it("instanceof", () => {
+		expect(isly.unknown() instanceof isly.unknown.Class).toBeTruthy()
+	})
 })

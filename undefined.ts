@@ -1,9 +1,11 @@
 import { Type } from "./Type"
 
-class IslyUndefined<T = undefined> extends Type<T> {
-	is = (value: T | any): value is T => value === undefined
-}
-
 export function islyUndefined<T = undefined>(name?: string): Type<T> {
-	return new IslyUndefined<T>(name ?? "undefined")
+	return new islyUndefined.Class<T>(name ?? "undefined")
+}
+export namespace islyUndefined {
+	export class Class<T = undefined> extends Type<T> {
+		readonly class = "undefined"
+		is = (value: T | any): value is T => value === undefined
+	}
 }
