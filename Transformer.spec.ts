@@ -27,13 +27,13 @@ describe("Transformer", () => {
 		interface TestObject {
 			amount: number
 			currency: string
-			approved: boolean
+			approved: boolean[]
 		}
 		const testObjectType = isly
 			.object<TestObject>({
 				amount: isly.number(),
 				currency: isly.string(["SEK", "EUR"]),
-				approved: isly.boolean(),
+				approved: isly.boolean().array(),
 			})
 			.optional()
 			.readonly()
@@ -43,7 +43,13 @@ describe("Transformer", () => {
 			name: "object node",
 			nested: {
 				amount: { condition: undefined, name: "number node", optional: true, readonly: true },
-				approved: { condition: undefined, name: "boolean node", optional: true, readonly: true },
+				approved: {
+					condition: undefined,
+					name: "array node",
+					nested: { values: { condition: undefined, name: "boolean node", optional: true, readonly: true } },
+					optional: true,
+					readonly: true,
+				},
 				currency: { condition: '"SEK" | "EUR"', name: "string node", optional: true, readonly: true },
 			},
 			optional: true,
@@ -51,40 +57,21 @@ describe("Transformer", () => {
 		})
 	})
 })
-type Node = { name: string; condition?: string; nested?: Record<string, Node> } & isly.Transformer.Options
+type Node = { name: string; condition?: string; nested?: Record<string, Node | undefined> } & isly.Transformer.Options
 export class Test extends isly.Transformer<Node> {
 	constructor() {
 		super()
 	}
-	protected onAny(type: isly.Transformer.IslyAny, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onBoolean(type: isly.Transformer.IslyBoolean, options?: isly.Transformer.Options): Node | undefined {
+	protected onBoolean(type: isly.Type, options?: isly.Transformer.Options): Node | undefined {
 		return { name: "boolean node", condition: type.condition, ...options }
 	}
-	protected onFromIs(type: isly.Transformer.IslyFromIs, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onFunction(type: isly.Transformer.IslyFunction, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onIntersection(
-		type: isly.Transformer.IslyIntersection,
-		options?: isly.Transformer.Options
-	): Node | undefined {
-		return undefined
-	}
-	protected onLazy(type: isly.Transformer.IslyLazy, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onNamed(type: isly.Transformer.IslyNamed, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onNumber(type: isly.Transformer.IslyNumber, options?: isly.Transformer.Options): Node {
+	protected onNumber(type: isly.Type, options?: isly.Transformer.Options): Node {
 		return { name: "number node", condition: type.condition, ...options }
 	}
-	protected onObject(type: isly.Transformer.IslyObject, options?: isly.Transformer.Options): Node {
-		const properties = type.getProperties()
+	protected onString(type: isly.Type, options?: isly.Transformer.Options): Node {
+		return { name: "string node", condition: type.condition, ...options }
+	}
+	protected onObject(type: isly.Type, properties: Record<string, isly.Type>, options?: isly.Transformer.Options): Node {
 		return {
 			name: "object node",
 			condition: type.condition,
@@ -95,31 +82,18 @@ export class Test extends isly.Transformer<Node> {
 			...options,
 		}
 	}
-	protected onRecord(type: isly.Transformer.IslyRecord, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
+	protected onArray(type: isly.Type, items: isly.Type, options?: isly.Transformer.Options): Node | undefined {
+		return {
+			name: "array node",
+			condition: type.condition,
+			...options,
+			nested: { values: this.transform(items, options) },
+		}
 	}
-	protected onString(type: isly.Transformer.IslyString, options?: isly.Transformer.Options): Node {
-		return { name: "string node", condition: type.condition, ...options }
+	protected onOptional(type: isly.Type, backend: isly.Type, options?: isly.Transformer.Options): Node | undefined {
+		return this.transform(backend, options)
 	}
-	protected onTuple(type: isly.Transformer.IslyTuple, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onArray(type: isly.Transformer.IslyArray, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onOptional(type: isly.Transformer.IslyOptional, options?: isly.Transformer.Options): Node | undefined {
-		return this.transform(type.backend, options)
-	}
-	protected onReadonly(type: isly.Transformer.IslyReadonly, options?: isly.Transformer.Options): Node | undefined {
-		return this.transform(type.backend, options)
-	}
-	protected onUndefined(type: isly.Transformer.IslyUndefined, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onUnion(type: isly.Transformer.IslyUnion, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
-	}
-	protected onUnknown(type: isly.Transformer.IslyUnknown, options?: isly.Transformer.Options): Node | undefined {
-		return undefined
+	protected onReadonly(type: isly.Type, backend: isly.Type, options?: isly.Transformer.Options): Node | undefined {
+		return this.transform(backend, options)
 	}
 }
