@@ -1,19 +1,19 @@
-import { any } from "./any"
-import { boolean } from "./boolean"
-import { fromIs } from "./fromIs"
-import { islyFunction } from "./function"
-import { intersection } from "./intersection"
-import { lazy } from "./lazy"
-import { named } from "./named"
-import { number } from "./number"
-import { object } from "./object"
-import { record } from "./record"
-import { string } from "./string"
-import { tuple } from "./tuple"
-import { array, optional, readonly as islyReadonly, Type } from "./Type"
-import { islyUndefined as undefined } from "./undefined"
-import { union } from "./union"
-import { unknown } from "./unknown"
+import { IslyAny } from "./any"
+import { IslyBoolean } from "./boolean"
+import { IslyFromIs } from "./fromIs"
+import { IslyFunction } from "./function"
+import { IslyIntersection } from "./intersection"
+import { IslyLazy } from "./lazy"
+import { IslyNamed } from "./named"
+import { IslyNumber } from "./number"
+import { IslyObject, object } from "./object"
+import { IslyRecord } from "./record"
+import { IslyString } from "./string"
+import { IslyTuple } from "./tuple"
+import { IslyArray, IslyOptional, IslyReadonly, Type } from "./Type"
+import { IslyUndefined } from "./undefined"
+import { IslyUnion } from "./union"
+import { IslyUnknown } from "./unknown"
 
 export abstract class Transformer<T> {
 	transform(type: Transformer.Types, options?: Transformer.Options): T | undefined {
@@ -33,43 +33,43 @@ export abstract class Transformer<T> {
 					result = this.onFunction(type, options)
 					break
 				case "intersection":
-					result = this.onIntersection(type, options)
+					result = this.onIntersection(type, type.types, options)
 					break
 				case "lazy":
-					result = this.onLazy(type, options)
+					result = this.onLazy(type, type.backend, options)
 					break
 				case "named":
-					result = this.onNamed(type, options)
+					result = this.onNamed(type, type.backend, options)
 					break
 				case "number":
 					result = this.onNumber(type, options)
 					break
 				case "object":
-					result = this.onObject(type, options)
+					result = this.onObject(type, type.getProperties(), options)
 					break
 				case "record":
-					result = this.onRecord(type, options)
+					result = this.onRecord(type, type.keyType, type.valueType, options)
 					break
 				case "string":
 					result = this.onString(type, options)
 					break
 				case "tuple":
-					result = this.onTuple(type, options)
+					result = this.onTuple(type, type.items, options)
 					break
 				case "array":
-					result = this.onArray(type, options)
+					result = this.onArray(type, type.itemType, options)
 					break
 				case "optional":
-					result = this.onOptional(type, { ...options, optional: true })
+					result = this.onOptional(type, type.backend, { ...options, optional: true })
 					break
 				case "readonly":
-					result = this.onReadonly(type, { ...options, readonly: true })
+					result = this.onReadonly(type, type.backend, { ...options, readonly: true })
 					break
 				case "undefined":
 					result = this.onUndefined(type, options)
 					break
 				case "union":
-					result = this.onUnion(type, options)
+					result = this.onUnion(type, type.types, options)
 					break
 				case "unknown":
 					result = this.onUnknown(type, options)
@@ -79,48 +79,79 @@ export abstract class Transformer<T> {
 			}
 		return result
 	}
-	protected abstract onAny(type: Transformer.IslyAny, options?: Transformer.Options): T | undefined
-	protected abstract onBoolean(type: Transformer.IslyBoolean, options?: Transformer.Options): T | undefined
-	protected abstract onFromIs(type: Transformer.IslyFromIs, options?: Transformer.Options): T | undefined
-	protected abstract onFunction(type: Transformer.IslyFunction, options?: Transformer.Options): T | undefined
-	protected abstract onIntersection(type: Transformer.IslyIntersection, options?: Transformer.Options): T | undefined
-	protected abstract onLazy(type: Transformer.IslyLazy, options?: Transformer.Options): T | undefined
-	protected abstract onNamed(type: Transformer.IslyNamed, options?: Transformer.Options): T | undefined
-	protected abstract onNumber(type: Transformer.IslyNumber, options?: Transformer.Options): T | undefined
-	protected abstract onObject(type: Transformer.IslyObject, options?: Transformer.Options): T | undefined
-	protected abstract onRecord(type: Transformer.IslyRecord, options?: Transformer.Options): T | undefined
-	protected abstract onString(type: Transformer.IslyString, options?: Transformer.Options): T | undefined
-	protected abstract onTuple(type: Transformer.IslyTuple, options?: Transformer.Options): T | undefined
-	protected abstract onArray(type: Transformer.IslyArray, options?: Transformer.Options): T | undefined
-	protected abstract onOptional(backend: Transformer.IslyOptional, options?: Transformer.Options): T | undefined
-	protected abstract onReadonly(type: Transformer.IslyReadonly, options?: Transformer.Options): T | undefined
-	protected abstract onUndefined(type: Transformer.IslyUndefined, options?: Transformer.Options): T | undefined
-	protected abstract onUnion(type: Transformer.IslyUnion, options?: Transformer.Options): T | undefined
-	protected abstract onUnknown(type: Transformer.IslyUnknown, options?: Transformer.Options): T | undefined
+	protected onAny(type: IslyAny, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onBoolean(type: IslyBoolean, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onFromIs(type: IslyFromIs, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onFunction(type: IslyFunction, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onIntersection(
+		type: IslyIntersection,
+		types: Type<unknown>[],
+		options?: Transformer.Options
+	): T | undefined {
+		return undefined
+	}
+	protected onLazy(type: IslyLazy, backend: Type<unknown>, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onNamed(type: IslyNamed, backend: Type<unknown>, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onNumber(type: IslyNumber, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onObject(
+		type: IslyObject,
+		properties: object.Properties<any, object>,
+		options?: Transformer.Options
+	): T | undefined {
+		return undefined
+	}
+	protected onRecord(
+		type: IslyRecord,
+		key: Type<string | number>,
+		value: Type,
+		options?: Transformer.Options
+	): T | undefined {
+		return undefined
+	}
+	protected onString(type: IslyString, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onTuple(type: IslyTuple, items: Type[], options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onArray(type: IslyArray, itemType: Type, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onOptional(type: IslyOptional, backend: Type, options?: Transformer.Options): T | undefined {
+		return
+	}
+	protected onReadonly(type: IslyReadonly, backend: Type, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onUndefined(type: IslyUndefined, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onUnion(type: IslyUnion, types: Type[], options?: Transformer.Options): T | undefined {
+		return undefined
+	}
+	protected onUnknown(type: IslyUnknown, options?: Transformer.Options): T | undefined {
+		return undefined
+	}
 }
 export namespace Transformer {
 	export type Options = {
 		readonly?: boolean
 		optional?: boolean
 	}
-	export type IslyAny = any.Class
-	export type IslyBoolean = boolean.Class
-	export type IslyFromIs = fromIs.Class
-	export type IslyFunction = islyFunction.Class
-	export type IslyIntersection = intersection.Class
-	export type IslyLazy = lazy.Class
-	export type IslyNamed = named.Class
-	export type IslyNumber = number.Class
-	export type IslyObject = object.Class
-	export type IslyRecord = record.Class
-	export type IslyString = string.Class
-	export type IslyTuple = tuple.Class
-	export type IslyArray = array.Class
-	export type IslyOptional = optional.Class
-	export type IslyReadonly = islyReadonly.Class
-	export type IslyUndefined = undefined.Class
-	export type IslyUnion = union.Class
-	export type IslyUnknown = unknown.Class
 	export type Types =
 		| IslyAny
 		| IslyBoolean
@@ -140,5 +171,5 @@ export namespace Transformer {
 		| IslyUndefined
 		| IslyUnion
 		| IslyUnknown
-		| Type<any>
+		| Type
 }

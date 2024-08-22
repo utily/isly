@@ -1,6 +1,6 @@
 import { Flaw } from "./Flaw"
 
-export abstract class Type<T> {
+export abstract class Type<T = unknown> {
 	get name(): string {
 		return typeof this._name == "function" ? this._name() : this._name
 	}
@@ -8,10 +8,10 @@ export abstract class Type<T> {
 		return typeof this._condition == "function" ? this._condition() : this._condition
 	}
 	public optional(): Type<T | undefined> {
-		return new optional.Class<T>(this)
+		return new IslyOptional<T>(this)
 	}
 	public readonly(): Type<Readonly<T>> {
-		return new readonly.Class<T>(this)
+		return new IslyReadonly<T>(this)
 	}
 	public array(...options: array.Option[]): Type<T[]> {
 		return array(this, ...options) as any
@@ -85,28 +85,24 @@ export namespace Type {
 	/** Utility-type to get Value-Type from Type<Value>. */
 	export type Value<T extends Type<unknown>> = T extends Type<infer U> ? U : never
 }
-export namespace optional {
-	export class Class<T = unknown> extends Type<T | undefined> {
-		readonly class = "optional"
-		constructor(readonly backend: Type<T>) {
-			super(() => backend.name + " | undefined", backend.condition)
-		}
-		is = (value: T | any): value is T => value == undefined || this.backend.is(value)
-		protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
-			return this.createFlawFromType(this.backend, value)
-		}
+export class IslyOptional<T = unknown> extends Type<T | undefined> {
+	readonly class = "optional"
+	constructor(readonly backend: Type<T>) {
+		super(() => backend.name + " | undefined", backend.condition)
+	}
+	is = (value: T | any): value is T => value == undefined || this.backend.is(value)
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType(this.backend, value)
 	}
 }
-export namespace readonly {
-	export class Class<T = unknown> extends Type<Readonly<T>> {
-		readonly class = "readonly"
-		constructor(readonly backend: Type<T>) {
-			super(() => `Readonly<${backend.name}>`, backend.condition)
-		}
-		is = (value: T | any): value is T => value == undefined || this.backend.is(value)
-		protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
-			return this.createFlawFromType(this.backend, value)
-		}
+export class IslyReadonly<T = unknown> extends Type<Readonly<T>> {
+	readonly class = "readonly"
+	constructor(readonly backend: Type<T>) {
+		super(() => `Readonly<${backend.name}>`, backend.condition)
+	}
+	is = (value: T | any): value is T => value == undefined || this.backend.is(value)
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType(this.backend, value)
 	}
 }
 // Array has to be here to avoid circular dependency
@@ -127,7 +123,7 @@ type OptionValue<C extends array.Criteria> = C extends array.Criteria ? number :
 export function array<T extends any[] = never>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T>
 export function array<I>(itemType: Type<I>, ...options: array.Option[]): Type<I[]>
 export function array<T extends any[]>(itemType: Type<T[number]>, ...options: array.Option[]): Type<T> {
-	return new array.Class(itemType, options)
+	return new IslyArray(itemType, options)
 }
 const criteriaFunctions: {
 	[K in array.Criteria]: {
@@ -148,39 +144,37 @@ const criteriaFunctions: {
 		condition: optionValue => `maxLength == ${optionValue}`,
 	},
 }
-export namespace array {
-	export class Class<T extends any[] = unknown[]> extends Type<T> {
-		readonly class = "array"
-		constructor(protected readonly itemType: Type<T[number]>, protected readonly options: array.Option[]) {
-			super(
-				() => this.baseName() + "[]",
-				options.length > 0 ? options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") : undefined
-			)
+export class IslyArray<T extends any[] = unknown[]> extends Type<T> {
+	readonly class = "array"
+	constructor(readonly itemType: Type<T[number]>, protected readonly options: array.Option[]) {
+		super(
+			() => this.baseName() + "[]",
+			options.length > 0 ? options.map(c => criteriaFunctions[c.criteria].condition(c.value)).join(" & ") : undefined
+		)
+	}
+	protected baseName() {
+		return this.itemType.name.includes(" ") ? `(${this.itemType.name})` : this.itemType.name
+	}
+	protected itemName(index: number) {
+		return `${this.baseName()}[${index}]`
+	}
+	is = (value: T | any): value is T =>
+		globalThis.Array.isArray(value) &&
+		this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
+		value.every(item => this.itemType.is(item))
+	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		const flaws =
+			(globalThis.Array.isArray(value) &&
+				value.flatMap((item, index) => {
+					const subFlaw = this.itemType.flaw(item)
+					return subFlaw.isFlaw ?? true ? [{ ...subFlaw, type: this.itemName(index) }] : []
+				})) ||
+			[]
+		return {
+			...(flaws.length > 0 ? { flaws } : undefined),
 		}
-		protected baseName() {
-			return this.itemType.name.includes(" ") ? `(${this.itemType.name})` : this.itemType.name
-		}
-		protected itemName(index: number) {
-			return `${this.baseName()}[${index}]`
-		}
-		is = (value: T | any): value is T =>
-			globalThis.Array.isArray(value) &&
-			this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
-			value.every(item => this.itemType.is(item))
-		createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
-			const flaws =
-				(globalThis.Array.isArray(value) &&
-					value.flatMap((item, index) => {
-						const subFlaw = this.itemType.flaw(item)
-						return subFlaw.isFlaw ?? true ? [{ ...subFlaw, type: this.itemName(index) }] : []
-					})) ||
-				[]
-			return {
-				...(flaws.length > 0 ? { flaws } : undefined),
-			}
-		}
-		protected getValue(value: T) {
-			return value.map(item => this.itemType.get(item)) as T
-		}
+	}
+	protected getValue(value: T) {
+		return value.map(item => this.itemType.get(item)) as T
 	}
 }

@@ -18,26 +18,24 @@ export function union<T extends A | B | C | D | E | F, A, B, C, D, E, F>(
 ): Type<T>
 export function union<T>(...types: Type<T>[]): Type<T>
 export function union<T>(...types: Type<T>[]): Type<T> {
-	return new union.Class(...types)
+	return new IslyUnion(...types)
 }
 
-export namespace union {
-	export class Class<T = unknown> extends Type<T> {
-		readonly class = "union"
-		protected readonly types: Type<T>[]
-		constructor(...types: Type<T>[]) {
-			super(() => types.map(type => type.name).join(" | "))
-			this.types = types
-		}
-		is = (value: T | any): value is T => this.types.some(type => type.is(value))
+export class IslyUnion<T = unknown> extends Type<T> {
+	readonly class = "union"
+	readonly types: Type<T>[]
+	constructor(...types: Type<T>[]) {
+		super(() => types.map(type => type.name).join(" | "))
+		this.types = types
+	}
+	is = (value: T | any): value is T => this.types.some(type => type.is(value))
 
-		protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
-			return {
-				flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
-			}
+	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return {
+			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
 		}
-		protected getValue(value: T): T {
-			return this.types.find(type => type.is(value))?.get(value) as T
-		}
+	}
+	protected getValue(value: T): T {
+		return this.types.find(type => type.is(value))?.get(value) as T
 	}
 }

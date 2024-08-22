@@ -23,7 +23,7 @@ const criteriaFunctions: Record<number.Criteria, { is: (value: number) => boolea
  */
 export function number<N extends number = number>(criteria?: Parameters<typeof fromCriteria>[0]): Type<N> {
 	const [isFunction, condition] = criteria == undefined ? [undefined, undefined] : fromCriteria(criteria)
-	return new number.Class<N>(isFunction, condition)
+	return new IslyNumber<N>(isFunction, condition)
 }
 function fromCriteria(
 	criteria: number | number.Criteria | number.Criteria[] | readonly number[] | ((value: number) => boolean)
@@ -54,14 +54,14 @@ function fromCriteria(
 }
 export namespace number {
 	export type Criteria = "positive" | "negative" | "integer"
-	export class Class<T extends number = number> extends Type<T> {
-		readonly class = "number"
-		constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
-			super("number", condition)
-		}
-		is = (value: T | any): value is T =>
-			typeof value == "number" &&
-			!Number.isNaN(value - value) && // NaN-NaN==NaN && Infinity-Infinity==NaN &&  (-Infinity)-(-Infinity)==NaN
-			(!this.isFunction || this.isFunction(value))
+}
+export class IslyNumber<T extends number = number> extends Type<T> {
+	readonly class = "number"
+	constructor(protected readonly isFunction?: (value: number) => boolean, condition?: string) {
+		super("number", condition)
 	}
+	is = (value: T | any): value is T =>
+		typeof value == "number" &&
+		!Number.isNaN(value - value) && // NaN-NaN==NaN && Infinity-Infinity==NaN &&  (-Infinity)-(-Infinity)==NaN
+		(!this.isFunction || this.isFunction(value))
 }
