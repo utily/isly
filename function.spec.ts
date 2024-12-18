@@ -1,4 +1,3 @@
-import "jest"
 import { isly } from "./index"
 
 describe("isly.function", () => {
