@@ -91,7 +91,7 @@ export class IslyOptional<T = unknown> extends Type<T | undefined> {
 		super(() => backend.name + " | undefined", backend.condition)
 	}
 	is = (value: T | any): value is T => value == undefined || this.backend.is(value)
-	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	protected override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}
 }
@@ -101,7 +101,7 @@ export class IslyReadonly<T = unknown> extends Type<Readonly<T>> {
 		super(() => `Readonly<${backend.name}>`, backend.condition)
 	}
 	is = (value: T | any): value is T => value == undefined || this.backend.is(value)
-	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	protected override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}
 }
@@ -162,7 +162,7 @@ export class IslyArray<T extends any[] = unknown[]> extends Type<T> {
 		globalThis.Array.isArray(value) &&
 		this.options.every(option => criteriaFunctions[option.criteria].is(value, option.value)) &&
 		value.every(item => this.itemType.is(item))
-	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		const flaws =
 			(globalThis.Array.isArray(value) &&
 				value.flatMap((item, index) => {
@@ -174,7 +174,7 @@ export class IslyArray<T extends any[] = unknown[]> extends Type<T> {
 			...(flaws.length > 0 ? { flaws } : undefined),
 		}
 	}
-	protected getValue(value: T) {
+	protected override getValue(value: T) {
 		return value.map(item => this.itemType.get(item)) as T
 	}
 }

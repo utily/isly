@@ -24,7 +24,7 @@ export class IslyRecord<K extends string | number = string | number, V = unknown
 					this.keyType.is(this.keyType.name == "number" && `${+key}` == key ? +key : key) && this.valueType.is(value)
 			)
 		)
-	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	protected override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws:
 				value &&
@@ -40,7 +40,7 @@ export class IslyRecord<K extends string | number = string | number, V = unknown
 				),
 		}
 	}
-	protected getValue(value: Record<K, V>): Record<K, V> {
+	protected override getValue(value: Record<K, V>): Record<K, V> {
 		return globalThis.Object.fromEntries(
 			globalThis.Object.entries(value).map(([key, value]) => [key, this.valueType.get(value)])
 		) as Record<K, V>

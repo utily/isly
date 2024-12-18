@@ -15,7 +15,7 @@ export class IslyTuple<T extends any[] = unknown[]> extends Type<T> {
 		globalThis.Array.isArray(value) &&
 		value.length == this.items.length &&
 		this.items.every((item, index) => item.is(value[index]))
-	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	protected override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: this.items
 				.map<[number, undefined | Flaw]>((type, property) => [
@@ -26,7 +26,7 @@ export class IslyTuple<T extends any[] = unknown[]> extends Type<T> {
 				.filter(flaw => flaw) as Flaw[],
 		}
 	}
-	protected getValue(value: T): T {
+	protected override getValue(value: T): T {
 		return this.items.map((item, index) => item.get(value[index])) as T
 	}
 }
