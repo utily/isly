@@ -23,16 +23,6 @@
 				"default": "./dist/cjs/index.js",
 				"types": "./dist/types/index.d.ts"
 			}
-		},
-		"./dist/types/global": {
-			"import": {
-				"default": "./dist/mjs/global.js",
-				"types": "./dist/types/global.d.ts"
-			},
-			"require": {
-				"default": "./dist/cjs/index.js",
-				"types": "./dist/types/global.d.ts"
-			}
 		}
 	},
 	"git": {

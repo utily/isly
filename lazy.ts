@@ -26,6 +26,6 @@ export class IslyLazy<T = unknown> extends Type<T> {
 		return this.createFlawFromType(this.backend, value)
 	}
 	public override get(value: any): T | undefined {
-		return this.backend?.get(value)
+		return this.backend.get(value)
 	}
 }

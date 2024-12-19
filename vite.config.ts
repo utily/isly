@@ -20,10 +20,5 @@ export default defineConfig({
 				inline: [],
 			},
 		},
-		poolOptions: {
-			forks: {
-				execArgv: ["--expose-gc"],
-			},
-		},
 	},
 })
