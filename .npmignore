@@ -1,7 +1,5 @@
 .vscode
 **/*.spec.js
 **/*.spec.ts
-*.ts
-!*.d.ts
 coverage
 .env
