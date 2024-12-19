@@ -30,12 +30,12 @@ export class IslyUnion<T = unknown> extends Type<T> {
 	}
 	is = (value: T | any): value is T => this.types.some(type => type.is(value))
 
-	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	protected override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
 		}
 	}
-	protected getValue(value: T): T {
+	protected override getValue(value: T): T {
 		return this.types.find(type => type.is(value))?.get(value) as T
 	}
 }

@@ -5,10 +5,13 @@
 		"*.json": true,
 		"CODEOWNERS": true,
 		"dist": true,
+		"README.md": true,
 		"LICENSE": true,
 		"tsconfig.*": true,
 		"node_modules": true,
-		"*.code-workspace": true
+		"*.code-workspace": true,
+		"*.config.ts": true,
+		"coverage": true
 	},
 	"search.exclude": {
 		".*": false,
@@ -20,7 +23,9 @@
 		"LICENSE": false,
 		"tsconfig.*": false,
 		"node_modules": false,
-		"*.code-workspace": false
+		"*.code-workspace": false,
+		"*.config.ts": false,
+		"coverage": false
 	},
 	"files.insertFinalNewline": true,
 	"editor.tabSize": 2,
@@ -53,6 +58,8 @@
 		"smoothly",
 		"tidily",
 		"transactly",
+		"typedly",
 		"uply"
-	]
+	],
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

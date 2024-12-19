@@ -1,4 +1,3 @@
-import "jest"
 import { isly } from "./index"
 
 describe("isly.Type", () => {
@@ -29,10 +28,12 @@ describe("isly.Type", () => {
 		}
 	})
 	it("Type.Value", () => {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const stringType = isly.string()
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const shouldBeString: isly.Type.Value<typeof stringType> = "This is a string"
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const numberType = isly.number()
 		// @ts-expect-error This should fail, since trying to assign string to number.
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -36,18 +36,18 @@ export class IslyIntersection<T = unknown> extends Type<T> {
 		this.types = types
 	}
 	is = (value: T | any): value is T => this.types.every(type => type.is(value))
-	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: this.types.map(type => type.flaw(value)).filter(flaw => flaw) as Flaw[],
 		}
 	}
 	// This seams to be the behavior users describe on stack overflow
 	// https://stackoverflow.com/questions/59722333/union-and-intersection-of-types
-	protected getValue(value: T): T {
+	protected override getValue(value: T): T {
 		return value && typeof value == "object"
 			? (this.types
 					.slice(1)
-					.reduce((resolved, type) => this.merge(resolved, type.get(value)), this.types[0].get(value)) as T)
+					.reduce((resolved, type) => this.merge(resolved, type.get(value)), this.types[0]?.get(value)) as T)
 			: value
 	}
 	private merge<Target, Source>(target: Target, source: Source): Target & Source {

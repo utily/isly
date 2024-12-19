@@ -14,18 +14,18 @@ export function lazy<T>(factory: () => Type<T>, name?: string): Type<T> {
 }
 export class IslyLazy<T = unknown> extends Type<T> {
 	readonly class = "lazy"
-	backend: Type<T>
+	#backend: Type<T> | undefined
+	get backend(): Type<T> {
+		return (this.#backend ??= this.factory())
+	}
 	constructor(protected readonly factory: () => Type<T>, name?: string) {
-		super(name ?? (() => (this.backend ??= factory()).name), () => (this.backend ??= factory()).condition)
+		super(name ?? (() => this.backend.name), () => this.backend.condition)
 	}
-	is = (value: T | any): value is T => (this.backend ??= this.factory()).is(value)
-	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
-		return this.createFlawFromType((this.backend ??= this.factory()), value)
+	is = (value: T | any): value is T => (this.#backend ??= this.factory()).is(value)
+	override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+		return this.createFlawFromType(this.backend, value)
 	}
-	getBackend() {
-		return this.backend
-	}
-	public get(value: any): T | undefined {
+	public override get(value: any): T | undefined {
 		return this.backend.get(value)
 	}
 }

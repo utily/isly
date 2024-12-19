@@ -22,8 +22,8 @@ export class IslyObject<T extends B = any, B extends object = object> extends Ty
 			() =>
 				name ??
 				(this.baseType ? `${this.baseType.name} & ` : "") +
-					`{${globalThis.Object.entries(this.properties)
-						.map(([property, type]: [string, Type<any>]) => `${property}: ${type.name}`)
+					`{${globalThis.Object.entries<Type<any>>(this.properties)
+						.map(([property, type]) => `${property}: ${type.name}`)
 						.join(", ")}}`
 		)
 	}
@@ -56,7 +56,7 @@ export class IslyObject<T extends B = any, B extends object = object> extends Ty
 			!globalThis.Array.isArray(value) &&
 			globalThis.Object.entries<Type<any>>(this.properties).every(([property, type]) => type.is(value[property]))
 		)
-	protected createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	protected override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return {
 			flaws: [
 				this.baseType ? this.baseType.flaw(value)?.flaws ?? [] : [],
@@ -72,7 +72,7 @@ export class IslyObject<T extends B = any, B extends object = object> extends Ty
 	/**
 	 * get-function on a object returns a object with only specified properties
 	 */
-	protected getValue(value: T) {
+	protected override getValue(value: T) {
 		const result: Record<any, any> = this.baseType ? this.baseType.getValue(value) : {}
 		if (result)
 			for (const [key, type] of globalThis.Object.entries(this.properties) as [keyof T, Type<any>][])

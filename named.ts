@@ -10,11 +10,11 @@ export class IslyNamed<T = unknown> extends Type<T> {
 		super(name, () => backend.condition)
 	}
 	is = (value: T | any): value is T => this.backend.is(value)
-	createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
+	override createFlaw(value: any): Omit<Flaw, "isFlaw" | "type" | "condition"> {
 		return this.createFlawFromType(this.backend, value)
 	}
 	getBackend() {
 		return this.backend
 	}
-	get = (value: any): T | undefined => this.backend.get(value)
+	override get = (value: any): T | undefined => this.backend.get(value)
 }
