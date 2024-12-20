@@ -70,4 +70,14 @@ describe("isly.string", () => {
 		expect(stringRegexpType.is("[12][45]")).toBe(true)
 		expect(stringRegexpType.is(".42")).toBe(false)
 	})
+	it("predicate", () => {
+		const type = isly.string(v => v.length == 5)
+		expect(type.is("13.37")).toBe(true)
+		expect(type.is("42")).toBe(false)
+		expect(type.flaw("42")).toEqual({ type: "string", condition: "custom-predicate" })
+		expect(isly.string(v => v.length == 5, "length 5").flaw("42")).toEqual({
+			type: "string",
+			condition: "length 5",
+		})
+	})
 })
