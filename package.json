@@ -4,12 +4,12 @@
 	"description": "Library for type checking.",
 	"author": "Utily Contributors",
 	"license": "MIT",
+	"private": false,
 	"repository": "https://github.com/utily/isly",
 	"bugs": {
 		"url": "https://github.com/utily/isly/issues"
 	},
 	"homepage": "https://github.com/utily",
-	"private": false,
 	"type": "module",
 	"module": "./dist/mjs/index.js",
 	"types": "./dist/types/index.d.ts",
@@ -38,23 +38,21 @@
 		"test": "vitest --run",
 		"coverage": "vitest --coverage",
 		"prepare": "npm run build",
-		"clean": "rimraf dist node_modules coverage"
+		"clean": "rimraf dist node_modules coverage",
+		"verify": "npm run build && npm run test && npm run lint && npm audit"
 	},
 	"devDependencies": {
-		"@types/jest": "^29.5.14",
 		"@typescript-eslint/eslint-plugin": "8.18.1",
 		"@typescript-eslint/parser": "8.18.1",
 		"@vitest/coverage-istanbul": "^2.1.8",
-		"eslint": "^8.56.0",
-		"eslint-plugin-prettierx": "github:utily/eslint-plugin-prettierx#utily-20240618",
+		"eslint": "^8.57.0",
+		"eslint-plugin-prettierx": "github:utily/eslint-plugin-prettierx#utily-20231004",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
-		"prettierx": "github:utily/prettierx#utily-20240618",
+		"prettierx": "github:utily/prettierx#utily-20231004",
 		"rimraf": "^6.0.1",
 		"typescript": "^5.7.2",
 		"vitest": "^2.1.8"
 	},
-	"overrides": {
-		"semver": "^7.5.3",
-		"optionator": "^0.9.3"
+		"dependencies": {
 	}
 }
