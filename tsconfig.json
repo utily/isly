@@ -34,12 +34,10 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
 		"types": [
-			"node",
 			"vitest/globals"
 		]
 	},
 	"include": [
-		"./global.ts",
 		"**/*.spec.ts",
 	],
 	"files": [
