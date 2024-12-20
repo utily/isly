@@ -1,6 +1,6 @@
 {
 	"name": "isly",
-	"version": "0.1.23",
+	"version": "0.1.24",
 	"description": "Library for type checking.",
 	"author": "Utily Contributors",
 	"license": "MIT",
@@ -53,6 +53,5 @@
 		"typescript": "^5.7.2",
 		"vitest": "^2.1.8"
 	},
-		"dependencies": {
-	}
+	"dependencies": {}
 }
