@@ -21,7 +21,7 @@ type DemoType = {
 	myUnion: string | number
 	myArray: string[]
 	myIntersection: { a: string } & { b: string }
-	
+
 	children?: DemoType[]
 
 	regExp: RegExp
@@ -110,6 +110,7 @@ console.log(userType.get(myUser)) // Prints myUser without password.
 Make an array type.
 
 It is possible to add restrictions to the type as parameters.
+
 ```typescript
 isly.string().array({ criteria: "minLength", value: 3 })
 ```
@@ -188,7 +189,7 @@ This is a possible usage pattern.
 
 ```typescript
 // model/Event.ts
-import * as isly from "isly"
+import { isly } from "isly"
 
 export interface Event {
 	name: string
