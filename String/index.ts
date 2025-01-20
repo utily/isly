@@ -11,14 +11,14 @@ export namespace String {
 				? {
 						class: "string",
 						name: condition.map(v => `"${v}"`).join(" | "),
-						condition: `one of: ${condition.map(v => `"${v}"`).join(", ")}`,
+						condition: [`one of: ${condition.map(v => `"${v}"`).join(", ")}`],
 						is: (value: T | any): value is T => typeof value == "string" && condition.some(v => v == value),
 				  }
 				: condition instanceof RegExp
 				? {
 						class: "string",
 						name: "string",
-						condition: condition.toString(),
+						condition: [condition.toString()],
 						is: (value: T | any): value is T => typeof value == "string" && condition.test(value),
 				  }
 				: {

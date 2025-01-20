@@ -3,7 +3,7 @@ import { Type } from "../Type"
 export type Object<T extends object = Record<string, any>> = Type<T> & Object.Data<T> & Object.Methods<T>
 export namespace Object {
 	export function create<T extends object>(properties: Object.Properties<T>, name?: string): Object<T> {
-		const result: Object<T> = global.Object.assign(
+		const result: Object<T> = globalThis.Object.assign(
 			Type.create<T, Object.Data<T>>({
 				class: "object",
 				name: name ?? Object.nameFromProperties(properties),
@@ -11,7 +11,7 @@ export namespace Object {
 					value &&
 					typeof value == "object" &&
 					!Array.isArray(value) &&
-					global.Object.entries<Type<any>>(properties).every(([property, type]) => type.is(value[property])),
+					globalThis.Object.entries<Type<any>>(properties).every(([property, type]) => type.is(value[property])),
 				properties: properties,
 			}),
 			{
@@ -44,7 +44,7 @@ export namespace Object {
 		readonly class: "object"
 		readonly name: string
 		readonly description?: string
-		readonly condition?: string
+		readonly condition?: string[]
 		readonly properties: Object.Properties<T>
 	}
 	export interface Methods<T> {
@@ -53,14 +53,14 @@ export namespace Object {
 		pick<K extends keyof T>(picks: readonly K[]): Object<Pick<T, K>>
 	}
 	export function omit<T extends globalThis.Object, K extends keyof T>(object: T, omits: readonly K[]): Omit<T, K> {
-		const keys = global.Object.keys(object).filter(k => omits.every(omit => omit != k)) as Exclude<keyof T, K>[]
+		const keys = globalThis.Object.keys(object).filter(k => omits.every(omit => omit != k)) as Exclude<keyof T, K>[]
 		return pick(object, keys)
 	}
 	export function pick<T extends globalThis.Object, K extends keyof T>(object: T, picks: readonly K[]): Pick<T, K> {
-		return global.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
+		return globalThis.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
 	}
 	export function nameFromProperties(properties: Properties<any>): string {
-		return `${global.Object.entries<Type<any>>(properties)
+		return `${globalThis.Object.entries<Type<any>>(properties)
 			.map(([p, t]) => `${p}: ${t.name}`)
 			.join(", ")} }`
 	}

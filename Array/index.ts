@@ -5,7 +5,7 @@ export namespace Array {
 		return Type.create<T[]>({
 			class: "array",
 			name: name ?? `${base.name}[]`,
-			is: (value: T[] | any): value is T[] => global.Array.isArray(value) && value.every(base.is),
+			is: (value: T[] | any): value is T[] => globalThis.Array.isArray(value) && value.every(base.is),
 		})
 	}
 }
