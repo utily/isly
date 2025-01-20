@@ -24,32 +24,36 @@ describe("isly", () => {
 			testMethod: () => boolean
 		}
 
-		const type: isly.Type<DemoType> = isly.object({
+		const type: isly.Type<DemoType> = isly("object", {
 			// number
-			anyNumber: isly.number(),
-			numberOf: isly.number("positive"),
-			temperature: isly.number(value => value > -273.15),
+			anyNumber: isly("number"),
+			numberOf: isly("number"), // "positive"
+			temperature: isly("number"), // (value => value > -273.15),
 			// string
-			message: isly.string(),
-			email: isly.string(/\S+@\S+\.\S+/),
-			currency: isly.string(["SEK", "EUR"]),
+			message: isly("string"),
+			email: isly("string", /\S+@\S+\.\S+/),
+			currency: isly("string", ["SEK", "EUR"]),
 			// boolean
-			new: isly.boolean(),
-			fromServer: isly.boolean(true),
+			new: isly("boolean"),
+			fromServer: isly("boolean", true),
 
-			myTuple: isly.tuple(isly.string(), isly.number()),
-			myUnion: isly.union(isly.string(), isly.number()),
-			myArray: isly.array(isly.string(), { criteria: "minLength", value: 1 }),
-			myIntersection: isly.intersection(
-				isly.object<{ a: string }>({ a: isly.string() }),
-				isly.object<{ b: string }>({ b: isly.string() })
+			myTuple: isly("tuple", isly("string"), isly("number")),
+			myUnion: isly("union", isly("string"), isly("number")),
+			myArray: isly("array", isly("string")), // { criteria: "minLength", value: 1 }),
+			myIntersection: isly(
+				"intersection",
+				isly<{ a: string }>("object", { a: isly("string") }),
+				isly<{ b: string }>("object", { b: isly("string") })
 			),
 
 			// Recursive
-			children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
-			regExp: isly.fromIs<RegExp>("RegExp", value => value instanceof RegExp),
+			children: isly(
+				"array",
+				isly(() => type, "DemoType")
+			).optional(),
+			regExp: isly<RegExp>("from", value => value instanceof RegExp, "RegExp"),
 			// function
-			testMethod: isly.function<DemoType["testMethod"]>(),
+			testMethod: isly<DemoType["testMethod"]>("function"),
 		})
 
 		const value: DemoType = {

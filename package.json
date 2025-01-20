@@ -1,6 +1,6 @@
 {
 	"name": "isly",
-	"version": "0.1.26",
+	"version": "1.0.0",
 	"description": "Library for type checking.",
 	"author": "Utily Contributors",
 	"license": "MIT",
@@ -34,7 +34,10 @@
 	"scripts": {
 		"lint": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
 		"fix": "eslint '**/*.{ts,tsx}' --fix",
-		"build": "rimraf dist/* && tsc -p tsconfig.mjs.json && tsc -p tsconfig.cjs.json",
+		"prebuild": "rimraf dist/*",
+		"build:mjs": "tsc -p tsconfig.mjs.json",
+		"build:cjs": "tsc -p tsconfig.cjs.json",
+		"build": "npm run build:mjs && npm run build:cjs",
 		"test": "vitest --run",
 		"coverage": "vitest --coverage",
 		"prepare": "npm run build",
