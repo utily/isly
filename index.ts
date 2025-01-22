@@ -16,13 +16,14 @@ import { Optional as islyOptional } from "./Optional"
 import { Readonly as islyReadonly } from "./Readonly"
 import { Record as islyRecord } from "./Record"
 import { String as islyString } from "./String"
+import { Tuple as islyTuple } from "./Tuple"
 import { Type as islyType } from "./Type"
 import { Undefined as islyUndefined } from "./Undefined"
 import { Union as islyUnion } from "./Union"
 import { Unknown as islyUnknown } from "./Unknown"
 
 export function isly<T = any>(type: "any", name?: string): isly.Type<T>
-export function isly<T = any>(type: "array", base: isly.Type<T>, name?: string): isly.Type<T[]>
+export function isly<T = any>(type: "array", base: isly.Type<T>, name?: string): isly.Type<T[]> & isly.Array<T> // TODO: remove isly.Type<T[]> as that is the base type for isly.Array<T>
 export function isly<T extends ArrayBufferLike = ArrayBufferLike>(type: "type", name?: string): isly.Type<T>
 export function isly<T extends globalThis.ArrayBufferLike = globalThis.ArrayBufferLike>(
 	type: "type",
@@ -75,9 +76,9 @@ export function isly<T extends A & B & C & D & E & F, A, B, C, D, E, F>(
 	typeE: isly.Type<E>,
 	typeF: isly.Type<F>
 ): isly.Type<T>
-export function isly<T, R extends isly.Type<T> = isly.Type<T>>(creator: () => R): R // lazy
+export function isly<T, R extends isly.Type<T> = isly.Type<T>>(creator: () => R, name?: string): R // lazy
 export function isly<T = null>(type: "null", name?: string): isly.Type<T>
-export function isly<T extends number = number>(type: "number", name?: string): isly.Type<T>
+export function isly<T extends number = number>(type: "number", name?: string): isly.Number<T>
 export function isly<T extends object = Record<string, any>>(
 	type: "object",
 	properties: isly.Object.Properties<T>,
@@ -95,10 +96,10 @@ export function isly<K extends string | number, V>(
 	key: isly.Type<K>,
 	value: isly.Type<V>
 ): isly.Type<Record<K, V>>
-export function isly<T extends string = string>(type: "string"): isly.Type<T>
-export function isly<T extends string = string>(type: "string", values: readonly T[]): isly.Type<T>
-export function isly<T extends string = string>(type: "string", ...values: readonly T[]): isly.Type<T>
-export function isly<T extends string = string>(type: "string", condition: RegExp): isly.Type<T>
+export function isly<T extends string = string>(type: "string"): isly.String<T>
+export function isly<T extends string = string>(type: "string", values: readonly T[]): isly.String<T>
+export function isly<T extends string = string>(type: "string", ...values: readonly T[]): isly.String<T>
+export function isly<T extends string = string>(type: "string", condition: RegExp): isly.String<T>
 export function isly<T extends any[]>(type: "tuple", ...types: { [I in keyof T]: isly.Type<T[I]> }): isly.Type<T>
 export function isly<T = undefined>(type: "undefined", name?: string): isly.Type<T>
 export function isly<T extends A | B, A, B>(type: "union", ...types: [isly.Type<A>, isly.Type<B>]): isly.Type<T>
@@ -120,16 +121,34 @@ export function isly<T extends A | B | C | D | E | F, A, B, C, D, E, F>(
 ): isly.Type<T>
 export function isly<T>(type: "union", ...types: isly.Type<T>[]): isly.Type<T>
 export function isly<T = unknown>(type: "unknown", name?: string): isly.Type<T>
-export function isly<T>(type: isly.Class | (() => isly.Type<T>), ...argument: any[]): isly.Type<T> {
+export function isly<T>(type: isly.Class | (() => isly.Type<T>), ...properties: any[]): isly.Type<T> {
 	return typeof type != "string"
 		? isly.Lazy.create<T>(type)
 		: (
 				{
 					any: isly.Any.create,
 					array: isly.Array.create,
+					arrayBufferLike: isly.ArrayBufferLike.create,
+					arrayBufferView: isly.ArrayBufferView.create,
+					boolean: isly.Boolean.create,
+					from: isly.From.create,
+					function: isly.Function.create,
+					instance: isly.Instance.create,
+					intersection: isly.Intersection.create,
+					lazy: isly.Lazy.create,
+					null: isly.Null.create,
+					number: isly.Number.create,
 					object: isly.Object.create,
+					optional: isly.Optional.create,
+					readonly: isly.Readonly.create,
+					record: isly.Record.create,
+					string: isly.String.create,
+					tuple: isly.Tuple.create,
+					undefined: isly.Undefined.create,
+					union: isly.Union.create,
+					unknown: isly.Unknown.create,
 				} as unknown as Record<isly.Class, (...argument: any[]) => isly.Type<T>>
-		  )[type](...argument)
+		  )[type](...properties)
 }
 
 export namespace isly {
@@ -152,6 +171,7 @@ export namespace isly {
 	export import Readonly = islyReadonly
 	export import Record = islyRecord
 	export import String = islyString
+	export import Tuple = islyTuple
 	export import Undefined = islyUndefined
 	export import Union = islyUnion
 	export import Unknown = islyUnknown

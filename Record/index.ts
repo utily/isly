@@ -1,9 +1,9 @@
 import { Type } from "../Type"
 
 export namespace Record {
-	export function record<T extends Record<string | number, any>>(key: Type<keyof T>, value: Type<T[keyof T]>): Type<T>
-	export function record<K extends string | number, V>(key: Type<K>, value: Type<V>): Type<Record<K, V>>
-	export function record<T extends Record<string | number, any>>(key: Type<keyof T>, value: Type<T[keyof T]>): Type<T> {
+	export function create<T extends Record<string | number, any>>(key: Type<keyof T>, value: Type<T[keyof T]>): Type<T>
+	export function create<K extends string | number, V>(key: Type<K>, value: Type<V>): Type<Record<K, V>>
+	export function create<T extends Record<string | number, any>>(key: Type<keyof T>, value: Type<T[keyof T]>): Type<T> {
 		return Type.create<T>({
 			class: "record",
 			name: `Record<${key.name}, ${value.name}>`,

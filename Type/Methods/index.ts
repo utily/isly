@@ -1,12 +1,13 @@
+import type { Array } from "../../Array"
 import type { Type } from ".."
-import { Data } from "../Data"
+import { Definition } from "../Definition"
 import { Decorator as MethodsDecorator } from "./Decorator"
 import { Decorators as MethodsDecorators } from "./Decorators"
 
 export interface Methods<T = any> {
 	optional: () => Type<T | undefined>
 	readonly: () => Type<Readonly<T>>
-	array: () => Type<Array<T>>
+	array: () => Array<T>
 }
 export namespace Methods {
 	export import Decorator = MethodsDecorator
@@ -15,7 +16,7 @@ export namespace Methods {
 	export function register<Method extends keyof Methods>(method: Method, decorator: Decorator<Method>): void {
 		decorators[method] = decorator
 	}
-	export function decorate<T = any, D extends Data = Data>(type: D): D & Methods<T> {
+	export function decorate<T = any, D extends Definition = Definition>(type: D): D & Methods<T> {
 		return decorators.optional!(decorators.readonly!(decorators.array!(type)))
 	}
 }

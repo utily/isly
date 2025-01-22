@@ -6,10 +6,7 @@ export namespace Tuple {
 			class: "tuple",
 			name: `[${types.map(t => t.name).join(", ")}]`,
 			is: (value: T | any): value is T =>
-				Array.isArray(value) &&
-				value.length == this.items.length &&
-				types.every((type, index) => type.is(value[index])),
-			get: (value: T): T => types.map((item, index) => item.get(value[index])) as T,
+				Array.isArray(value) && value.length == types.length && types.every((type, index) => type.is(value[index])),
 		})
 	}
 }

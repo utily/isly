@@ -1,6 +1,6 @@
-export interface Data {
+export interface Definition {
 	readonly name: string
 	readonly description?: string
 	readonly condition?: string[]
 }
-export namespace Data {}
+export namespace Definition {}

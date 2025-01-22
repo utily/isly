@@ -1,10 +1,19 @@
 import { Type } from "../Type"
+import { Definition as ObjectDefinition } from "./Definition"
+import { Methods as ObjectMethods } from "./Methods"
+import { Properties as ObjectProperties } from "./Properties"
 
-export type Object<T extends object = Record<string, any>> = Type<T> & Object.Data<T> & Object.Methods<T>
+export type Object<T extends object = Record<string, any>> = Type<T> & Object.Definition<T> & Object.Methods<T>
 export namespace Object {
-	export function create<T extends object>(properties: Object.Properties<T>, name?: string): Object<T> {
+	export import Definition = ObjectDefinition
+	export import Methods = ObjectMethods
+	export import Properties = ObjectProperties
+	export function create<T extends object = Record<string, any>>(
+		properties: Object.Properties<T>,
+		name?: string
+	): Object<T> {
 		const result: Object<T> = globalThis.Object.assign(
-			Type.create<T, Object.Data<T>>({
+			Type.create<T, Object.Definition<T>>({
 				class: "object",
 				name: name ?? Object.nameFromProperties(properties),
 				is: (value: T | any): value is T =>
@@ -36,21 +45,6 @@ export namespace Object {
 			}
 		)
 		return result
-	}
-	export type Properties<T extends object> = {
-		[P in keyof T]: Type<T[P]>
-	}
-	export interface Data<T extends object = Record<string, any>> extends Type.Data {
-		readonly class: "object"
-		readonly name: string
-		readonly description?: string
-		readonly condition?: string[]
-		readonly properties: Object.Properties<T>
-	}
-	export interface Methods<T> {
-		extend<T2 extends T & object>(properties: Object.Properties<Omit<T2, keyof T>>): Object<T2>
-		omit<K extends keyof T>(omits: readonly K[]): Object<Omit<T, K>>
-		pick<K extends keyof T>(picks: readonly K[]): Object<Pick<T, K>>
 	}
 	export function omit<T extends globalThis.Object, K extends keyof T>(object: T, omits: readonly K[]): Omit<T, K> {
 		const keys = globalThis.Object.keys(object).filter(k => omits.every(omit => omit != k)) as Exclude<keyof T, K>[]
