@@ -3,10 +3,15 @@ import { Condition as StringCondition } from "./Condition"
 import { Create as StringCreate } from "./Create"
 
 export interface String<T extends string = string> extends Type<T> {
+	readonly values?: readonly T[]
 	restrict(...condition: String.Condition): String<T>
 }
 
 export namespace String {
+	export interface Definition extends Type.Definition {
+		readonly class: "string"
+		readonly values?: string[]
+	}
 	export import Condition = StringCondition
 	export import Create = StringCreate
 	export function create<T extends string = string>(): String<T>
@@ -33,6 +38,7 @@ export namespace String {
 					  }),
 			}),
 			{
+				...(Array.isArray(condition) ? { values: condition } : {}),
 				restrict(...condition: String.Condition): String<T> {
 					return Condition.restrict(result, ...condition) // TODO: call String.create before returning to
 				},

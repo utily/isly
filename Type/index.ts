@@ -1,37 +1,31 @@
-import type { Class } from "../Class"
+import { Array } from "../Array"
+import { Optional } from "../Optional"
+import { Readonly } from "../Readonly"
 import { Definition as TypeDefinition } from "./Definition"
-import { Methods as TypeMethods } from "./Methods"
 
-export interface Type<T> extends Type.Definition, Readonly<Type.Methods<T>> {
-	readonly class: Class
-	// readonly definition: Type.Definition
-	readonly is: (value: T | any) => value is T
-	readonly get: (value: T | any, fallback?: T) => T | undefined
-	readonly rename: (name: string) => Type<T>
-	readonly describe: (description: string) => Type<T>
-	// readonly flaw: (value: T | any) => false | Type.Definition
+export interface Type<V, T extends Type<V, T>> extends Type.Definition {
+	readonly class: T["class"]
+	is(value: V | any): value is V
+	get(value: V | any, fallback?: V): V | undefined
+	rename(name: string): T
+	describe(description: string): T
+	optional(name?: string): Optional<T>
+	readonly(name?: string): Readonly<V, T>
+	array(name?: string): Array<V, T>
 }
 export namespace Type {
 	export import Definition = TypeDefinition
-	export import Methods = TypeMethods
-	export function create<T, D extends Definition = Definition>(
-		type: D & Partial<Type<T>> & Pick<Type<T>, "class" | "is">
-	): Type<T> & D {
-		const result = Object.assign(Methods.decorate(type), {
-			get data(): D {
-				return type
+	export function construct<B, T extends Type<B, T>>(): Pick<Type<B, T>, "get" | "rename" | "describe"> {
+		return {
+			get(value: B | any, fallback?: B): B | undefined {
+				return (this as T).is(value) ? value : fallback
 			},
-			get: type.get ?? ((value: T | any, fallback?: T): T | undefined => (result.is(value) ? value : fallback)),
-			rename(name: string): Type<T> {
-				return { ...result, name }
+			rename(name: string): T {
+				return { ...(this as T), name }
 			},
-			describe(description: string): Type<T> {
-				return { ...result, description }
+			describe(description: string): T {
+				return { ...(this as T), description }
 			},
-			// flaw(value: T | any): false | Definition {
-			// 	return !result.is(value) && result.definition
-			// },
-		})
-		return result
+		}
 	}
 }

@@ -6,7 +6,7 @@
 			"ES2023",
 		],
 		"moduleResolution": "node10",
-		"module": "ESNext",
+		"module": "ES2022",
 		// where mjs is omitted. point package.json `exports` (import) / `module` field to these
 		"outDir": "dist/mjs",
 		"declaration": true,

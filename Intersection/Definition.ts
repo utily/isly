@@ -2,6 +2,6 @@ import { Type } from "../Type"
 
 export interface Definition extends Type.Definition {
 	readonly class: "intersection"
-	readonly types: Type<unknown>[]
+	readonly types: Definition[]
 }
 export namespace Definition {}

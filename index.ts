@@ -1,22 +1,22 @@
 import { Any as islyAny } from "./Any"
 import { Array as islyArray } from "./Array"
-import { ArrayBufferLike as islyArrayBufferLike } from "./ArrayBufferLike"
-import { ArrayBufferView as islyArrayBufferView } from "./ArrayBufferView"
+// import { ArrayBufferLike as islyArrayBufferLike } from "./ArrayBufferLike"
+// import { ArrayBufferView as islyArrayBufferView } from "./ArrayBufferView"
 import { Boolean as islyBoolean } from "./Boolean"
 import { Class as islyClass } from "./Class"
 import { From as islyFrom } from "./From"
 import { Function as islyFunction } from "./Function"
-import { Instance as islyInstance } from "./Instance"
-import { Intersection as islyIntersection } from "./Intersection"
-import { Lazy as islyLazy } from "./Lazy"
+// import { Instance as islyInstance } from "./Instance"
+// import { Intersection as islyIntersection } from "./Intersection"
+// import { Lazy as islyLazy } from "./Lazy"
 import { Null as islyNull } from "./Null"
 import { Number as islyNumber } from "./Number"
-import { Object as islyObject } from "./Object"
+// import { Object as islyObject } from "./Object"
 import { Optional as islyOptional } from "./Optional"
 import { Readonly as islyReadonly } from "./Readonly"
 import { Record as islyRecord } from "./Record"
 import { String as islyString } from "./String"
-import { Tuple as islyTuple } from "./Tuple"
+// import { Tuple as islyTuple } from "./Tuple"
 import { Type as islyType } from "./Type"
 import { Undefined as islyUndefined } from "./Undefined"
 import { Union as islyUnion } from "./Union"
@@ -25,10 +25,7 @@ import { Unknown as islyUnknown } from "./Unknown"
 export function isly<T = any>(type: "any", name?: string): isly.Type<T>
 export function isly<T = any>(type: "array", base: isly.Type<T>, name?: string): isly.Type<T[]> & isly.Array<T> // TODO: remove isly.Type<T[]> as that is the base type for isly.Array<T>
 export function isly<T extends ArrayBufferLike = ArrayBufferLike>(type: "type", name?: string): isly.Type<T>
-export function isly<T extends globalThis.ArrayBufferLike = globalThis.ArrayBufferLike>(
-	type: "type",
-	name?: string
-): isly.Type<globalThis.ArrayBufferView<T>>
+export function isly(type: "type", name?: string): isly.Type<globalThis.ArrayBufferView>
 export function isly<T extends boolean = boolean>(type: "boolean", value?: T): isly.Type<T>
 export function isly<T>(type: "from", is: (value: T | any) => value is T, name: string): isly.Type<T>
 export function isly<T>(type: "from", is: (value: any) => boolean, name: string): isly.Type<T>
@@ -78,12 +75,15 @@ export function isly<T extends A & B & C & D & E & F, A, B, C, D, E, F>(
 ): isly.Type<T>
 export function isly<T, R extends isly.Type<T> = isly.Type<T>>(creator: () => R, name?: string): R // lazy
 export function isly<T = null>(type: "null", name?: string): isly.Type<T>
-export function isly<T extends number = number>(type: "number", name?: string): isly.Number<T>
-export function isly<T extends object = Record<string, any>>(
-	type: "object",
-	properties: isly.Object.Properties<T>,
-	name?: string
-): isly.Object<T>
+export function isly<T extends number = number>(
+	type: "number",
+	...condition: isly.Number.Condition<T> | []
+): isly.Number<T>
+// export function isly<T extends object = Record<string, any>>(
+// 	type: "object",
+// 	properties: isly.Object.Properties<T>,
+// 	name?: string
+// ): isly.Object<T>
 export function isly<T>(type: "optional", base: isly.Type<T>): isly.Type<T | undefined>
 export function isly<T>(type: "readonly", base: isly.Type<T>): isly.Type<Readonly<T>>
 export function isly<T extends Record<string | number, any>>(
@@ -119,31 +119,34 @@ export function isly<T extends A | B | C | D | E | F, A, B, C, D, E, F>(
 	type: "union",
 	...types: [isly.Type<A>, isly.Type<B>, isly.Type<C>, isly.Type<D>, isly.Type<E>, isly.Type<F>]
 ): isly.Type<T>
+export function isly<T extends A | B | C | D | E | F | G, A, B, C, D, E, F, G>(
+	type: "union",
+	...types: [isly.Type<A>, isly.Type<B>, isly.Type<C>, isly.Type<D>, isly.Type<E>, isly.Type<F>, isly.Type<G>]
+): isly.Type<T>
 export function isly<T>(type: "union", ...types: isly.Type<T>[]): isly.Type<T>
 export function isly<T = unknown>(type: "unknown", name?: string): isly.Type<T>
 export function isly<T>(type: isly.Class | (() => isly.Type<T>), ...properties: any[]): isly.Type<T> {
 	return typeof type != "string"
-		? isly.Lazy.create<T>(type)
+		? isly.Unknown.create() // isly.Lazy.create<T>(type)
 		: (
 				{
 					any: isly.Any.create,
 					array: isly.Array.create,
-					arrayBufferLike: isly.ArrayBufferLike.create,
-					arrayBufferView: isly.ArrayBufferView.create,
+					// arrayBufferLike: isly.ArrayBufferLike.create,
+					// arrayBufferView: isly.ArrayBufferView.create,
 					boolean: isly.Boolean.create,
 					from: isly.From.create,
 					function: isly.Function.create,
-					instance: isly.Instance.create,
-					intersection: isly.Intersection.create,
-					lazy: isly.Lazy.create,
+					// instance: isly.Instance.create,
+					// intersection: isly.Intersection.create,
 					null: isly.Null.create,
 					number: isly.Number.create,
-					object: isly.Object.create,
+					// object: isly.Object.create,
 					optional: isly.Optional.create,
 					readonly: isly.Readonly.create,
 					record: isly.Record.create,
 					string: isly.String.create,
-					tuple: isly.Tuple.create,
+					// tuple: isly.Tuple.create,
 					undefined: isly.Undefined.create,
 					union: isly.Union.create,
 					unknown: isly.Unknown.create,
@@ -155,23 +158,23 @@ export namespace isly {
 	export import Any = islyAny
 	export import Array = islyArray
 	export import Class = islyClass
-	export import Object = islyObject
+	// export import Object = islyObject
 	export import Type = islyType
-	export import ArrayBufferLike = islyArrayBufferLike
-	export import ArrayBufferView = islyArrayBufferView
+	// export import ArrayBufferLike = islyArrayBufferLike
+	// export import ArrayBufferView = islyArrayBufferView
 	export import Boolean = islyBoolean
 	export import From = islyFrom
 	export import Function = islyFunction
-	export import Instance = islyInstance
-	export import Intersection = islyIntersection
-	export import Lazy = islyLazy
+	// export import Instance = islyInstance
+	// export import Intersection = islyIntersection
+	// export import Lazy = islyLazy
 	export import Null = islyNull
 	export import Number = islyNumber
 	export import Optional = islyOptional
 	export import Readonly = islyReadonly
 	export import Record = islyRecord
 	export import String = islyString
-	export import Tuple = islyTuple
+	// export import Tuple = islyTuple
 	export import Undefined = islyUndefined
 	export import Union = islyUnion
 	export import Unknown = islyUnknown

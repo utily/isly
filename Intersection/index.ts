@@ -2,7 +2,6 @@ import { Type } from "../Type"
 import { Definition as IntersectionDefinition } from "./Definition"
 
 export interface Intersection<T = unknown> extends Type<T> {
-	class: "intersection"
 	types: Type<unknown>[]
 }
 
@@ -33,11 +32,13 @@ export namespace Intersection {
 		typeF: Type<F>
 	): Intersection<T>
 	export function create<T>(...types: Type<unknown>[]): Intersection<T> {
-		return Type.create<T, Intersection.Definition>({
-			class: "intersection",
-			name: types.map(type => type.name).join(" & "),
-			is: (value: T | any): value is T => types.every(type => type.is(value)),
-			types,
-		})
+		return Object.assign(
+			Type.create<T>({
+				class: "intersection",
+				name: types.map(type => type.name).join(" & "),
+				is: (value: T | any): value is T => types.every(type => type.is(value)),
+			}),
+			{ types }
+		)
 	}
 }

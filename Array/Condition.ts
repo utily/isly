@@ -7,19 +7,22 @@ export type Condition = Condition.Length
 export namespace Condition {
 	export type Property = "length"
 	export type Length = [property: "length", ...Number.Condition]
-	export function restrict<T = any>(type: Array<T>, ...condition: Condition): Array<T> {
-		const { verify, description } = getVerifier(...condition)
-		const result: Array<T> = {
+	export function restrict<T = any, A extends globalThis.Array<T> = T[]>(
+		type: Array<T, A>,
+		...condition: Condition
+	): Array<T, A> {
+		const { verify, description } = getVerifier<T, A>(...condition)
+		const result: Array<T, A> = {
 			...type,
 			condition: [...(type.condition ?? []), description],
-			is: (value: T[] | any): value is T[] => type.is(value) && verify(value),
+			is: (value: A | any): value is A => type.is(value) && verify(value),
 		}
 		return result
 	}
-	export function getVerifier<T = any>(...condition: Condition): Verifier<T[]> {
-		const conditions: Record<Property, Verifier<T[]>> = {
-			length: ((verifier: Verifier<number>): Verifier<T[]> => ({
-				verify: (value: T[]): boolean => verifier.verify(value.length),
+	export function getVerifier<T = any, A extends globalThis.Array<T> = T[]>(...condition: Condition): Verifier<A> {
+		const conditions: Record<Property, Verifier<A>> = {
+			length: ((verifier: Verifier<number>): Verifier<A> => ({
+				verify: (value: A): boolean => verifier.verify(value.length),
 				description: "length." + verifier.description,
 			}))(Number.Condition.getVerifier(...(condition.slice(1) as Number.Condition))),
 		}

@@ -3,7 +3,9 @@ import { Definition as ObjectDefinition } from "./Definition"
 import { Methods as ObjectMethods } from "./Methods"
 import { Properties as ObjectProperties } from "./Properties"
 
-export type Object<T extends object = Record<string, any>> = Type<T> & Object.Definition<T> & Object.Methods<T>
+export interface Object<T extends object = Record<string, any>> extends Type<T>, Object.Methods<T> {
+	properties: Object.Properties<T>
+}
 export namespace Object {
 	export import Definition = ObjectDefinition
 	export import Methods = ObjectMethods
@@ -21,7 +23,7 @@ export namespace Object {
 					typeof value == "object" &&
 					!Array.isArray(value) &&
 					globalThis.Object.entries<Type<any>>(properties).every(([property, type]) => type.is(value[property])),
-				properties: properties,
+				properties,
 			}),
 			{
 				extend<R extends T & object>(properties: Object.Properties<Omit<R, keyof T>>, name?: string): Object<R> {
@@ -32,13 +34,17 @@ export namespace Object {
 				},
 				omit<K extends keyof T>(omits: readonly K[], name?: string): Object<Omit<T, K>> {
 					return create(
-						Object.omit<Object.Properties<T>, K>(result.properties, omits) as Object.Properties<Omit<T, K>>,
+						Object.omit<Object.Properties<T>, K>((this as Object<T>).properties, omits) as Object.Properties<
+							Omit<T, K>
+						>,
 						name ?? `Omit<${name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`
 					)
 				},
 				pick<K extends keyof T>(picks: readonly K[]): Object<Pick<T, K>> {
 					return create(
-						Object.pick<Object.Properties<T>, K>(result.properties, picks) as Object.Properties<Pick<T, K>>,
+						Object.pick<Object.Properties<T>, K>((this as Object<T>).properties, picks) as Object.Properties<
+							Pick<T, K>
+						>,
 						name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`
 					)
 				},

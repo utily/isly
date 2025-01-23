@@ -1,8 +1,9 @@
 import { Type } from "../Type"
 
+export type Function<T extends globalThis.Function = globalThis.Function> = Type<T>
 export namespace Function {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-	export function create<T extends Function>(): Type<T> {
+	export type Definition = Type.Definition
+	export function create<T extends globalThis.Function = globalThis.Function>(): Function<T> {
 		return Type.create({
 			class: "function",
 			name: "function",

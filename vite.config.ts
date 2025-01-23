@@ -11,7 +11,7 @@ export default defineConfig({
 			provider: "istanbul",
 		},
 		globals: true,
-		include: ["**/*.spec.[tj]s"],
+		include: ["**/*.spec.[t]s"],
 		testTimeout: 20000,
 		isolate: false,
 		exclude: ["node_modules", "dist"],

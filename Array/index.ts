@@ -1,24 +1,28 @@
 import { Type } from "../Type"
 import { Condition as ArrayCondition } from "./Condition"
+import { Definition as ArrayDefinition } from "./Definition"
 
-export interface Array<T = any> extends Type<T[]> {
-	restrict(...condition: Array.Condition): Array<T>
+export interface Array<B = any, T extends globalThis.Array<B> = B[]> extends Type<T> {
+	readonly element: Type<B>
+	restrict(...condition: Array.Condition): Array<B, T>
 }
 export namespace Array {
 	export import Condition = ArrayCondition
-	export function create<T = any>(base: Type<T>, name?: string): Array<T> {
+	export import Definition = ArrayDefinition
+	export function create<B = any, T extends globalThis.Array<B> = B[]>(element: Type<B>, name?: string): Array<B, T> {
 		return Object.assign(
-			Type.create<T[]>({
+			Type.create<T>({
 				class: "array",
-				name: name ?? `${base.name}[]`,
-				is: (value: T[] | any): value is T[] => globalThis.Array.isArray(value) && value.every(base.is),
+				name: name ?? `${element.name}[]`,
+				is: (value: T | any): value is T => globalThis.Array.isArray(value) && value.every(element.is),
 			}),
 			{
-				restrict(...condition: Array.Condition): Array<T> {
-					return Condition.restrict(this as Array<T>, ...condition)
+				element: element,
+				restrict(...condition: Array.Condition): Array<B, T> {
+					return Condition.restrict(this as Array<B, T>, ...condition)
 				},
 			}
 		)
 	}
 }
-Type.Methods.register("array", Array.create)
+Type.Methods.register("array", type => Object.assign(type, () => Array.create(type)))

@@ -4,12 +4,10 @@ import { Object } from "../Object"
 import { Type } from "../Type"
 
 export namespace ArrayBufferView {
-	export function create<T extends globalThis.ArrayBufferLike = globalThis.ArrayBufferLike>(
-		name?: string
-	): Type<globalThis.ArrayBufferView<T>> {
-		return Object.create<globalThis.ArrayBufferView<T>>(
+	export function create(name?: string): Type<globalThis.ArrayBufferView> {
+		return Object.create<globalThis.ArrayBufferView>(
 			{
-				buffer: ArrayBufferLike.create() as unknown as Type<T>,
+				buffer: ArrayBufferLike.create(),
 				byteLength: Number.create(),
 				byteOffset: Number.create(),
 			},

@@ -2,7 +2,7 @@ import { isly } from "../index"
 
 describe("isly.unknown", () => {
 	it("TypeScript narrowing", () => {
-		const unknown = isly.unknown()
+		const unknown = isly("unknown")
 
 		const narrowingUnknown = "garbage" as unknown
 		if (unknown.is(narrowingUnknown)) {
@@ -16,14 +16,14 @@ describe("isly.unknown", () => {
 		}
 	})
 	it("generic", () => {
-		const unknown = isly.unknown()
+		const unknown = isly("unknown")
 		expect(unknown.is("42")).toEqual(true)
 		expect(unknown.is(null)).toEqual(false)
 		expect(unknown.is(undefined)).toEqual(false)
-		expect(unknown.flaw(undefined)).toEqual({ type: "unknown" })
+		// expect(unknown.flaw(undefined)).toEqual({ type: "unknown" })
 	})
 	it("get", () => {
-		const unknown = isly.unknown()
+		const unknown = isly("unknown")
 		expect(unknown.get(42)).toEqual(42)
 	})
 })

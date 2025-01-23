@@ -5,13 +5,14 @@ export interface Number<T extends number = number> extends Type<T> {
 	restrict(...condition: Number.Condition<T>): Number<T>
 }
 export namespace Number {
+	export type Definition = Type.Definition
 	export import Condition = NumberCondition
 	export function create<T extends number = number>(...condition: Condition<T> | []): Number<T> {
 		const result: Number<T> = Object.assign(
 			Type.create<T>({
 				class: "number",
 				name: "number",
-				is: (value: T | any): value is T => typeof value == "number",
+				is: (value: T | any): value is T => typeof value == "number" && globalThis.Number.isFinite(value),
 			}),
 			{
 				restrict(...condition: Condition<T>): Number<T> {

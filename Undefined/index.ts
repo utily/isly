@@ -1,7 +1,9 @@
 import { Type } from "../Type"
 
+export type Undefined<T = undefined> = Type<T>
 export namespace Undefined {
-	export function create<T = undefined>(name?: string): Type<T> {
+	export type Definition = Type.Definition
+	export function create<T = undefined>(name?: string): Undefined<T> {
 		return Type.create<T>({
 			class: "undefined",
 			name: name ?? "undefined",
