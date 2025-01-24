@@ -39,4 +39,6 @@ describe("isly.boolean", () => {
 
 		// expect(booleanType.flaw(0)).toEqual({ type: "false" })
 	})
+	// it("definition", () =>
+	// 	expect(isly("boolean").definition).toEqual({ name: "boolean", description: "Value has to be true or false." }))
 })

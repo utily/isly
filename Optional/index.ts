@@ -20,7 +20,7 @@ export namespace Optional {
 			},
 			...Base.generate<V | undefined, Optional<V, B>>(),
 		}
-		return result
+		return result.bind()
 	}
 }
 Base.register({

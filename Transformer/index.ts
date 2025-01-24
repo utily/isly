@@ -6,10 +6,12 @@ export class Transformer<R extends Record<Class, any>> {
 	transform<T extends Type>(type: T): R[T["class"]] | undefined {
 		return this.configuration[type.class]?.(type as any) // TODO: Fix this any
 	}
-	static create<R extends Record<Class, any>>(configuration: Transformer.Configuration<R>) {
+	static create<R extends Partial<Record<Class, any>>>(configuration: Transformer.Configuration<R>) {
 		return new Transformer(configuration)
 	}
 }
 export namespace Transformer {
-	export type Configuration<R extends Record<Class, any>> = { [K in Class]?: (type: Type.FromClass[K]) => R[K] }
+	export type Configuration<R extends Partial<Record<Class, any>>> = Partial<
+		{ [K in Class]: (type: Type.FromClass[K]) => R[K] }
+	>
 }

@@ -7,10 +7,12 @@ import { Definition as BaseDefinition } from "./Definition"
 export interface Base<V, T extends Base<V, T>> {
 	readonly name: string
 	readonly description?: string
-	readonly condition?: string
+	readonly condition?: string[]
 	bind(): T
 	is(value: V | any): value is V
+	// get(value: V | any, fallback: V): V
 	get(value: V | any, fallback?: V): V | undefined
+	// extract(value: V | any): V | undefined
 	restrict(verify: (value: V) => boolean, condition: string, name?: string): T
 	rename(name: string): T
 	describe(description: string): T
@@ -43,7 +45,7 @@ export namespace Base {
 					name,
 				}.bind()
 			},
-			rename(name: T["name"]): T {
+			rename(name: string): T {
 				return { ...(this as T), name }.bind()
 			},
 			describe(description: string): T {

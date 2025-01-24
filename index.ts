@@ -1,6 +1,7 @@
 import { Base } from "./Base"
 import { Boolean as islyBoolean } from "./Boolean"
 import { Class as islyClass } from "./Class"
+import { Definition as islyDefinition } from "./Definition"
 import { Optional as islyOptional } from "./Optional"
 import { Readonly as islyReadonly } from "./Readonly"
 import { Type as islyType } from "./Type"
@@ -26,6 +27,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 export namespace isly {
 	export import Boolean = islyBoolean
 	export import Class = islyClass
+	export import Definition = islyDefinition
 	export import Optional = islyOptional
 	export import Readonly = islyReadonly
 	export import Type = islyType
