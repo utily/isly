@@ -1,24 +1,29 @@
-import { Type } from "../Type"
+import { Base } from "../Base"
+import type { Type } from "../Type"
+import { Definition as BaseDefinition } from "./Definition"
 
-export interface Readonly<B = any, T extends globalThis.Readonly<B> = globalThis.Readonly<B>> extends Type<T> {
-	readonly base: Type<B>
+export interface Readonly<V extends any | undefined = unknown | undefined, B extends Type = Type>
+	extends Base<V, Readonly<V, B>> {
+	class: "readonly"
+	readonly base: B
 }
 export namespace Readonly {
-	export interface Definition extends Type.Definition {
-		readonly class: "readonly"
-		readonly base: Type.Definition
-	}
-	export function create<B = any, T extends globalThis.Readonly<B> = globalThis.Readonly<B>>(
-		base: Type<B>
-	): Readonly<B, T> {
-		return Object.assign(
-			Type.create<T>({
-				class: "readonly",
-				name: `Readonly<${base.name}>`,
-				is: (value: T | any): value is T => base.is(value),
-			}),
-			{ base }
-		)
+	export import Definition = BaseDefinition
+	export function create<V, B extends Type>(base: B, name?: string): Readonly<V, B> {
+		return {
+			class: "readonly",
+			name: name ?? `Readonly<${base.name}>`,
+			description: "Readonly variant of base.",
+			base,
+			is(value: V | any): value is V {
+				return this.base.is(value)
+			},
+			...Base.generate<V | undefined, Readonly<V, B>>(),
+		}
 	}
 }
-Type.Methods.register("readonly", type => Object.assign(type, () => Readonly.create(type)))
+Base.register({
+	readonly(name?: string): Readonly<any, Type> {
+		return Readonly.create(this as Type, name)
+	},
+})

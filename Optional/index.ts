@@ -1,26 +1,30 @@
-import { Type } from "../Type"
+import { Base } from "../Base"
+import type { Type } from "../Type"
+import { Definition as BaseDefinition } from "./Definition"
 
-export interface Optional<V = unknown, R extends V | undefined = V | undefined, T extends Type<V, Type<V, T>>>
-	extends Type<R, Type<V, R>> {
-	readonly base: T
+export interface Optional<V extends any | undefined = unknown | undefined, B extends Type = Type>
+	extends Base<V, Optional<V, B>> {
+	class: "optional"
+	readonly base: B
 }
 export namespace Optional {
-	export interface Definition extends Type.Definition {
-		readonly class: "optional"
-		readonly base: Type.Definition
-	}
-	export function create<B = unknown, T extends B | undefined = B | undefined>(
-		base: Type<B>,
-		name?: string
-	): Optional<B, T> {
-		return Object.assign(
-			Type.create<T>({
-				class: "optional",
-				name: name ?? `${base.name} | undefined`,
-				is: (value: T | any): value is T => value == undefined || base.is(value),
-			}),
-			{ base }
-		)
+	export import Definition = BaseDefinition
+	export function create<V, B extends Type>(base: B, name?: string): Optional<V, B> {
+		const result: Optional<V, B> = {
+			class: "optional",
+			name: name ?? `${base.name} | undefined`,
+			description: "Value is optional or base type.",
+			base,
+			is(value: V | any): value is V {
+				return value === undefined || this.base.is(value)
+			},
+			...Base.generate<V | undefined, Optional<V, B>>(),
+		}
+		return result
 	}
 }
-Type.register({ optional: (name?: string) => Optional.create(this as Type, name) })
+Base.register({
+	optional(name?: string): Optional<any, Type> {
+		return Optional.create(this as Type, name)
+	},
+})

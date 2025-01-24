@@ -1,15 +1,15 @@
 import { Class } from "../Class"
-import { Types } from "../Types"
+import { Type } from "../Type"
 
-export class Transformer<T extends Record<Class, any>> {
-	private constructor(private configuration: Transformer.Configuration<T>) {}
-	transform(type: Types[Class]): T[Class] | undefined {
-		return this.configuration[type.class]?.(type)
+export class Transformer<R extends Record<Class, any>> {
+	private constructor(private configuration: Transformer.Configuration<R>) {}
+	transform<T extends Type>(type: T): R[T["class"]] | undefined {
+		return this.configuration[type.class]?.(type as any) // TODO: Fix this any
 	}
-	static create<T extends Record<Class, any>>(configuration: Transformer.Configuration<T>) {
+	static create<R extends Record<Class, any>>(configuration: Transformer.Configuration<R>) {
 		return new Transformer(configuration)
 	}
 }
 export namespace Transformer {
-	export type Configuration<T extends Record<Class, any>> = { [K in Class]?: (type: Types[K]) => T[K] }
+	export type Configuration<R extends Record<Class, any>> = { [K in Class]?: (type: Type.FromClass[K]) => R[K] }
 }
