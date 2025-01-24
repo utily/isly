@@ -26,7 +26,7 @@ export namespace Base {
 	> {
 		return {
 			bind(): T {
-				// ;(this as T).is = (this as T).is.bind(this)
+				;(this as T).is = (this as T).is.bind(this)
 				return this as T
 			},
 			get(value: V | any, fallback?: V): V | undefined {

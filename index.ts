@@ -11,16 +11,16 @@ export function isly<V, B extends isly.Type & Base<V, B>>(type: "optional", base
 export function isly<V, B extends isly.Type & Base<V, B>>(type: "readonly", base: B, name?: string): isly.Readonly<V, B>
 export function isly(type: "undefined", name?: string): isly.Undefined
 export function isly(type: isly.Class, ...properties: any[]): isly.Type {
-	const result = (
+	return (
 		{
 			boolean: isly.Boolean.create,
 			optional: isly.Optional.create,
 			readonly: isly.Readonly.create,
 			undefined: isly.Undefined.create,
 		} as unknown as Record<isly.Class, (...argument: any[]) => isly.Type>
-	)[type](...properties)
-	result.is = result.is.bind(result) // make is reassignable
-	return result
+	)
+		[type](...properties)
+		.bind()
 }
 
 export namespace isly {
