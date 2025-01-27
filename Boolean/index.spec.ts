@@ -29,6 +29,35 @@ describe("isly.boolean", () => {
 		[true, false],
 		[0, false],
 	])("false: is(%s) == %s", (input, expected) => expect(isly("boolean", false).is(input)).toBe(expected))
-	// it("definition", () =>
-	// 	expect(isly("boolean").definition).toEqual({ name: "boolean", description: "Value has to be true or false." }))
+	it.each([
+		[isly("boolean"), { name: "boolean", description: "Value has to be true or false." }],
+		[
+			isly("boolean", true),
+			{ name: "true", description: "Value has to be true.", condition: ["equals true"], allowed: true },
+		],
+		[
+			isly("boolean", false),
+			{ name: "false", description: "Value has to be false.", condition: ["equals false"], allowed: false },
+		],
+	] as const)("definition == %s", (type, expected) => expect(type.definition).toEqual(expected))
+	it.each([
+		[true, true],
+		[false, false],
+		[0, undefined],
+		["string", undefined],
+		[null, undefined],
+		[undefined, undefined],
+		[{}, undefined],
+		[[], undefined],
+	])("get(%s) == %s", (input, expected) => expect(isly("boolean").get(input)).toBe(expected))
+	it.each([
+		[true, true],
+		[false, false],
+		[0, undefined],
+		["string", undefined],
+		[null, undefined],
+		[undefined, undefined],
+		[{}, undefined],
+		[[], undefined],
+	])("extract(%s) == %s", (input, expected) => expect(isly("boolean").extract(input)).toBe(expected))
 })

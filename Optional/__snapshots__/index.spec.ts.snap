@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`isly.Optional > definition 1`] = `[Function]`;
+
+exports[`isly.Optional > definition 2`] = `[Function]`;
+
+exports[`isly.Optional > definition 3`] = `[Function]`;

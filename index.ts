@@ -1,7 +1,7 @@
 import { Base } from "./Base"
 import { Boolean as islyBoolean } from "./Boolean"
 import { Class as islyClass } from "./Class"
-import { Definition as islyDefinition } from "./Definition"
+import { Definition, Definition as islyDefinition } from "./Definition"
 import { Optional as islyOptional } from "./Optional"
 import { Readonly as islyReadonly } from "./Readonly"
 import { Type as islyType } from "./Type"
@@ -28,9 +28,14 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 			undefined: islyUndefined.create,
 		} as unknown as Record<isly.Class, (...argument: any[]) => isly.Type>
 	)[type](...properties)
+	// override methods that otherwise requires circular dependencies
 	result.optional = (name?: string): isly.Optional => islyOptional.create(result as Base, name)
 	result.readonly = (name?: string): isly.Readonly => islyReadonly.create(result as Base, name)
-	return result
+	return Object.assign(result, {
+		get definition(): Definition {
+			return Definition.create(result)
+		},
+	})
 }
 
 export namespace isly {

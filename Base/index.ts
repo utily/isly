@@ -1,5 +1,6 @@
 // import type { Array } from "../Array"
 import { Class } from "Class"
+import { Definition } from "Definition"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
 import { Definition as BaseDefinition } from "./Definition"
@@ -7,6 +8,9 @@ import { Definition as BaseDefinition } from "./Definition"
 export abstract class Base<V = unknown, T extends Base<V, T> = Base<V, any>> {
 	abstract readonly class: Class
 	abstract readonly name: string
+	get definition(): Definition {
+		throw new Error("Not implemented")
+	}
 	constructor(readonly description?: string, readonly condition?: string[]) {}
 	abstract is(value: V | any): value is V
 	// get(value: V | any, fallback: V): V

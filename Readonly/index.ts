@@ -13,6 +13,9 @@ export class Readonly<
 	override is(value: V | any): value is V {
 		return value === undefined || this.base.is(value)
 	}
+	override extract(value: V | any): V | undefined {
+		return this.base.extract(value)
+	}
 	static create<
 		V extends any | undefined = unknown | undefined,
 		T extends Base<V, T> = Base<V, any>,

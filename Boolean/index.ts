@@ -17,7 +17,9 @@ export class Boolean<V extends boolean = boolean> extends Base<V, Boolean<V>> {
 		const result = Base.bind(new Boolean(allowed))
 		return allowed == undefined
 			? result
-			: result.restrict(value => value == allowed, `equals ${allowed}`, allowed.toString())
+			: result
+					.restrict(value => value == allowed, `equals ${allowed}`, allowed.toString())
+					.describe(`Value has to be ${allowed}.`)
 	}
 }
 export namespace Boolean {
