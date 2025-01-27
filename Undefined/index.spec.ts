@@ -1,24 +1,21 @@
 import { isly } from "../index"
 
 describe("isly.undefined", () => {
-	it("TypeScript narrowing", () => {
-		const undefinedType = isly("undefined")
+	it("type narrowing", () => {
+		// compilation error if not working
 		const isNarrowingWorking = "garbage" as unknown
-		if (undefinedType.is(isNarrowingWorking)) {
+		if (isly("undefined").is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const myUndefined: undefined = isNarrowingWorking
 		}
 	})
-	it("generic", () => {
-		const undefinedType = isly("undefined")
-		expect(undefinedType.is(undefined)).toEqual(true)
-		expect(undefinedType.is(42)).toEqual(false)
-		// expect(undefinedType.flaw(42)).toEqual({ type: "undefined" })
-		expect(undefinedType.is(null)).toEqual(false)
-	})
-	it("get", () => {
-		const undefinedType = isly("undefined")
-		expect(undefinedType.get("42")).toEqual(undefined)
-		expect(undefinedType.get(undefined)).toEqual(undefined)
-	})
+	it.each([
+		[undefined, true],
+		[42, false],
+		[null, false],
+	])("generic %s", (input, expected) => expect(isly("undefined").is(input)).toEqual(expected))
+	it.each([
+		["42", undefined],
+		[undefined, undefined],
+	])("get %s", (input, expected) => expect(isly("undefined").get(input)).toEqual(expected))
 })

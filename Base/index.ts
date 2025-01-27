@@ -1,72 +1,59 @@
 // import type { Array } from "../Array"
+import { Class } from "Class"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
-import type { Type } from "../Type"
 import { Definition as BaseDefinition } from "./Definition"
 
-export interface Base<V, T extends Base<V, T>> {
-	readonly name: string
-	readonly description?: string
-	readonly condition?: string[]
-	bind(): T
-	is(value: V | any): value is V
+export abstract class Base<V = unknown, T extends Base<V, T> = Base<V, any>> {
+	abstract readonly class: Class
+	abstract readonly name: string
+	constructor(readonly description?: string, readonly condition?: string[]) {}
+	abstract is(value: V | any): value is V
 	// get(value: V | any, fallback: V): V
-	get(value: V | any, fallback?: V): V | undefined
-	// extract(value: V | any): V | undefined
-	restrict(verify: (value: V) => boolean, condition: string, name?: string): T
-	rename(name: string): T
-	describe(description: string): T
-	optional(name?: string): Optional<T>
-	readonly(name?: string): Readonly<T>
-	// array(name?: string): Array<V, T>
+	get(value: V | any, fallback?: V): V | undefined {
+		return this.is(value) ? value : fallback
+	}
+	extract(value: V | any): V | undefined {
+		return this.is(value) ? value : undefined
+	}
+	restrict(verify: (value: V) => boolean, condition: string, name?: string): T {
+		const previous = this.is
+		return {
+			...this,
+			is: (value: V | any): value is V => previous(value) && verify(value),
+			condition: [...(this.condition ?? []), condition],
+			name: name ?? this.name,
+		} as unknown as T
+	}
+	rename(name: string): T {
+		return { ...this, name } as unknown as T
+	}
+	describe(description: string): T {
+		return { ...this, description } as unknown as T
+	}
+	optional(name?: string): Optional<V, T> {
+		throw new Error("Not implemented")
+	}
+	readonly(name?: string): Readonly<V, T> {
+		throw new Error("Not implemented")
+	}
+	// array(name?: string): Array<V, T> {
+	// 	throw new Error("Not implemented")
+	// }
+	static bind<V = unknown, T extends Base<V, T> = Base<V, any>>(type: T): T {
+		const result = { ...type }
+		result.is = type.is.bind(result)
+		result.get = type.get.bind(result)
+		result.extract = type.extract.bind(result)
+		result.restrict = type.restrict.bind(result)
+		result.rename = type.rename.bind(result)
+		result.describe = type.describe.bind(result)
+		result.optional = type.optional.bind(result)
+		result.readonly = type.readonly.bind(result)
+		// result.array = type.array.bind(result)
+		return result
+	}
 }
 export namespace Base {
 	export import Definition = BaseDefinition
-	export function generate<V, T extends Base<V, T>>(): Pick<
-		T,
-		"bind" | "get" | "restrict" | "rename" | "describe" | Methods.Name
-	> {
-		return {
-			bind(): T {
-				;(this as T).is = (this as T).is.bind(this)
-				return this as T
-			},
-			get(value: V | any, fallback?: V): V | undefined {
-				return (this as T).is(value) ? value : fallback
-			},
-			restrict(verify: (value: V) => boolean, condition: string, name?: string): T {
-				const previous = (this as T).is
-				return {
-					...(this as T),
-					is(value: V | any): value is V {
-						return previous(value) && verify(value)
-					},
-					condition,
-					name,
-				}.bind()
-			},
-			rename(name: string): T {
-				return { ...(this as T), name }.bind()
-			},
-			describe(description: string): T {
-				return { ...(this as T), description }.bind()
-			},
-			...(prototype as unknown as Pick<Base<V, T>, Methods.Name>),
-		}
-	}
-	export type Methods = Pick<Type, Methods.Name>
-	export namespace Methods {
-		export type Name = "optional" | "readonly"
-	}
-	export const prototype: Methods = {
-		optional(name?: string): Optional<any, Type> {
-			throw new Error("Not implemented")
-		},
-		readonly(name?: string): Readonly<any, Type> {
-			throw new Error("Not implemented")
-		},
-	}
-	export function register(method: Partial<Methods>): void {
-		Object.assign(prototype, method)
-	}
 }

@@ -1,29 +1,26 @@
 import { Base } from "../Base"
-import type { Type } from "../Type"
 import { Definition as BaseDefinition } from "./Definition"
 
-export interface Readonly<V extends any | undefined = unknown | undefined, B extends Type = Type>
-	extends Base<V, Readonly<V, B>> {
-	class: "readonly"
-	readonly base: B
+export class Readonly<
+	V extends any | undefined = unknown | undefined,
+	T extends Base<V, T> = Base<V, any>,
+	B extends Base<V, T> = Base<V, any>
+> extends Base<V, Readonly<V, T, B>> {
+	readonly class = "readonly"
+	private constructor(readonly base: B, readonly name: string = `Readonly<${base.name}>`) {
+		super("Readonly version of base type.")
+	}
+	override is(value: V | any): value is V {
+		return value === undefined || this.base.is(value)
+	}
+	static create<
+		V extends any | undefined = unknown | undefined,
+		T extends Base<V, T> = Base<V, any>,
+		B extends Base<V, T> = Base<V, any>
+	>(base: B, name?: string): Readonly<V, T, B> {
+		return Base.bind(new Readonly<V, T, B>(base, name))
+	}
 }
 export namespace Readonly {
 	export import Definition = BaseDefinition
-	export function create<V, B extends Type>(base: B, name?: string): Readonly<V, B> {
-		return {
-			class: "readonly",
-			name: name ?? `Readonly<${base.name}>`,
-			description: "Readonly variant of base.",
-			base,
-			is(value: V | any): value is V {
-				return this.base.is(value)
-			},
-			...Base.generate<V | undefined, Readonly<V, B>>(),
-		}
-	}
 }
-Base.register({
-	readonly(name?: string): Readonly<any, Type> {
-		return Readonly.create(this as Type, name)
-	},
-})

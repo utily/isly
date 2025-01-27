@@ -8,28 +8,46 @@ import { Type as islyType } from "./Type"
 import { Undefined as islyUndefined } from "./Undefined"
 
 export function isly<V extends boolean = boolean>(type: "boolean", allowed?: V): isly.Boolean<V>
-export function isly<V, B extends isly.Type & Base<V, B>>(type: "optional", base: B, name?: string): isly.Optional<V, B>
-export function isly<V, B extends isly.Type & Base<V, B>>(type: "readonly", base: B, name?: string): isly.Readonly<V, B>
-export function isly(type: "undefined", name?: string): isly.Undefined
+export function isly<
+	V extends any | undefined = unknown | undefined,
+	T extends Base<V, T> = Base<V, any>,
+	B extends Base<V, T> = Base<V, any>
+>(type: "optional", base: B, name?: string): isly.Optional<V, T, B>
+export function isly<
+	V extends any | undefined = unknown | undefined,
+	T extends Base<V, T> = Base<V, any>,
+	B extends Base<V, T> = Base<V, any>
+>(type: "readonly", base: B, name?: string): isly.Readonly<V, T, B>
+export function isly<V extends undefined = undefined>(type: "undefined", name?: string): isly.Undefined<V>
 export function isly(type: isly.Class, ...properties: any[]): isly.Type {
-	return (
+	const result = (
 		{
-			boolean: isly.Boolean.create,
-			optional: isly.Optional.create,
-			readonly: isly.Readonly.create,
-			undefined: isly.Undefined.create,
+			boolean: islyBoolean.create,
+			optional: islyOptional.create,
+			readonly: islyReadonly.create,
+			undefined: islyUndefined.create,
 		} as unknown as Record<isly.Class, (...argument: any[]) => isly.Type>
-	)
-		[type](...properties)
-		.bind()
+	)[type](...properties)
+	result.optional = (name?: string): isly.Optional => islyOptional.create(result as Base, name)
+	result.readonly = (name?: string): isly.Readonly => islyReadonly.create(result as Base, name)
+	return result
 }
 
 export namespace isly {
-	export import Boolean = islyBoolean
+	// Don't export create functions
+	export type Boolean<V extends boolean = boolean> = islyBoolean<V>
 	export import Class = islyClass
 	export import Definition = islyDefinition
-	export import Optional = islyOptional
-	export import Readonly = islyReadonly
+	export type Optional<
+		V extends any | undefined = unknown | undefined,
+		T extends Base<V, T> = Base<V, any>,
+		B extends Base<V, T> = Base<V, any>
+	> = islyOptional<V, T, B>
+	export type Readonly<
+		V extends any | undefined = unknown | undefined,
+		T extends Base<V, T> = Base<V, any>,
+		B extends Base<V, T> = Base<V, any>
+	> = islyReadonly<V, T, B>
 	export import Type = islyType
-	export import Undefined = islyUndefined
+	export type Undefined<V extends undefined = undefined> = islyUndefined<V>
 }

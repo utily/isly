@@ -1,12 +1,12 @@
 import { isly } from "../index"
 
 describe("isly.Optional", () => {
-	it("should return the correct value for get(%p)", () => {
+	it("", () => {
 		const t1 = isly("boolean")
 		const t2 = t1.optional()
 		expect(t2.name).toBe("boolean | undefined")
 	})
-	it("should return the correct value for get(%p)", () => {
+	it("", () => {
 		const t1 = isly("boolean").rename("t1")
 		const t2 = t1.optional("not-required t1")
 		expect(t2.name).toBe("not-required t1")
@@ -27,5 +27,9 @@ describe("isly.Optional", () => {
 		[{}, false],
 		[[], false],
 		[() => {}, false],
-	])("is(%s) == %s", (value, expected) => expect(isly("boolean").optional().is(value)).toBe(expected))
+	])("is(%s) == %s", (value, expected) => {
+		const type = isly("boolean")
+		// type.optional = (name?: string) => isly("optional", type, name)
+		expect(type.optional().is(value)).toBe(expected)
+	})
 })
