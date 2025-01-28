@@ -2,15 +2,15 @@ export type Class = typeof Class.values[number]
 export namespace Class {
 	export const values = [
 		// "any",
-		// "array",
+		"array",
 		"boolean",
 		// "from",
 		// "function",
 		// "instance",
 		// "intersection",
 		// "null",
-		// "number",
-		// "object",
+		"number",
+		"object",
 		"optional",
 		"readonly",
 		// "record",

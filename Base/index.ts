@@ -1,6 +1,6 @@
-// import type { Array } from "../Array"
 import { Class } from "Class"
 import { Definition } from "Definition"
+import type { Array } from "../Array"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
 import { Definition as BaseDefinition } from "./Definition"
@@ -13,7 +13,8 @@ export abstract class Base<V = unknown, T extends Base<V, T> = Base<V, any>> {
 	}
 	constructor(readonly description?: string, readonly condition?: string[]) {}
 	abstract is(value: V | any): value is V
-	// get(value: V | any, fallback: V): V
+	get(value: V | any): V | undefined
+	get(value: V | any, fallback: V): V
 	get(value: V | any, fallback?: V): V | undefined {
 		return this.is(value) ? value : fallback
 	}
@@ -35,16 +36,19 @@ export abstract class Base<V = unknown, T extends Base<V, T> = Base<V, any>> {
 	describe(description: string): T {
 		return { ...this, description } as unknown as T
 	}
-	optional(name?: string): Optional<V, T> {
+	optional(name?: string): Optional<V | undefined, T> {
 		throw new Error("Not implemented")
 	}
 	readonly(name?: string): Readonly<V, T> {
 		throw new Error("Not implemented")
 	}
-	// array(name?: string): Array<V, T> {
-	// 	throw new Error("Not implemented")
-	// }
-	static bind<V = unknown, T extends Base<V, T> = Base<V, any>>(type: T): T {
+	array(name?: string): Array<V, T> {
+		throw new Error("Not implemented")
+	}
+}
+export namespace Base {
+	export import Definition = BaseDefinition
+	export function bind<V = unknown, T extends Base<V, T> = Base<V, any>>(type: T): T {
 		const result = { ...type }
 		result.is = type.is.bind(result)
 		result.get = type.get.bind(result)
@@ -54,10 +58,7 @@ export abstract class Base<V = unknown, T extends Base<V, T> = Base<V, any>> {
 		result.describe = type.describe.bind(result)
 		result.optional = type.optional.bind(result)
 		result.readonly = type.readonly.bind(result)
-		// result.array = type.array.bind(result)
+		result.array = type.array.bind(result)
 		return result
 	}
-}
-export namespace Base {
-	export import Definition = BaseDefinition
 }

@@ -1,11 +1,10 @@
 import { Base } from "../Base"
 import { Definition as BaseDefinition } from "./Definition"
 
-export class Readonly<
-	V extends any | undefined = unknown | undefined,
-	T extends Base<V, T> = Base<V, any>,
-	B extends Base<V, T> = Base<V, any>
-> extends Base<V, Readonly<V, T, B>> {
+export class Readonly<V extends any | undefined = unknown | undefined, B extends Base<V, B> = Base<V>> extends Base<
+	V,
+	Readonly<V, B>
+> {
 	readonly class = "readonly"
 	private constructor(readonly base: B, readonly name: string = `Readonly<${base.name}>`) {
 		super("Readonly version of base type.")
@@ -16,12 +15,11 @@ export class Readonly<
 	override extract(value: V | any): V | undefined {
 		return this.base.extract(value)
 	}
-	static create<
-		V extends any | undefined = unknown | undefined,
-		T extends Base<V, T> = Base<V, any>,
-		B extends Base<V, T> = Base<V, any>
-	>(base: B, name?: string): Readonly<V, T, B> {
-		return Base.bind(new Readonly<V, T, B>(base, name))
+	static create<V extends any | undefined = unknown | undefined, B extends Base<V, B> = Base<V, any>>(
+		base: B,
+		name?: string
+	): Readonly<V, B> {
+		return Base.bind(new Readonly<V, B>(base, name))
 	}
 }
 export namespace Readonly {

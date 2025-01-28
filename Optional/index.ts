@@ -1,27 +1,19 @@
 import { Base } from "../Base"
 import { Definition as BaseDefinition } from "./Definition"
 
-export class Optional<
-	V extends any | undefined = unknown | undefined,
-	T extends Base<V, T> = Base<V, any>,
-	B extends Base<V, T> = Base<V, any>
-> extends Base<V, Optional<V, T, B>> {
+export class Optional<V = unknown, B extends Base<V, B> = Base<V>> extends Base<V | undefined, Optional<V, B>> {
 	readonly class = "optional"
 	private constructor(readonly base: B, readonly name: string = `${base.name} | undefined`) {
 		super("Value is optional i.e. undefined or base type.")
 	}
-	override is(value: V | any): value is V {
+	override is(value: V | undefined | any): value is V | undefined {
 		return value === undefined || this.base.is(value)
 	}
-	override extract(value: V | any): V | undefined {
+	override extract(value: V | undefined | any): V | undefined {
 		return value === undefined ? undefined : this.base.extract(value)
 	}
-	static create<
-		V extends any | undefined = unknown | undefined,
-		T extends Base<V, T> = Base<V, any>,
-		B extends Base<V, T> = Base<V, any>
-	>(base: B, name?: string): Optional<V, T, B> {
-		return Base.bind(new Optional<V, T, B>(base, name))
+	static create<V = unknown, B extends Base<V, B> = Base<V>>(base: B, name?: string): Optional<V, B> {
+		return Base.bind(new Optional<V, B>(base, name))
 	}
 }
 export namespace Optional {

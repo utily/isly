@@ -7,7 +7,6 @@ export class Boolean<V extends boolean = boolean> extends Base<V, Boolean<V>> {
 	private constructor(readonly allowed?: V) {
 		super("Value has to be true or false.")
 	}
-
 	override is(value: V | any): value is V {
 		return typeof value == "boolean"
 	}
