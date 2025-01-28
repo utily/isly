@@ -12,4 +12,3 @@ export class Class<V extends undefined = undefined> extends Base<undefined, Clas
 		return Base.bind(new Class<V>())
 	}
 }
-Base.register("undefined", Class.create)

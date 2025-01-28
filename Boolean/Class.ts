@@ -20,4 +20,3 @@ export class Class<V extends boolean> extends Base<V, Class<V>> {
 					.describe(`Value has to be ${allowed}.`)
 	}
 }
-Base.register("boolean", Class.create)

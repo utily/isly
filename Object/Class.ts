@@ -53,4 +53,3 @@ export namespace Class {
 		return globalThis.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
 	}
 }
-Base.register("object", Class.create)

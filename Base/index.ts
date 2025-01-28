@@ -3,7 +3,6 @@ import { Definition } from "Definition"
 import type { Array } from "../Array"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
-import type { Type } from "../Type"
 import { Definition as BaseDefinition } from "./Definition"
 
 export abstract class Base<V = unknown, T extends Base<V, T> = Base<V, any>> {
@@ -49,13 +48,6 @@ export abstract class Base<V = unknown, T extends Base<V, T> = Base<V, any>> {
 }
 export namespace Base {
 	export import Definition = BaseDefinition
-	const creators: Partial<Record<Class, (...argument: any[]) => Type>> = {}
-	export function register(type: Class, creator: (...argument: any[]) => Type): void {
-		creators[type] = creator
-	}
-	export function instantiate(type: Class, ...argument: any[]): Type | undefined {
-		return creators[type]?.(...argument)
-	}
 	export function bind<V = unknown, T extends Base<V, T> = Base<V, any>>(type: T): T {
 		const result = { ...type }
 		result.is = type.is.bind(result)

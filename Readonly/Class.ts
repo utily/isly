@@ -21,4 +21,3 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 		return Base.bind(new Class<V, B>(base, name))
 	}
 }
-Base.register("readonly", Class.create)

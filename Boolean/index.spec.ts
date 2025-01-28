@@ -27,12 +27,24 @@ describe("isly.boolean", () => {
 		[true, true],
 		[false, false],
 		[0, false],
-	])("true: is(%s) == %s", (input, expected) => expect(isly("boolean", true).is(input)).toBe(expected))
+	])("true: is(%s) == %s", (input, expected) =>
+		expect(
+			isly("boolean")
+				.restrict(value => value == false, "true", "true")
+				.is(input)
+		).toBe(expected)
+	)
 	it.each([
 		[false, true],
 		[true, false],
 		[0, false],
-	])("false: is(%s) == %s", (input, expected) => expect(isly("boolean", false).is(input)).toBe(expected))
+	])("false: is(%s) == %s", (input, expected) =>
+		expect(
+			isly("boolean")
+				.restrict(value => value == false, "false", "false")
+				.is(input)
+		).toBe(expected)
+	)
 	// it.each([
 	// 	[isly("boolean"), { name: "boolean", description: "Value has to be true or false." }],
 	// 	[

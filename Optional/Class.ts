@@ -15,4 +15,3 @@ export class Class<V, B extends Base<V, B>> extends Base<V | undefined, Class<V,
 		return Base.bind(new Class<V, B>(base, name))
 	}
 }
-Base.register("optional", Class.create)

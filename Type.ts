@@ -3,12 +3,12 @@ import { Array } from "./Array"
 import { Boolean } from "./Boolean"
 import { Class } from "./Class"
 import { Number } from "./Number"
-import { Object } from "./Object"
+import { Object2 } from "./Object"
 import { Optional } from "./Optional"
 import { Readonly } from "./Readonly"
 import { Undefined } from "./Undefined"
 
-export type Type = Omit<Base, "constructor"> // Array | Boolean | Number | Object2 | Optional | Readonly | Undefined
+export type Type = Base // Omit<Base, "constructor"> // Array | Boolean | Number | Object2 | Optional | Readonly | Undefined
 export namespace Type {
 	export interface FromClass extends Record<Class, Type> {
 		// any: Undefined
@@ -20,7 +20,7 @@ export namespace Type {
 		// intersection: Undefined
 		// null: Undefined
 		number: Number
-		object: Object
+		object: Object2
 		optional: Optional
 		readonly: Readonly
 		// record: Undefined
