@@ -1,3 +1,4 @@
+import { Flaw } from "Flaw"
 import { Base } from "../Base"
 
 export class Class<V, B extends Base<V>> extends Base<V[]> {
@@ -10,6 +11,18 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	}
 	is(value: V[] | any): value is V[] {
 		return globalThis.Array.isArray(value) && value.every(this.base.is)
+	}
+	override flawed(value: V[] | any): Flaw | false {
+		const result: Flaw | false = super.flawed(value)
+		return (
+			result && {
+				...result,
+				flaws: (Array.isArray(value)
+					? value.map(this.base.flawed).map((flaw, index) => flaw && { ...flaw, index })
+					: [this.base.flawed(undefined)]
+				).filter((f: Flaw | false): f is Flaw => !f),
+			}
+		)
 	}
 	// restrict(...condition: Array.Condition): Array<V, B> {
 	// 	return Array.Condition.restrict(this, ...condition)

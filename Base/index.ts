@@ -1,6 +1,6 @@
 import { Class } from "Class"
-import { Definition } from "Definition"
 import type { Array } from "../Array"
+import { Flaw } from "../Flaw"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
 import { Definition as BaseDefinition } from "./Definition"
@@ -8,7 +8,7 @@ import { Definition as BaseDefinition } from "./Definition"
 export abstract class Base<V = unknown> {
 	abstract readonly class: Class
 	abstract readonly name: string
-	get definition(): Definition {
+	get definition(): Base.Definition {
 		throw new Error("Not implemented")
 	}
 	constructor(readonly description?: string, readonly condition?: string[]) {}
@@ -44,6 +44,15 @@ export abstract class Base<V = unknown> {
 	array(name?: string): Array<V, this> {
 		throw new Error("Not implemented")
 	}
+	flawed(value: V | any): Flaw | false {
+		return (
+			!this.is(value) && {
+				name: this.name,
+				...(this.description ? { description: this.description } : {}),
+				...(this.condition ? { condition: this.condition } : {}),
+			}
+		)
+	}
 	bind(changes?: any): this {
 		// TODO: why can't we use Partial<this> instead?
 		const result = { ...this }
@@ -58,22 +67,10 @@ export abstract class Base<V = unknown> {
 			optional: (changes?.optional ?? this.optional).bind(result),
 			readonly: (changes?.readonly ?? this.readonly).bind(result),
 			array: (changes?.array ?? this.array).bind(result),
+			flawed: (changes?.flawed ?? this.flawed).bind(result),
 			bind: (changes?.bind ?? this.bind).bind(result),
 		})
 	}
-	// bind(type?: Partial<this>): this {
-	// 	const result = { ...this, ...type } as unknown as T
-	// 	result.is = (type?.is ?? result.is).bind(result)
-	// 	result.get = (type?.get ?? result.get).bind(result)
-	// 	result.extract = (type?.extract ?? result.extract).bind(result)
-	// 	result.restrict = (type?.restrict ?? result.restrict).bind(result)
-	// 	result.rename = (type?.rename ?? result.rename).bind(result)
-	// 	result.describe = (type?.describe ?? result.describe).bind(result)
-	// 	result.optional = (type?.optional ?? result.optional).bind(result)
-	// 	result.readonly = (type?.readonly ?? result.readonly).bind(result)
-	// 	result.array = (type?.array ?? result.array).bind(result)
-	// 	return result
-	// }
 }
 export namespace Base {
 	export import Definition = BaseDefinition

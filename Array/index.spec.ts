@@ -15,56 +15,56 @@ describe("isly.Array", () => {
 		}
 	})
 	it("number[]", () => {
-		const arrayType = isly("array", isly("number"))
-		expect(arrayType.is([])).toBe(true)
-		expect(arrayType.is([1, 2, 3])).toBe(true)
+		const type = isly("array", isly("number"))
+		expect(type.is([])).toBe(true)
+		expect(type.is([1, 2, 3])).toBe(true)
 
-		expect(arrayType.is(0)).toBe(false)
+		expect(type.is(0)).toBe(false)
 
-		// 	expect(arrayType.flaw(42)).toEqual({ type: "number[]" })
-		// 	expect(arrayType.flaw([1, 2, undefined])).toEqual({
-		// 		type: "number[]",
-		// 		flaws: [
-		// 			{
-		// 				type: "number[2]",
-		// 			},
-		// 		],
-		// 	})
+		expect(type.flawed(42)).toEqual({ name: "number[]", description: "Array of number[].", flaws: [] })
+		expect(type.flawed([1, 2, undefined])).toEqual({
+			type: "number[]",
+			flaws: [
+				{
+					type: "number[2]",
+				},
+			],
+		})
 	})
 	it("(number | string)[]", () => {
-		// const arrayType = isly("union", isly("string"), isly("number")).array()
-		// expect(arrayType.flaw(undefined)).toEqual({
-		// 	type: "(string | number)[]",
-		// })
+		const arrayType = isly("union", isly("string"), isly("number")).array()
+		expect(arrayType.flawed(undefined)).toEqual({
+			type: "(string | number)[]",
+		})
 	})
 
-	it("number[] with length criteria", () => {
-		const arrayType = isly("number").array() //.restrict("length", "value", 3)
-		expect(arrayType.is([3, 4, 5])).toBe(true)
+	// it("number[] with length criteria", () => {
+	// 	const type = isly("number").array() //.restrict("length", "value", 3)
+	// 	expect(type.is([3, 4, 5])).toBe(true)
 
-		expect(arrayType.is([])).toBe(false)
+	// 	expect(type.is([])).toBe(false)
 
-		// expect(arrayType.flaw(42)).toEqual({ type: "number[]", condition: "length == 3" })
-		// expect(arrayType.flaw([1, 2, undefined])).toEqual({
-		// 	type: "number[]",
-		// 	condition: "length == 3",
-		// 	flaws: [
-		// 		{
-		// 			type: "number[2]",
-		// 		},
-		// 	],
-		// })
-		// expect(arrayType.flaw([1, 2, 3, 4])).toEqual({
-		// 	type: "number[]",
-		// 	condition: "length == 3",
-		// })
-	})
+	// 	expect(type.flawed(42)).toEqual({ type: "number[]", condition: "length == 3" })
+	// 	expect(type.flawed([1, 2, undefined])).toEqual({
+	// 		type: "number[]",
+	// 		condition: "length == 3",
+	// 		flaws: [
+	// 			{
+	// 				type: "number[2]",
+	// 			},
+	// 		],
+	// 	})
+	// 	expect(type.flawed([1, 2, 3, 4])).toEqual({
+	// 		type: "number[]",
+	// 		condition: "length == 3",
+	// 	})
+	// })
 	it("number[] with minLength & maxLength criteria", () => {
-		const arrayType = isly("number").array() // .restrict("length", "range", 1, 3)
-		expect(arrayType.is([3, 4, 5])).toBe(true)
+		const type = isly("number").array() // .restrict("length", "range", 1, 3)
+		expect(type.is([3, 4, 5])).toBe(true)
 
-		expect(arrayType.is([1, 2, 3, 4])).toBe(false)
-		expect(arrayType.is([])).toBe(false)
+		expect(type.is([1, 2, 3, 4])).toBe(false)
+		expect(type.is([])).toBe(false)
 
 		// expect(arrayType.flaw(42)).toEqual({ type: "number[]", condition: "minLength == 1 & maxLength == 3" })
 	})

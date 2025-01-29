@@ -1,4 +1,6 @@
 import { Base } from "../Base"
+import { Flaw } from "../Flaw"
+import type { Type } from "../Type"
 import { Properties } from "./Properties"
 
 export class Class<V extends object = Record<string, any>> extends Base<V> {
@@ -30,6 +32,18 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		return Class.create(
 			Class.pick<Properties<V>, K>(this.properties, picks) as Properties<Pick<V, K>>,
 			name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`
+		)
+	}
+	override flawed(value: V | any): Flaw | false {
+		const result: Flaw | false = super.flawed(value)
+		return (
+			result && {
+				...result,
+				flaws: Object.entries<Type>(this.properties)
+					.map(([property, type]) => [property, type.flawed(value[property])] as const)
+					.map(([property, flaw]) => flaw && ({ ...flaw, property } as Flaw))
+					.filter((f: Flaw | false): f is Flaw => !f),
+			}
 		)
 	}
 	override bind(type: Partial<this>): this {

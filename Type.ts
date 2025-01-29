@@ -6,7 +6,9 @@ import { Number } from "./Number"
 import { Object2 } from "./Object"
 import { Optional } from "./Optional"
 import { Readonly } from "./Readonly"
+import { String } from "./String"
 import { Undefined } from "./Undefined"
+import { Union } from "./Union"
 
 export type Type = Base // Omit<Base, "constructor"> // Array | Boolean | Number | Object2 | Optional | Readonly | Undefined
 export namespace Type {
@@ -24,11 +26,11 @@ export namespace Type {
 		optional: Optional
 		readonly: Readonly
 		// record: Undefined
-		// string: Undefined
+		string: String
 		// tuple: Undefined
 		// type: Type
 		undefined: Undefined
-		// union: Undefined
+		union: Union
 		// unknown: Undefined
 	}
 }

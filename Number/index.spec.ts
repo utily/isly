@@ -10,13 +10,15 @@ describe("isly.number", () => {
 			const myNumber: number = isNarrowingWorking
 		}
 	})
-	it(`isly("number").is.bind (Deprecated)`, () => {
+	it(`isly("number").is`, () => {
 		// This was needed before functions where implemented with closures.
 		const type = isly("number")
-		const is = type.is.bind(type)
-		expect(is(13.37)).toEqual(true)
-		// const flaw = type.flaw.bind(type)
-		// expect(flaw({})).toEqual({ type: "number" })
+		expect(type.is(13.37)).toBe(true)
+		expect(type.flawed({})).toEqual({ name: "number", description: "Any finite numeric value." })
+		const is = type.is
+		expect(is(13.37)).toBe(true)
+		const flawed = type.flawed
+		expect(flawed({})).toEqual({ name: "number", description: "Any finite numeric value." })
 	})
 	it.each([
 		[13.37, true],
@@ -40,14 +42,13 @@ describe("isly.number", () => {
 	])('isly("number").get(%p)', (input, expected) => expect(isly("number").get(input)).toEqual(expected))
 
 	it('isly("number").name', () => expect(isly("number").name).toEqual("number"))
-	// it('isly("number").flaw({})', () =>
-	// 	expect(numberType.flaw({})).toEqual({ type: "number" })
-	// )
+	it('isly("number").flaw({})', () =>
+		expect(isly("number").flawed({})).toEqual({ name: "number", description: "Any finite numeric value." }))
 	it('isly.number("positive")', () => {
-		const numberType = isly("number", "positive")
-		expect(numberType.is(13.37)).toEqual(true)
-		expect(numberType.is(-13.37)).toEqual(false)
-		// expect(numberType.flaw({})).toEqual({ type: "number", condition: "> 0" })
+		const type = isly("number", "positive")
+		expect(type.is(13.37)).toEqual(true)
+		expect(type.is(-13.37)).toEqual(false)
+		expect(type.flawed({})).toEqual({ type: "number", condition: "> 0" })
 	})
 	it('isly.number().restrict("positive")', () => {
 		const { verify, description } = isly.Number.Condition.getVerifier("positive")
@@ -57,7 +58,7 @@ describe("isly.number", () => {
 		expect(type.is(-13.37)).toEqual(false)
 		expect(d.is(13.37)).toEqual(true)
 		expect(d.is(-13.37)).toEqual(false)
-		// expect(numberType.flaw({})).toEqual({ type: "number", condition: "> 0" })
+		expect(type.flawed({})).toEqual({ type: "number", condition: "> 0" })
 	})
 	// it('isly.number(["positive", "integer"])', () => {
 	// 	const numberType = isly("number", "positive").restrict("integer")
@@ -69,8 +70,10 @@ describe("isly.number", () => {
 
 	// 	// expect(numberType.flaw({})).toEqual({ type: "number", condition: "> 0 & Number.isInteger" })
 	// })
-	it("isly.number([1, 2, 3]).is(2)", () => expect(isly("number", "value", [1, 2, 3]).is(2)).toEqual(true))
-	it("isly.number([1, 2, 3]).is(0)", () => expect(isly("number", "value", [1, 2, 3]).is(0)).toEqual(false))
-	it("isly.number<1, 2, 3>([1, 2, 3] as const).is(2)", () =>
+	it('isly("number", "value", [1, 2, 3]).is(2) == true', () =>
+		expect(isly("number", "value", [1, 2, 3]).is(2)).toEqual(true))
+	it('isly("number", "value", [1, 2, 3]).is(0) == false', () =>
+		expect(isly("number", "value", [1, 2, 3]).is(0)).toEqual(false))
+	it('isly<1 | 2 | 3>("number", "value", [1, 2, 3] as const).is(2) == true', () =>
 		expect(isly<1 | 2 | 3>("number", "value", [1, 2, 3] as const).is(2)).toEqual(true))
 })

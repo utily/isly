@@ -14,11 +14,11 @@ export namespace Class {
 		"optional",
 		"readonly",
 		// "record",
-		// "string",
+		"string",
 		// "tuple",
 		// "type",
 		"undefined",
-		// "union",
+		"union",
 		// "unknown",
 	] as const
 }

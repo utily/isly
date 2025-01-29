@@ -8,5 +8,4 @@ export type Array<V = unknown, B extends Base<V> = Base<V>> = Omit<Class<V, B>, 
 export namespace Array {
 	export import Condition = ArrayCondition
 	export import Definition = ArrayDefinition
-	export type BaseType<A> = A extends globalThis.Array<infer U> ? U : never
 }
