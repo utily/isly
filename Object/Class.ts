@@ -3,10 +3,7 @@ import { Properties } from "./Properties"
 
 export class Class<V extends object = Record<string, any>> extends Base<V> {
 	override readonly class = "object"
-	private constructor(
-		readonly properties: Readonly<Properties<V>>,
-		readonly name: string = Properties.getName(properties)
-	) {
+	private constructor(readonly properties: Properties<V>, readonly name: string = Properties.getName(properties)) {
 		super(`Object of type ${name}.`, [])
 	}
 	override is(value: V | any): value is V {
@@ -17,9 +14,9 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			globalThis.Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
 		)
 	}
-	extend<R extends V>(properties: Properties<Omit<R, keyof V>>, name?: string): Class<R> {
+	extend<R extends object = Record<string, any>>(properties: Properties<R>, name?: string): Class<V & R> {
 		return Class.create(
-			{ ...this.properties, ...properties } as unknown as Properties<R>,
+			{ ...this.properties, ...properties } as Properties<V & R>,
 			name ?? `${this.name} & ${Properties.getName(properties)}`
 		)
 	}
@@ -43,7 +40,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			pick: (type?.pick ?? this.pick).bind(result),
 		})
 	}
-	static create<V extends object = Record<string, any>>(properties: Readonly<Properties<V>>, name?: string): Class<V> {
+	static create<V extends object = Record<string, any>>(properties: Properties<V>, name?: string): Class<V> {
 		return new Class<V>(properties, name)
 	}
 }
@@ -55,4 +52,13 @@ export namespace Class {
 	export function pick<T extends globalThis.Object, K extends keyof T>(object: T, picks: readonly K[]): Pick<T, K> {
 		return globalThis.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
 	}
+}
+type MergeProperties<T, U> = {
+	[K in keyof T | keyof U]: K extends keyof T
+		? K extends keyof U
+			? T[K] | U[K] // Allow both types instead of `never`
+			: T[K]
+		: K extends keyof U
+		? U[K]
+		: never
 }
