@@ -17,9 +17,9 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			globalThis.Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
 		)
 	}
-	extend<R extends V & object>(properties: Properties<Omit<R, keyof V>>, name?: string): Class<R> {
+	extend<R extends V>(properties: Properties<Omit<R, keyof V>>, name?: string): Class<R> {
 		return Class.create(
-			{ ...this.properties, ...properties } as any as Properties<R>,
+			{ ...this.properties, ...properties } as unknown as Properties<R>,
 			name ?? `${this.name} & ${Properties.getName(properties)}`
 		)
 	}
@@ -35,12 +35,13 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`
 		)
 	}
-	override bind(type: this): this {
+	override bind(type: Partial<this>): this {
 		const result = super.bind(type)
-		result.extend = type.extend.bind(result)
-		result.omit = type.omit.bind(result)
-		result.pick = type.pick.bind(result)
-		return result
+		return Object.assign(result, {
+			extend: (type?.extend ?? this.extend).bind(result),
+			omit: (type?.omit ?? this.omit).bind(result),
+			pick: (type?.pick ?? this.pick).bind(result),
+		})
 	}
 	static create<V extends object = Record<string, any>>(properties: Readonly<Properties<V>>, name?: string): Class<V> {
 		return new Class<V>(properties, name)
