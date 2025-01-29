@@ -1,6 +1,6 @@
 import { Base } from "../Base"
 
-export class Class<V, B extends Base<V, B>> extends Base<V[], Class<V, B>> {
+export class Class<V, B extends Base<V>> extends Base<V[]> {
 	readonly class = "array"
 	override readonly name: string
 	private constructor(readonly base: B, name?: string) {
@@ -14,7 +14,7 @@ export class Class<V, B extends Base<V, B>> extends Base<V[], Class<V, B>> {
 	// restrict(...condition: Array.Condition): Array<V, B> {
 	// 	return Array.Condition.restrict(this, ...condition)
 	// }
-	static create<V = unknown, B extends Base<V, B> = Base<V>>(base: B, name?: string): Class<V, B> {
-		return Base.bind(new Class<V, B>(base, name))
+	static create<V = unknown, B extends Base<V> = Base<V>>(base: B, name?: string): Class<V, B> {
+		return new Class<V, B>(base, name)
 	}
 }

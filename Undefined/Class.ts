@@ -1,6 +1,6 @@
 import { Base } from "../Base"
 
-export class Class<V extends undefined = undefined> extends Base<undefined, Class<V>> {
+export class Class<V extends undefined = undefined> extends Base<undefined> {
 	readonly class = "undefined"
 	private constructor(readonly name: string = "undefined") {
 		super("Value has to be undefined.")
@@ -9,6 +9,6 @@ export class Class<V extends undefined = undefined> extends Base<undefined, Clas
 		return value === undefined
 	}
 	static create<V extends undefined = undefined>(name?: string): Class<V> {
-		return Base.bind(new Class<V>())
+		return new Class<V>()
 	}
 }

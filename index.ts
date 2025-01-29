@@ -17,20 +17,16 @@ import { Type as islyType } from "./Type"
 import { Undefined as islyUndefined } from "./Undefined"
 import { Class as UndefinedClass } from "./Undefined/Class"
 
-export function isly<V = unknown, B extends Base<V, B> = Base<V>>(
-	type: "array",
-	base: B,
-	name?: string
-): isly.Array<V, B>
+export function isly<V = unknown, B extends Base<V> = Base<V>>(type: "array", base: B, name?: string): isly.Array<V, B>
 export function isly<V extends boolean = boolean>(type: "boolean", allowed?: V): isly.Boolean<V>
 export function isly<V extends number = number>(type: "number"): isly.Number<V>
 export function isly<V extends number = number>(type: "number", ...condition: isly.Number.Condition<V>): isly.Number<V>
-export function isly<V extends any | undefined = unknown | undefined, B extends Base<V, B> = Base<V>>(
+export function isly<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 	type: "optional",
 	base: B,
 	name?: string
 ): isly.Optional<V, B>
-export function isly<V extends any | undefined = unknown | undefined, B extends Base<V, B> = Base<V>>(
+export function isly<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 	type: "readonly",
 	base: B,
 	name?: string
@@ -49,7 +45,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 		} as Record<isly.Class, (...argument: any[]) => isly.Type>
 	)[type](...properties)
 	// override methods that otherwise requires circular dependencies
-	return Object.assign(result, {
+	return Object.assign(result.bind(result), {
 		get definition(): Definition {
 			return Definition.create(result)
 		},

@@ -1,7 +1,7 @@
 import { Base } from "../Base"
 import { Properties } from "./Properties"
 
-export class Class<V extends object = Record<string, any>> extends Base<V, Class<V>> {
+export class Class<V extends object = Record<string, any>> extends Base<V> {
 	override readonly class = "object"
 	private constructor(
 		readonly properties: Readonly<Properties<V>>,
@@ -25,23 +25,25 @@ export class Class<V extends object = Record<string, any>> extends Base<V, Class
 	}
 	omit<K extends keyof V>(omits: readonly K[], name?: string): Class<Omit<V, K>> {
 		return Class.create(
-			Class.omit<Properties<V>, K>((this as Class<V>).properties, omits) as Properties<Omit<V, K>>,
+			Class.omit<Properties<V>, K>(this.properties, omits) as Properties<Omit<V, K>>,
 			name ?? `Omit<${name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`
 		)
 	}
 	pick<K extends keyof V>(picks: readonly K[], name?: string): Class<Pick<V, K>> {
 		return Class.create(
-			Class.pick<Properties<V>, K>((this as Class<V>).properties, picks) as Properties<Pick<V, K>>,
+			Class.pick<Properties<V>, K>(this.properties, picks) as Properties<Pick<V, K>>,
 			name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`
 		)
 	}
+	override bind(type: this): this {
+		const result = super.bind(type)
+		result.extend = type.extend.bind(result)
+		result.omit = type.omit.bind(result)
+		result.pick = type.pick.bind(result)
+		return result
+	}
 	static create<V extends object = Record<string, any>>(properties: Readonly<Properties<V>>, name?: string): Class<V> {
-		const result = Base.bind(new Class<V>(properties, name))
-		return globalThis.Object.assign(result, {
-			extend: result.extend.bind(result),
-			omit: result.omit.bind(result),
-			pick: result.pick.bind(result),
-		})
+		return new Class<V>(properties, name)
 	}
 }
 export namespace Class {

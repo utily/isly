@@ -1,6 +1,6 @@
 import { Base } from "../Base"
 
-export class Class<V, B extends Base<V, B>> extends Base<V | undefined, Class<V, B>> {
+export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 	readonly class = "optional"
 	private constructor(readonly base: B, readonly name: string = `${base.name} | undefined`) {
 		super("Value is optional i.e. undefined or base type.")
@@ -11,7 +11,7 @@ export class Class<V, B extends Base<V, B>> extends Base<V | undefined, Class<V,
 	override extract(value: V | undefined | any): V | undefined {
 		return value === undefined ? undefined : this.base.extract(value)
 	}
-	static create<V, B extends Base<V, B>>(base: B, name?: string): Class<V, B> {
-		return Base.bind(new Class<V, B>(base, name))
+	static create<V, B extends Base<V>>(base: B, name?: string): Class<V, B> {
+		return new Class<V, B>(base, name)
 	}
 }

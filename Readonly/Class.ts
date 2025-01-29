@@ -1,9 +1,6 @@
 import { Base } from "../Base"
 
-export class Class<V extends any | undefined = unknown | undefined, B extends Base<V, B> = Base<V>> extends Base<
-	V,
-	Class<V, B>
-> {
+export class Class<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "readonly"
 	private constructor(readonly base: B, readonly name: string = `Readonly<${base.name}>`) {
 		super("Readonly version of base type.")
@@ -14,10 +11,10 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	override extract(value: V | any): V | undefined {
 		return this.base.extract(value)
 	}
-	static create<V extends any | undefined = unknown | undefined, B extends Base<V, B> = Base<V, any>>(
+	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 		base: B,
 		name?: string
 	): Class<V, B> {
-		return Base.bind(new Class<V, B>(base, name))
+		return new Class<V, B>(base, name)
 	}
 }

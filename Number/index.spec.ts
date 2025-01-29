@@ -49,6 +49,16 @@ describe("isly.number", () => {
 		expect(numberType.is(-13.37)).toEqual(false)
 		// expect(numberType.flaw({})).toEqual({ type: "number", condition: "> 0" })
 	})
+	it('isly.number().restrict("positive")', () => {
+		const { verify, description } = isly.Number.Condition.getVerifier("positive")
+		const type = isly("number").restrict(verify, "positive")
+		const d = type.describe(description)
+		expect(type.is(13.37)).toEqual(true)
+		expect(type.is(-13.37)).toEqual(false)
+		expect(d.is(13.37)).toEqual(true)
+		expect(d.is(-13.37)).toEqual(false)
+		// expect(numberType.flaw({})).toEqual({ type: "number", condition: "> 0" })
+	})
 	// it('isly.number(["positive", "integer"])', () => {
 	// 	const numberType = isly("number", "positive").restrict("integer")
 	// 	expect(numberType.is(13)).toEqual(true)
