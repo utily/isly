@@ -53,12 +53,3 @@ export namespace Class {
 		return globalThis.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
 	}
 }
-type MergeProperties<T, U> = {
-	[K in keyof T | keyof U]: K extends keyof T
-		? K extends keyof U
-			? T[K] | U[K] // Allow both types instead of `never`
-			: T[K]
-		: K extends keyof U
-		? U[K]
-		: never
-}
