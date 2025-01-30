@@ -1,5 +1,5 @@
-import { Base } from "Base"
 import type { Array } from "./Array"
+import { Base } from "./Base"
 import type { Boolean } from "./Boolean"
 import type { Number } from "./Number"
 import type { Optional } from "./Optional"

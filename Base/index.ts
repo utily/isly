@@ -23,17 +23,17 @@ export abstract class Base<V = unknown> {
 	}
 	restrict(verify: (value: V) => boolean, condition: string, name?: string): this {
 		const previous = this.is
-		return this.bind({
+		return this.modify({
 			is: (value: V | any): value is V => previous(value) && verify(value),
 			condition: [...(this.condition ?? []), condition],
 			name: name ?? this.name,
-		})
+		} as Partial<this>)
 	}
 	rename(name: string): this {
-		return this.bind({ name })
+		return this.modify({ name } as Partial<this>)
 	}
 	describe(description: string): this {
-		return this.bind({ description })
+		return this.modify({ description } as Partial<this>)
 	}
 	optional(name?: string): Optional<V | undefined, this> {
 		throw new Error("Not implemented")
@@ -53,22 +53,21 @@ export abstract class Base<V = unknown> {
 			}
 		)
 	}
-	bind(changes?: any): this {
-		// TODO: why can't we use Partial<this> instead?
+	modify(changes?: Partial<this>): this {
 		const result = { ...this }
 		return Object.assign(result, {
 			...changes,
-			is: (changes?.is ?? this.is).bind(result),
-			get: (changes?.get ?? this.get).bind(result),
-			extract: (changes?.extract ?? this.extract).bind(result),
-			restrict: (changes?.restrict ?? this.restrict).bind(result),
-			rename: (changes?.rename ?? this.rename).bind(result),
-			describe: (changes?.describe ?? this.describe).bind(result),
-			optional: (changes?.optional ?? this.optional).bind(result),
-			readonly: (changes?.readonly ?? this.readonly).bind(result),
-			array: (changes?.array ?? this.array).bind(result),
-			flawed: (changes?.flawed ?? this.flawed).bind(result),
-			bind: (changes?.bind ?? this.bind).bind(result),
+			is: changes?.is ?? this.is,
+			get: changes?.get ?? this.get,
+			extract: changes?.extract ?? this.extract,
+			restrict: changes?.restrict ?? this.restrict,
+			rename: changes?.rename ?? this.rename,
+			describe: changes?.describe ?? this.describe,
+			optional: changes?.optional ?? this.optional,
+			readonly: changes?.readonly ?? this.readonly,
+			array: changes?.array ?? this.array,
+			flawed: changes?.flawed ?? this.flawed,
+			modify: changes?.modify ?? this.modify,
 		})
 	}
 }

@@ -1,4 +1,4 @@
-import { Base } from "Base"
+import { Base } from "../Base"
 
 export class Class<V extends boolean> extends Base<V> {
 	readonly class = "boolean"
@@ -12,12 +12,11 @@ export class Class<V extends boolean> extends Base<V> {
 	// restrict(value: V, name?: string): Boolean<V>
 	// restrict(verify: (value: V) => boolean, condition: string, name?: string): Boolean<V>
 	static create<V extends boolean>(allowed?: V): Class<V> {
-		return new Class<V>()
-		// const result = Base.bind(new Class<V>(allowed))
-		// return allowed == undefined
-		// 	? result
-		// 	: result
-		// 			.restrict(value => value == allowed, `equals ${allowed}`, allowed.toString())
-		// 			.describe(`Value has to be ${allowed}.`)
+		const result = new Class<V>(allowed)
+		return allowed == undefined
+			? result
+			: result
+					.restrict(value => value == allowed, `equals ${allowed}`, allowed.toString())
+					.describe(`Value has to be ${allowed}.`)
 	}
 }

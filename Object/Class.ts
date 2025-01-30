@@ -46,12 +46,12 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			}
 		)
 	}
-	override bind(type: Partial<this>): this {
-		const result = super.bind(type)
+	override modify(type?: Partial<this>): this {
+		const result = super.modify(type)
 		return Object.assign(result, {
-			extend: (type?.extend ?? this.extend).bind(result),
-			omit: (type?.omit ?? this.omit).bind(result),
-			pick: (type?.pick ?? this.pick).bind(result),
+			extend: type?.extend ?? this.extend,
+			omit: type?.omit ?? this.omit,
+			pick: type?.pick ?? this.pick,
 		})
 	}
 	static create<V extends object = Record<string, any>>(properties: Properties<V>, name?: string): Class<V> {

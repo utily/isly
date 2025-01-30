@@ -74,7 +74,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 		} as Record<isly.Class, (...argument: any[]) => isly.Type>
 	)[type](...properties)
 	// override methods that otherwise requires circular dependencies
-	return result.bind({
+	return result.modify({
 		get definition(): Definition {
 			return Definition.create(result)
 		},
