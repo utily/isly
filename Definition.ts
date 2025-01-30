@@ -3,7 +3,7 @@ import type { Array } from "./Array"
 import { Base } from "./Base"
 import type { Boolean } from "./Boolean"
 import type { Number } from "./Number"
-import { Object2 } from "./Object"
+import { islyObject } from "./Object"
 import { Properties } from "./Object/Properties"
 import type { Optional } from "./Optional"
 import type { Readonly } from "./Readonly"
@@ -18,7 +18,7 @@ export type Definition =
 	| Array.Definition
 	| Boolean.Definition
 	| Number.Definition
-	| Object2.Definition
+	| islyObject.Definition
 	| Optional.Definition
 	| Readonly.Definition
 	| String.Definition
@@ -37,7 +37,7 @@ export namespace Definition {
 		array: Array.Definition
 		boolean: Boolean.Definition
 		number: Number.Definition
-		object: Object2.Definition
+		object: islyObject.Definition
 		optional: Optional.Definition
 		readonly: Readonly.Definition
 		string: String.Definition
@@ -54,7 +54,7 @@ export namespace Definition {
 			...base(type),
 			...(type.allowed ? { allowed: [...type.allowed] } : {}),
 		}),
-		object: (type: Object2): Object2.Definition => ({
+		object: (type: islyObject): islyObject.Definition => ({
 			...base(type),
 			properties: globalThis.Object.fromEntries(
 				Properties.entries(type.properties).map(([p, t]) => [p, transformer.transform(t)])
