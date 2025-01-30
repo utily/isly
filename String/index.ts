@@ -1,9 +1,9 @@
 import { Class } from "./Class"
-import { Restriction as StringCondition } from "./Restriction"
 import { Definition as StringDefinition } from "./Definition"
+import { Restriction as StringRestriction } from "./Restriction"
 
 export type String<V extends string = string> = Class<V>
 export namespace String {
 	export import Definition = StringDefinition
-	export import Condition = StringCondition
+	export import Restriction = StringRestriction
 }

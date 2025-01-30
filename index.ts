@@ -22,10 +22,17 @@ import { Class as UndefinedClass } from "./Undefined/Class"
 import { Union as islyUnion, Union } from "./Union"
 import { Class as UnionClass } from "./Union/Class"
 
-export function isly<V = unknown, B extends Base<V> = Base<V>>(type: "array", base: B, name?: string): isly.Array<V, B>
+export function isly<V = unknown, B extends Base<V> = Base<V>>(
+	type: "array",
+	base: B,
+	...restriction: isly.Array.Restriction | []
+): isly.Array<V, B>
 export function isly<V extends boolean = boolean>(type: "boolean", allowed?: V): isly.Boolean<V>
 export function isly<V extends number = number>(type: "number"): isly.Number<V>
-export function isly<V extends number = number>(type: "number", ...condition: isly.Number.Restriction<V>): isly.Number<V>
+export function isly<V extends number = number>(
+	type: "number",
+	...restriction: isly.Number.Restriction<V>
+): isly.Number<V>
 export function isly<V extends object = Record<string, any>>(
 	type: "object",
 	properties: isly.Object.Properties<V>,
@@ -42,7 +49,10 @@ export function isly<V extends any | undefined = unknown | undefined, B extends 
 	name?: string
 ): isly.Readonly<V, B>
 export function isly<V extends string = string>(type: "string"): isly.String<V>
-export function isly<V extends string = string>(type: "string", ...condition: isly.String.Condition<V>): isly.String<V>
+export function isly<V extends string = string>(
+	type: "string",
+	...restriction: isly.String.Restriction<V>
+): isly.String<V>
 export function isly<V extends undefined = undefined>(type: "undefined", name?: string): isly.Undefined<V>
 export function isly<T extends A | B, A, B>(type: "union", ...types: [Base<A>, Base<B>]): Union<T>
 export function isly<T extends A | B | C, A, B, C>(type: "union", ...types: [Base<A>, Base<B>, Base<C>]): Union<T>
@@ -78,8 +88,8 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 		get definition(): isly.Definition {
 			return isly.Definition.create(result)
 		},
-		array(name?: string): isly.Array {
-			return isly("array", result, name)
+		array(...restriction: isly.Array.Restriction | []): isly.Array {
+			return isly("array", result, ...restriction)
 		},
 		optional(name?: string): isly.Optional {
 			return isly("optional", result, name)

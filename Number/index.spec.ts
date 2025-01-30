@@ -55,29 +55,27 @@ describe("isly.number", () => {
 		})
 	})
 	it('isly("number").restrict("positive")', () => {
-		const { verify, condition: description } = isly.Number.Restriction.getVerifier("positive")
-		const type = isly("number").restrict(verify, "positive")
-		const d = type.describe(description)
+		const type = isly("number", "positive")
 		expect(type.is(13.37)).toEqual(true)
 		expect(type.is(-13.37)).toEqual(false)
-		expect(d.is(13.37)).toEqual(true)
-		expect(d.is(-13.37)).toEqual(false)
 		expect(type.flawed({})).toEqual({
 			name: "number",
 			condition: ["positive"],
 			description: "Any finite numeric value.",
 		})
 	})
-	// it('isly.number(["positive", "integer"])', () => {
-	// 	const numberType = isly("number", "positive").restrict("integer")
-	// 	expect(numberType.is(13)).toEqual(true)
-
-	// 	expect(numberType.is(-13)).toEqual(false)
-	// 	expect(numberType.is(13.37)).toEqual(false)
-	// 	expect(numberType.is(-13.37)).toEqual(false)
-
-	// 	// expect(numberType.flaw({})).toEqual({ type: "number", condition: "> 0 & Number.isInteger" })
-	// })
+	it('isly("number", "positive").restrict("integer"])', () => {
+		const numberType = isly("number", "positive").restrict("integer")
+		expect(numberType.is(13)).toEqual(true)
+		expect(numberType.is(-13)).toEqual(false)
+		expect(numberType.is(13.37)).toEqual(false)
+		expect(numberType.is(-13.37)).toEqual(false)
+		expect(numberType.flawed({})).toEqual({
+			name: "number",
+			condition: ["positive", "integer"],
+			description: "Any finite numeric value.",
+		})
+	})
 	it('isly("number", "value", [1, 2, 3]).is(2) == true', () =>
 		expect(isly("number", "value", [1, 2, 3]).is(2)).toEqual(true))
 	it('isly("number", "value", [1, 2, 3]).is(0) == false', () =>

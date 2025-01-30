@@ -1,6 +1,7 @@
 import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import { Name } from "../Name"
+import { Restriction } from "./Restriction"
 
 export class Class<V, B extends Base<V>> extends Base<V[]> {
 	readonly class = "array"
@@ -28,10 +29,17 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	override prune(value: V[] | any): V[] | undefined {
 		return this.is(value) ? (value.map(this.base.prune.bind(this.base)) as V[]) : undefined
 	}
-	// restrict(...condition: Array.Condition): Array<V, B> {
-	// 	return Array.Condition.restrict(this, ...condition)
-	// }
-	static create<V = unknown, B extends Base<V> = Base<V>>(base: B, name?: string): Class<V, B> {
-		return new Class<V, B>(base, name)
+	override restrict(...restriction: Restriction): this
+	override restrict(verify: (value: V[]) => boolean, condition: string, name?: string): this
+	override restrict(...restriction: Restriction | [verify: (value: V[]) => boolean, condition: string, name?: string]) {
+		return restriction.length > 2 && typeof restriction[0] == "function"
+			? super.restrict(...restriction)
+			: Restriction.restrict(this, ...(restriction as Restriction))
+	}
+	static create<V = unknown, B extends Base<V> = Base<V>>(base: B, ...restriction: Restriction | []): Class<V, B> {
+		const result: Class<V, B> = new Class<V, B>(base)
+		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
+			? result
+			: Restriction.restrict(result, ...restriction)
 	}
 }

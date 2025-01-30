@@ -52,7 +52,7 @@ export abstract class Base<V = unknown> {
 	readonly(name?: string): Readonly<V, this> {
 		throw new Error("Not implemented")
 	}
-	array(name?: string): Array<V, this> {
+	array(...restriction: Array.Restriction | []): Array<V, this> {
 		throw new Error("Not implemented")
 	}
 	modify(changes?: Partial<this>): this {

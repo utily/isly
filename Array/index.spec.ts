@@ -18,9 +18,7 @@ describe("isly.Array", () => {
 		const type = isly("array", isly("number"))
 		expect(type.is([])).toBe(true)
 		expect(type.is([1, 2, 3])).toBe(true)
-
 		expect(type.is(0)).toBe(false)
-
 		expect(type.flawed(42)).toEqual({ name: "number[]", description: "Array of number[].", flaws: [] })
 		expect(type.flawed(["test", true])).toEqual({ name: "number[]", description: "Array of number[].", flaws: [] })
 		expect(type.flawed([1, 2, undefined])).toEqual({
