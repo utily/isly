@@ -1,16 +1,17 @@
-import { Any } from "./Any"
-import { Array } from "./Array"
-import { Base } from "./Base"
-import { Boolean } from "./Boolean"
-import { Class } from "./Class"
-import { Number } from "./Number"
-import { islyObject } from "./Object"
-import { Optional } from "./Optional"
-import { Readonly } from "./Readonly"
-import { String } from "./String"
-import { Tuple } from "./Tuple"
-import { Undefined } from "./Undefined"
-import { Union } from "./Union"
+import type { Any } from "./Any"
+import type { Array } from "./Array"
+import type { Base } from "./Base"
+import type { Boolean } from "./Boolean"
+import type { Class } from "./Class"
+import type { Function } from "./Function"
+import type { Number } from "./Number"
+import type { islyObject } from "./Object"
+import type { Optional } from "./Optional"
+import type { Readonly } from "./Readonly"
+import type { String } from "./String"
+import type { Tuple } from "./Tuple"
+import type { Undefined } from "./Undefined"
+import type { Union } from "./Union"
 
 export type Type = Base // Omit<Base, "constructor"> // Array | Boolean | Number | Object | Optional | Readonly | Undefined
 export namespace Type {
@@ -19,7 +20,7 @@ export namespace Type {
 		array: Array
 		boolean: Boolean
 		// from: Undefined
-		// function: Undefined
+		function: Function
 		// instance: Undefined
 		// intersection: Undefined
 		// null: Undefined

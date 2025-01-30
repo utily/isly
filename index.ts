@@ -8,6 +8,8 @@ import { Class as BooleanClass } from "./Boolean/Class"
 import { Class as islyClass } from "./Class"
 import { Definition as islyDefinition } from "./Definition"
 import { Flaw as islyFlaw } from "./Flaw"
+import { Function as islyFunction } from "./Function"
+import { Class as FunctionClass } from "./Function/Class"
 import { Number as islyNumber } from "./Number"
 import { Class as NumberClass } from "./Number/Class"
 import { islyObject } from "./Object"
@@ -33,6 +35,8 @@ export function isly<V = unknown, B extends Base<V> = Base<V>>(
 	...restriction: isly.Array.Restriction | []
 ): isly.Array<V, B>
 export function isly<V extends boolean = boolean>(type: "boolean", allowed?: V): isly.Boolean<V>
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+export function isly<V extends Function = Function>(type: "function", name?: string): isly.Function<V>
 export function isly<V extends number = number>(type: "number"): isly.Number<V>
 export function isly<V extends number = number>(
 	type: "number",
@@ -81,6 +85,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 			any: AnyClass.create,
 			array: ArrayClass.create,
 			boolean: BooleanClass.create,
+			function: FunctionClass.create,
 			number: NumberClass.create,
 			object: ObjectClass.create,
 			optional: OptionalClass.create,
@@ -115,6 +120,7 @@ export namespace isly {
 	export import Class = islyClass
 	export import Definition = islyDefinition
 	export import Flaw = islyFlaw
+	export import Function = islyFunction
 	export import Number = islyNumber
 	export import Object = islyObject
 	export import Optional = islyOptional

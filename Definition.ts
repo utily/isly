@@ -2,6 +2,7 @@ import type { Any } from "./Any"
 import type { Array } from "./Array"
 import { Base } from "./Base"
 import type { Boolean } from "./Boolean"
+import type { Function } from "./Function"
 import type { Number } from "./Number"
 import { islyObject } from "./Object"
 import { Properties } from "./Object/Properties"
@@ -18,6 +19,7 @@ export type Definition =
 	| Any.Definition
 	| Array.Definition
 	| Boolean.Definition
+	| Function.Definition
 	| Number.Definition
 	| islyObject.Definition
 	| Optional.Definition
@@ -38,6 +40,7 @@ export namespace Definition {
 		any: Any.Definition
 		array: Array.Definition
 		boolean: Boolean.Definition
+		function: Function.Definition
 		number: Number.Definition
 		object: islyObject.Definition
 		optional: Optional.Definition
@@ -53,6 +56,7 @@ export namespace Definition {
 			...base(type),
 			...(type.allowed != undefined ? { allowed: type.allowed } : {}),
 		}),
+		function: (type: Function): Function.Definition => ({ ...base(type) }),
 		number: (type: Number): Number.Definition => ({
 			...base(type),
 			...(type.allowed ? { allowed: [...type.allowed] } : {}),

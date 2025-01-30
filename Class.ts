@@ -5,7 +5,7 @@ export namespace Class {
 		"array",
 		"boolean",
 		// "from",
-		// "function",
+		"function",
 		// "instance",
 		// "intersection",
 		// "null",
