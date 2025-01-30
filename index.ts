@@ -1,3 +1,5 @@
+import { Any as islyAny } from "./Any"
+import { Class as AnyClass } from "./Any/Class"
 import { Array as islyArray } from "./Array"
 import { Class as ArrayClass } from "./Array/Class"
 import { Base } from "./Base"
@@ -22,6 +24,7 @@ import { Class as UndefinedClass } from "./Undefined/Class"
 import { Union as islyUnion, Union } from "./Union"
 import { Class as UnionClass } from "./Union/Class"
 
+export function isly<V = any>(type: "any", name?: string): isly.Any<V>
 export function isly<V = unknown, B extends Base<V> = Base<V>>(
 	type: "array",
 	base: B,
@@ -72,6 +75,7 @@ export function isly<V>(type: "union", ...types: Base<V>[]): Union<V>
 export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 	const result = (
 		{
+			any: AnyClass.create,
 			array: ArrayClass.create,
 			boolean: BooleanClass.create,
 			number: NumberClass.create,
@@ -101,7 +105,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 }
 
 export namespace isly {
-	// Don't export create functions
+	export import Any = islyAny
 	export import Array = islyArray
 	export import Boolean = islyBoolean
 	export import Class = islyClass

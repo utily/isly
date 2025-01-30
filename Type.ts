@@ -1,3 +1,4 @@
+import { Any } from "./Any"
 import { Array } from "./Array"
 import { Base } from "./Base"
 import { Boolean } from "./Boolean"
@@ -13,7 +14,7 @@ import { Union } from "./Union"
 export type Type = Base // Omit<Base, "constructor"> // Array | Boolean | Number | Object2 | Optional | Readonly | Undefined
 export namespace Type {
 	export interface FromClass extends Record<Class, Type> {
-		// any: Undefined
+		any: Any
 		array: Array
 		boolean: Boolean
 		// from: Undefined

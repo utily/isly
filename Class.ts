@@ -1,7 +1,7 @@
 export type Class = typeof Class.values[number]
 export namespace Class {
 	export const values = [
-		// "any",
+		"any",
 		"array",
 		"boolean",
 		// "from",

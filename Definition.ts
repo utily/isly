@@ -1,3 +1,4 @@
+import type { Any } from "./Any"
 import type { Array } from "./Array"
 import { Base } from "./Base"
 import type { Boolean } from "./Boolean"
@@ -13,6 +14,7 @@ import type { Undefined } from "./Undefined"
 import type { Union } from "./Union"
 
 export type Definition =
+	| Any.Definition
 	| Array.Definition
 	| Boolean.Definition
 	| Number.Definition
@@ -31,6 +33,7 @@ export namespace Definition {
 		}
 	}
 	const transformer = Transformer.create<{
+		any: Any.Definition
 		array: Array.Definition
 		boolean: Boolean.Definition
 		number: Number.Definition
@@ -41,6 +44,7 @@ export namespace Definition {
 		undefined: Undefined.Definition
 		union: Union.Definition
 	}>({
+		any: (type: Any): Any.Definition => ({ ...base(type) }),
 		array: (type: Array): Array.Definition => ({ ...base(type), base: transformer.transform(type.base) }),
 		boolean: (type: Boolean): Boolean.Definition => ({
 			...base(type),
