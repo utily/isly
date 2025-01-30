@@ -1,7 +1,7 @@
+import { Base } from "../Base"
 import { Name } from "../Name"
 import { Number } from "../Number"
 import { Verifier } from "../Verifier"
-import type { String } from "."
 
 export type Restriction<V extends string = string> =
 	| [property: "length", ...Number.Restriction]
@@ -10,13 +10,11 @@ export type Restriction<V extends string = string> =
 
 export namespace Restriction {
 	export type Property = "length" | "value"
-	export function restrict<V extends string = string>(type: String<V>, ...restriction: Restriction): String<V> {
-		const { condition, verify, allowed } = getVerifier<V>(...restriction)
-		return type.modify({
-			...(allowed ? { name: Name.fromString(allowed), description: `One of: ${allowed.join(", ")}.` } : {}),
-			condition: [...(type.condition ?? []), condition],
-			is: (value: V | any): value is V => type.is(value) && verify(value),
-		})
+	export function convert<V extends string = string>(restriction: Restriction<V>): Base.Restriction<V> {
+		const { verify, condition, allowed } = getVerifier<V>(...restriction)
+		return allowed
+			? [verify, condition, Name.fromString(allowed), `One of: ${allowed.join(", ")}.`]
+			: [verify, condition]
 	}
 	export function getVerifier<V extends string = string>(...[property, ...argument]: Restriction): Verifier<V> {
 		const argument0 = argument[0]

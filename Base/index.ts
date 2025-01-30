@@ -6,6 +6,7 @@ import { Name } from "../Name"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
 import { Definition as BaseDefinition } from "./Definition"
+import { Restriction as BaseRestriction } from "./Restriction"
 
 export abstract class Base<V = unknown> {
 	abstract readonly class: Class
@@ -32,12 +33,13 @@ export abstract class Base<V = unknown> {
 			}
 		)
 	}
-	restrict(verify: (value: V) => boolean, condition: string, name?: string): this {
+	restrict(...restriction: Base.Restriction): this {
 		const previous = this.is.bind(this)
 		return this.modify({
-			is: (value: V | any): value is V => previous(value) && verify(value),
-			condition: [...(this.condition ?? []), condition],
-			name: name ?? this.name,
+			is: (value: V | any): value is V => previous(value) && restriction[0](value),
+			condition: [...(this.condition ?? []), restriction[1]],
+			name: restriction[2] ?? this.name,
+			...(restriction[3] ? { description: restriction[3] } : {}),
 		} as Partial<this>)
 	}
 	rename(name: string): this {
@@ -75,4 +77,5 @@ export abstract class Base<V = unknown> {
 }
 export namespace Base {
 	export import Definition = BaseDefinition
+	export import Restriction = BaseRestriction
 }

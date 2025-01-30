@@ -1,6 +1,6 @@
+import { Base } from "../Base"
 import { Name } from "../Name"
 import { Verifier } from "../Verifier"
-import type { Number } from "."
 
 export type Restriction<V extends number = number> =
 	| [category: Exclude<Restriction.Category, "range" | "minimum" | "maximum">]
@@ -21,13 +21,11 @@ export namespace Restriction {
 		| "range"
 		| "within"
 		| "value"
-	export function restrict<V extends number = number>(type: Number<V>, ...restriction: Restriction<V>): Number<V> {
+	export function convert<V extends number = number>(restriction: Restriction<V>): Base.Restriction<V> {
 		const { verify, condition, allowed } = getVerifier<V>(...restriction)
-		return type.modify({
-			...(allowed ? { name: Name.fromNumber(allowed), description: `One of: ${allowed.join(", ")}.` } : {}),
-			condition: [...(type.condition ?? []), condition],
-			is: (value: V | any): value is V => type.is(value) && verify(value),
-		} as Number<V>)
+		return allowed
+			? [verify, condition, Name.fromNumber(allowed), `One of: ${allowed.join(", ")}.`]
+			: [verify, condition]
 	}
 	export function getVerifier<T extends number = number>(...[category, ...restriction]: Restriction<T>): Verifier<T> {
 		const verifiers: Record<Restriction.Category, (value: T) => boolean> = {

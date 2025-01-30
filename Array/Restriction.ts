@@ -8,16 +8,16 @@ export type Restriction = Restriction.Length
 export namespace Restriction {
 	export type Property = "length"
 	export type Length = [property: "length", ...Number.Restriction]
+	export function convert(restriction: Restriction): Base.Restriction {
+		const { verify, condition } = getVerifier(...restriction)
+		return [verify, condition]
+	}
 	export function restrict<V = unknown, B extends Base<V> = Base<V>>(
 		type: Array<V, B>,
 		...restriction: Restriction
 	): Array<V, B> {
 		const { verify, condition } = getVerifier<V>(...restriction)
-		return {
-			...type,
-			condition: [...(type.condition ?? []), condition],
-			is: (value: V | any): value is V => type.is(value) && verify(value),
-		} as unknown as Array<V, B>
+		return type.restrict(verify, condition)
 	}
 	export function getVerifier<V = unknown>(...condition: Restriction): Verifier<V[]> {
 		const conditions: Record<Property, Verifier<V[]>> = {

@@ -1,4 +1,5 @@
 import { Base } from "../Base"
+import { Restriction } from "./Restriction"
 
 export class Class<V extends boolean> extends Base<V> {
 	readonly class = "boolean"
@@ -9,14 +10,11 @@ export class Class<V extends boolean> extends Base<V> {
 	override is(value: V | any): value is V {
 		return typeof value == "boolean"
 	}
-	// restrict(value: V, name?: string): Boolean<V>
-	// restrict(verify: (value: V) => boolean, condition: string, name?: string): Boolean<V>
+	override restrict(...restriction: Restriction | Base.Restriction) {
+		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
+	}
 	static create<V extends boolean>(allowed?: V): Class<V> {
 		const result = new Class<V>(allowed)
-		return allowed == undefined
-			? result
-			: result
-					.restrict(value => value == allowed, `equals ${allowed}`, allowed.toString())
-					.describe(`Value has to be ${allowed}.`)
+		return allowed == undefined ? result : result.restrict(allowed)
 	}
 }

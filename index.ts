@@ -34,7 +34,7 @@ export function isly<V extends boolean = boolean>(type: "boolean", allowed?: V):
 export function isly<V extends number = number>(type: "number"): isly.Number<V>
 export function isly<V extends number = number>(
 	type: "number",
-	...restriction: isly.Number.Restriction<V>
+	...restriction: [] | isly.Number.Restriction<V> | Base.Restriction
 ): isly.Number<V>
 export function isly<V extends object = Record<string, any>>(
 	type: "object",
@@ -54,7 +54,7 @@ export function isly<V extends any | undefined = unknown | undefined, B extends 
 export function isly<V extends string = string>(type: "string"): isly.String<V>
 export function isly<V extends string = string>(
 	type: "string",
-	...restriction: isly.String.Restriction<V>
+	...restriction: [] | isly.String.Restriction<V> | Base.Restriction
 ): isly.String<V>
 export function isly<V extends undefined = undefined>(type: "undefined", name?: string): isly.Undefined<V>
 export function isly<T extends A | B, A, B>(type: "union", ...types: [Base<A>, Base<B>]): Union<T>
@@ -85,7 +85,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 			string: StringClass.create,
 			undefined: UndefinedClass.create,
 			union: UnionClass.create,
-		} as Record<isly.Class, (...argument: any[]) => isly.Type>
+		} as Record<isly.Class, (...properties: any[]) => isly.Type>
 	)[type](...properties)
 	// override methods that otherwise requires circular dependencies
 	return result.modify({

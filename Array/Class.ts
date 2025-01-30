@@ -29,17 +29,13 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	override prune(value: V[] | any): V[] | undefined {
 		return this.is(value) ? (value.map(this.base.prune.bind(this.base)) as V[]) : undefined
 	}
-	override restrict(...restriction: Restriction): this
-	override restrict(verify: (value: V[]) => boolean, condition: string, name?: string): this
-	override restrict(...restriction: Restriction | [verify: (value: V[]) => boolean, condition: string, name?: string]) {
-		return restriction.length > 2 && typeof restriction[0] == "function"
-			? super.restrict(...restriction)
-			: Restriction.restrict(this, ...(restriction as Restriction))
+	override restrict(...restriction: Restriction | Base.Restriction) {
+		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
 	static create<V = unknown, B extends Base<V> = Base<V>>(base: B, ...restriction: Restriction | []): Class<V, B> {
 		const result: Class<V, B> = new Class<V, B>(base)
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
-			: Restriction.restrict(result, ...restriction)
+			: result.restrict(...restriction)
 	}
 }

@@ -10,19 +10,13 @@ export class Class<V extends string> extends Base<V> {
 	is(value: V | any): value is V {
 		return typeof value == "string"
 	}
-	override restrict(...restriction: Restriction<V>): this
-	override restrict(verify: (value: V) => boolean, condition: string, name?: string): this
-	override restrict(
-		...restriction: Restriction<V> | [verify: (value: V) => boolean, condition: string, name?: string]
-	) {
-		return restriction.length > 1 && typeof restriction[0] == "function" && typeof restriction[1] == "string"
-			? super.restrict(...restriction)
-			: Restriction.restrict(this, ...(restriction as Restriction<V>))
+	override restrict(...restriction: Restriction | Base.Restriction) {
+		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
-	static create<V extends string = string>(...restriction: Restriction<V> | []): Class<V> {
+	static create<V extends string = string>(...restriction: [] | Restriction<V> | Base.Restriction): Class<V> {
 		const result = new Class<V>()
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
-			: Restriction.restrict(result, ...restriction)
+			: result.restrict(...restriction)
 	}
 }
