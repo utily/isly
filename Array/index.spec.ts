@@ -54,31 +54,31 @@ describe("isly.Array", () => {
 					{
 						index: 0,
 						name: "(42 | 1337)",
-						condition: ["value(42, 1337)"],
+						condition: ["value: [42, 1337]"],
 						description: "One of: 42, 1337.",
 					},
 					{
 						index: 2,
 						name: "(42 | 1337)",
-						condition: ["value(42, 1337)"],
+						condition: ["value: [42, 1337]"],
 						description: "One of: 42, 1337.",
 					},
 					{
 						index: 3,
 						name: "(42 | 1337)",
-						condition: ["value(42, 1337)"],
+						condition: ["value: [42, 1337]"],
 						description: "One of: 42, 1337.",
 					},
 					{
 						index: 4,
 						name: "(42 | 1337)",
-						condition: ["value(42, 1337)"],
+						condition: ["value: [42, 1337]"],
 						description: "One of: 42, 1337.",
 					},
 					{
 						index: 5,
 						name: "(42 | 1337)",
-						condition: ["value(42, 1337)"],
+						condition: ["value: [42, 1337]"],
 						description: "One of: 42, 1337.",
 					},
 				],
@@ -163,7 +163,7 @@ describe("isly.Array", () => {
 
 		expect(type.flawed(42)).toEqual({
 			name: "number[]",
-			condition: ["length.value(3)"],
+			condition: ["length.value: 3"],
 			description: "Array of number[].",
 			flaws: [
 				{
@@ -174,7 +174,7 @@ describe("isly.Array", () => {
 		})
 		expect(type.flawed([1, 2, undefined])).toEqual({
 			name: "number[]",
-			condition: ["length.value(3)"],
+			condition: ["length.value: 3"],
 			description: "Array of number[].",
 			flaws: [
 				{
@@ -186,7 +186,7 @@ describe("isly.Array", () => {
 		})
 		expect(type.flawed([1, 2, 3, 4])).toEqual({
 			name: "number[]",
-			condition: ["length.value(3)"],
+			condition: ["length.value: 3"],
 			description: "Array of number[].",
 			flaws: [],
 		})
@@ -200,7 +200,7 @@ describe("isly.Array", () => {
 
 		expect(type.flawed(42)).toEqual({
 			name: "number[]",
-			condition: ["length.range(1, 3)"],
+			condition: ["length.range: [1, 3]"],
 			description: "Array of number[].",
 			flaws: [
 				{

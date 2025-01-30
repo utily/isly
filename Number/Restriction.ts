@@ -46,7 +46,13 @@ export namespace Restriction {
 		}
 		return {
 			verify: verifiers[category],
-			condition: category + (restriction.length > 0 ? `(${restriction.join(", ")})` : ""),
+			condition:
+				category +
+				(restriction.length > 1
+					? `: [${restriction.join(", ")}]`
+					: restriction.length == 1
+					? `: ${restriction[0]}`
+					: ""),
 			allowed: category == "value" ? (restriction as T[]) : undefined,
 		}
 	}

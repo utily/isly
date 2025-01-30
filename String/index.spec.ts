@@ -66,7 +66,7 @@ describe("isly.string", () => {
 		expect(type.flawed("42")).toEqual({ name: "string", condition: ["length: 5"], description: "A string value." })
 		expect(isly("string", "length", "value", 5).flawed("42")).toEqual({
 			name: "string",
-			condition: ["length.value(5)"],
+			condition: ["length.value: 5"],
 			description: "A string value.",
 		})
 	})
