@@ -39,7 +39,7 @@ describe("isly.string", () => {
 		expect(type.flawed(42)).toEqual({ name: "'42'", condition: ["value: '42'"], description: "One of: 42." })
 		expect(isly("string", "value", ["42", "43"]).flawed("44")).toEqual({
 			name: "('42' | '43')",
-			condition: ["value: '42' | '43'"],
+			condition: ["value: ['42', '43']"],
 			description: "One of: 42, 43.",
 		})
 	})

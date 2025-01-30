@@ -29,7 +29,9 @@ export namespace Restriction {
 					  }
 					: ((allowed: V[]): Verifier<V> => ({
 							allowed,
-							condition: `value: ${allowed.map(a => `'${a}'`).join(" | ")}`,
+							condition: `value: ${
+								allowed.length == 1 ? `'${allowed[0]}'` : `[${allowed.map(a => `'${a}'`).join(", ")}]`
+							}`,
 							verify: (value: V): boolean => allowed.some(a => a == value),
 					  }))((Array.isArray(argument0) ? argument0 : argument) as V[]),
 			length: ((verifier: Verifier<number>): Verifier<V> => ({
