@@ -12,7 +12,7 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 		this.name = name
 	}
 	override is(value: V[] | any): value is V[] {
-		return globalThis.Array.isArray(value) && value.every(this.base.is)
+		return globalThis.Array.isArray(value) && value.every(this.base.is.bind(this.base))
 	}
 	override flawed(value: V[] | any): Flaw | false {
 		const result: Flaw | false = super.flawed(value)
@@ -20,9 +20,9 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 			result && {
 				...result,
 				flaws: (Array.isArray(value)
-					? value.map(this.base.flawed).map((flaw, index) => flaw && { ...flaw, index })
+					? value.map(this.base.flawed.bind(this.base)).map((flaw, index) => flaw && { ...flaw, index })
 					: [this.base.flawed(undefined)]
-				).filter((f: Flaw | false): f is Flaw => !f),
+				).filter((f: Flaw | false): f is Flaw => !!f),
 			}
 		)
 	}

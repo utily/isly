@@ -15,7 +15,7 @@ export class Class<V extends string> extends Base<V> {
 	override restrict(
 		...restriction: Restriction<V> | [verify: (value: V) => boolean, condition: string, name?: string]
 	) {
-		return restriction.length > 2 && typeof restriction[0] == "function"
+		return restriction.length > 1 && typeof restriction[0] == "function" && typeof restriction[1] == "string"
 			? super.restrict(...restriction)
 			: Restriction.restrict(this, ...(restriction as Restriction<V>))
 	}

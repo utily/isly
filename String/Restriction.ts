@@ -6,7 +6,7 @@ import type { String } from "."
 export type Restriction<V extends string = string> =
 	| [property: "length", ...Number.Restriction]
 	| [property: "value", ...V[]]
-	| [property: "value", V[]]
+	| [property: "value", V[] | RegExp]
 
 export namespace Restriction {
 	export type Property = "length" | "value"
@@ -21,11 +21,17 @@ export namespace Restriction {
 	export function getVerifier<V extends string = string>(...[property, ...argument]: Restriction): Verifier<V> {
 		const argument0 = argument[0]
 		const conditions: Record<Property, Verifier<V>> = {
-			value: ((allowed: V[]): Verifier<V> => ({
-				allowed,
-				condition: `value: ${allowed.map(a => `'${a}'`).join(" | ")}`,
-				verify: (value: V): boolean => allowed.some(a => a == value),
-			}))((Array.isArray(argument0) ? argument0 : argument) as V[]),
+			value:
+				argument0 instanceof RegExp
+					? {
+							condition: `value: ${argument0.toString()}`,
+							verify: (value: V): boolean => argument0.test(value),
+					  }
+					: ((allowed: V[]): Verifier<V> => ({
+							allowed,
+							condition: `value: ${allowed.map(a => `'${a}'`).join(" | ")}`,
+							verify: (value: V): boolean => allowed.some(a => a == value),
+					  }))((Array.isArray(argument0) ? argument0 : argument) as V[]),
 			length: ((verifier: Verifier<number>): Verifier<V> => ({
 				verify: (value: V): boolean => verifier.verify(value.length),
 				condition: "length." + verifier.condition,

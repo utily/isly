@@ -33,7 +33,7 @@ export abstract class Base<V = unknown> {
 		)
 	}
 	restrict(verify: (value: V) => boolean, condition: string, name?: string): this {
-		const previous = this.is
+		const previous = this.is.bind(this)
 		return this.modify({
 			is: (value: V | any): value is V => previous(value) && verify(value),
 			condition: [...(this.condition ?? []), condition],
