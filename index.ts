@@ -18,6 +18,8 @@ import { Readonly as islyReadonly } from "./Readonly"
 import { Class as ReadonlyClass } from "./Readonly/Class"
 import { String as islyString } from "./String"
 import { Class as StringClass } from "./String/Class"
+import { Tuple as islyTuple } from "./Tuple"
+import { Class as TupleClass } from "./Tuple/Class"
 import { Type as islyType } from "./Type"
 import { Undefined as islyUndefined } from "./Undefined"
 import { Class as UndefinedClass } from "./Undefined/Class"
@@ -56,6 +58,7 @@ export function isly<V extends string = string>(
 	type: "string",
 	...restriction: [] | isly.String.Restriction<V> | Base.Restriction
 ): isly.String<V>
+export function isly<V extends any[] = unknown[]>(type: "tuple", ...base: { [I in keyof V]: Base<V[I]> }): isly.Tuple<V>
 export function isly<V extends undefined = undefined>(type: "undefined", name?: string): isly.Undefined<V>
 export function isly<T extends A | B, A, B>(type: "union", ...types: [Base<A>, Base<B>]): Union<T>
 export function isly<T extends A | B | C, A, B, C>(type: "union", ...types: [Base<A>, Base<B>, Base<C>]): Union<T>
@@ -83,6 +86,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 			optional: OptionalClass.create,
 			readonly: ReadonlyClass.create,
 			string: StringClass.create,
+			tuple: TupleClass.create,
 			undefined: UndefinedClass.create,
 			union: UnionClass.create,
 		} as Record<isly.Class, (...properties: any[]) => isly.Type>
@@ -116,6 +120,7 @@ export namespace isly {
 	export import Optional = islyOptional
 	export import Readonly = islyReadonly
 	export import String = islyString
+	export import Tuple = islyTuple
 	export import Type = islyType
 	export import Undefined = islyUndefined
 	export import Union = islyUnion

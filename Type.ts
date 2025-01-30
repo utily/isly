@@ -8,6 +8,7 @@ import { islyObject } from "./Object"
 import { Optional } from "./Optional"
 import { Readonly } from "./Readonly"
 import { String } from "./String"
+import { Tuple } from "./Tuple"
 import { Undefined } from "./Undefined"
 import { Union } from "./Union"
 
@@ -28,7 +29,7 @@ export namespace Type {
 		readonly: Readonly
 		// record: Undefined
 		string: String
-		// tuple: Undefined
+		tuple: Tuple
 		// type: Type
 		undefined: Undefined
 		union: Union

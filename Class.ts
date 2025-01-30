@@ -15,7 +15,7 @@ export namespace Class {
 		"readonly",
 		// "record",
 		"string",
-		// "tuple",
+		"tuple",
 		// "type",
 		"undefined",
 		"union",

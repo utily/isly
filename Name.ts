@@ -18,6 +18,9 @@ export namespace Name {
 	export function fromUnion(base: Type[]): Name {
 		return fromNames(base.map(b => b.name))
 	}
+	export function fromTuple(base: Type[]): Name {
+		return `[${base.map(b => b.name).join(", ")}]`
+	}
 	export function fromArray(base: Type): Name {
 		return `${base.name}[]`
 	}

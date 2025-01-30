@@ -9,6 +9,7 @@ import type { Optional } from "./Optional"
 import type { Readonly } from "./Readonly"
 import type { String } from "./String"
 import { Transformer } from "./Transformer"
+import type { Tuple } from "./Tuple"
 import type { Type } from "./Type"
 import type { Undefined } from "./Undefined"
 import type { Union } from "./Union"
@@ -22,6 +23,7 @@ export type Definition =
 	| Optional.Definition
 	| Readonly.Definition
 	| String.Definition
+	| Tuple.Definition
 	| Undefined.Definition
 	| Union.Definition
 export namespace Definition {
@@ -41,11 +43,12 @@ export namespace Definition {
 		optional: Optional.Definition
 		readonly: Readonly.Definition
 		string: String.Definition
+		tuple: Tuple.Definition
 		undefined: Undefined.Definition
 		union: Union.Definition
 	}>({
 		any: (type: Any): Any.Definition => ({ ...base(type) }),
-		array: (type: Array): Array.Definition => ({ ...base(type), base: transformer.transform(type.base) }),
+		array: (type: Array): Array.Definition => ({ ...base(type), base: type.base.definition }),
 		boolean: (type: Boolean): Boolean.Definition => ({
 			...base(type),
 			...(type.allowed != undefined ? { allowed: type.allowed } : {}),
@@ -60,12 +63,13 @@ export namespace Definition {
 				Properties.entries(type.properties).map(([p, t]) => [p, transformer.transform(t)])
 			),
 		}),
-		optional: (type: Optional): Optional.Definition => ({ ...base(type), base: transformer.transform(type.base) }),
-		readonly: (type: Readonly): Readonly.Definition => ({ ...base(type), base: transformer.transform(type.base) }),
+		optional: (type: Optional): Optional.Definition => ({ ...base(type), base: type.base.definition }),
+		readonly: (type: Readonly): Readonly.Definition => ({ ...base(type), base: type.base.definition }),
 		string: (type: String): String.Definition => ({
 			...base(type),
 			...(type.allowed != undefined ? { allowed: type.allowed } : {}),
 		}),
+		tuple: (type: Tuple): Tuple.Definition => ({ ...base(type), base: type.base.map(b => b.definition) }),
 		undefined: (type: Undefined): Undefined.Definition => ({ ...base(type) }),
 		union: (type: Union): Union.Definition => ({ ...base(type), base: type.base.map(b => b.definition) }),
 	})
