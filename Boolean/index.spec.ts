@@ -101,5 +101,5 @@ describe("isly.boolean", () => {
 		[undefined, undefined],
 		[{}, undefined],
 		[[], undefined],
-	])("extract(%s) == %s", (input, expected) => expect(isly("boolean").extract(input)).toBe(expected))
+	])("extract(%s) == %s", (input, expected) => expect(isly("boolean").prune(input)).toBe(expected))
 })

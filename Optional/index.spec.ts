@@ -17,7 +17,7 @@ describe("isly.Optional", () => {
 	})
 	it.each([
 		["boolean | undefined", types[0]],
-		["boolean | undefined", types[1]],
+		["true | undefined", types[1]],
 		["false?", types[2]],
 	] as const)("name == %s", (expected, type) => expect(type.name).toBe(expected))
 	it.each([
@@ -50,5 +50,5 @@ describe("isly.Optional", () => {
 		[false, false],
 		[undefined, undefined],
 		["invalid", undefined],
-	])("extract(%s) == %s", (value, expected) => expect(isly("boolean").optional().extract(value)).toBe(expected))
+	])("extract(%s) == %s", (value, expected) => expect(isly("boolean").optional().prune(value)).toBe(expected))
 })

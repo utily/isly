@@ -8,8 +8,8 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	override is(value: V | any): value is V {
 		return value === undefined || this.base.is(value)
 	}
-	override extract(value: V | any): V | undefined {
-		return this.base.extract(value)
+	override prune(value: V | any): V | undefined {
+		return this.base.prune(value)
 	}
 	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 		base: B,

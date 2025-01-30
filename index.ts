@@ -4,7 +4,7 @@ import { Base } from "./Base"
 import { Boolean as islyBoolean } from "./Boolean"
 import { Class as BooleanClass } from "./Boolean/Class"
 import { Class as islyClass } from "./Class"
-import { Definition, Definition as islyDefinition } from "./Definition"
+import { Definition as islyDefinition } from "./Definition"
 import { Flaw as islyFlaw } from "./Flaw"
 import { Number as islyNumber } from "./Number"
 import { Class as NumberClass } from "./Number/Class"
@@ -25,7 +25,7 @@ import { Class as UnionClass } from "./Union/Class"
 export function isly<V = unknown, B extends Base<V> = Base<V>>(type: "array", base: B, name?: string): isly.Array<V, B>
 export function isly<V extends boolean = boolean>(type: "boolean", allowed?: V): isly.Boolean<V>
 export function isly<V extends number = number>(type: "number"): isly.Number<V>
-export function isly<V extends number = number>(type: "number", ...condition: isly.Number.Condition<V>): isly.Number<V>
+export function isly<V extends number = number>(type: "number", ...condition: isly.Number.Restriction<V>): isly.Number<V>
 export function isly<V extends object = Record<string, any>>(
 	type: "object",
 	properties: isly.Object.Properties<V>,
@@ -75,8 +75,8 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 	)[type](...properties)
 	// override methods that otherwise requires circular dependencies
 	return result.modify({
-		get definition(): Definition {
-			return Definition.create(result)
+		get definition(): isly.Definition {
+			return isly.Definition.create(result)
 		},
 		array(name?: string): isly.Array {
 			return isly("array", result, name)

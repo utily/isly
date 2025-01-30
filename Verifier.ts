@@ -1,5 +1,6 @@
 export interface Verifier<T> {
+	condition: string
 	verify: (value: T) => boolean
-	description: string
+	allowed?: T[]
 }
 export namespace Verifier {}

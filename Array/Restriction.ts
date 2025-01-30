@@ -3,29 +3,28 @@ import { Number } from "../Number"
 import { Verifier } from "../Verifier"
 import type { Array } from "."
 
-export type Condition = Condition.Length
+export type Restriction = Restriction.Length
 
-export namespace Condition {
+export namespace Restriction {
 	export type Property = "length"
-	export type Length = [property: "length", ...Number.Condition]
+	export type Length = [property: "length", ...Number.Restriction]
 	export function restrict<V = unknown, B extends Base<V> = Base<V>>(
 		type: Array<V, B>,
-		...condition: Condition
+		...restriction: Restriction
 	): Array<V, B> {
-		const { verify, description } = getVerifier<V>(...condition)
+		const { verify, condition } = getVerifier<V>(...restriction)
 		return {
 			...type,
 			condition: [...(type.condition ?? []), condition],
-			description,
 			is: (value: V | any): value is V => type.is(value) && verify(value),
 		} as unknown as Array<V, B>
 	}
-	export function getVerifier<V = unknown>(...condition: Condition): Verifier<V[]> {
+	export function getVerifier<V = unknown>(...condition: Restriction): Verifier<V[]> {
 		const conditions: Record<Property, Verifier<V[]>> = {
 			length: ((verifier: Verifier<number>): Verifier<V[]> => ({
 				verify: (value: V[]): boolean => verifier.verify(value.length),
-				description: "length." + verifier.description,
-			}))(Number.Condition.getVerifier(...(condition.slice(1) as Number.Condition))),
+				condition: "length." + verifier.condition,
+			}))(Number.Restriction.getVerifier(...(condition.slice(1) as Number.Restriction))),
 		}
 		return conditions[condition[0]]
 	}

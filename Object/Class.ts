@@ -16,6 +16,21 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			globalThis.Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
 		)
 	}
+	override prune(value: V | any): V | undefined {
+		return this.is(value) ? Properties.prune(this.properties, value) : undefined
+	}
+	override flawed(value: V | any): Flaw | false {
+		const result: Flaw | false = super.flawed(value)
+		return (
+			result && {
+				...result,
+				flaws: Object.entries<Type>(this.properties)
+					.map(([property, type]) => [property, type.flawed(value[property])] as const)
+					.map(([property, flaw]) => flaw && ({ ...flaw, property } as Flaw))
+					.filter((f: Flaw | false): f is Flaw => !f),
+			}
+		)
+	}
 	extend<R extends object = Record<string, any>>(properties: Properties<R>, name?: string): Class<V & R> {
 		return Class.create(
 			{ ...this.properties, ...properties } as Properties<V & R>,
@@ -32,18 +47,6 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		return Class.create(
 			Class.pick<Properties<V>, K>(this.properties, picks) as Properties<Pick<V, K>>,
 			name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`
-		)
-	}
-	override flawed(value: V | any): Flaw | false {
-		const result: Flaw | false = super.flawed(value)
-		return (
-			result && {
-				...result,
-				flaws: Object.entries<Type>(this.properties)
-					.map(([property, type]) => [property, type.flawed(value[property])] as const)
-					.map(([property, flaw]) => flaw && ({ ...flaw, property } as Flaw))
-					.filter((f: Flaw | false): f is Flaw => !f),
-			}
 		)
 	}
 	override modify(type?: Partial<this>): this {

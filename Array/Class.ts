@@ -1,15 +1,16 @@
-import { Flaw } from "Flaw"
 import { Base } from "../Base"
+import { Flaw } from "../Flaw"
+import { Name } from "../Name"
 
 export class Class<V, B extends Base<V>> extends Base<V[]> {
 	readonly class = "array"
 	override readonly name: string
 	private constructor(readonly base: B, name?: string) {
-		name = name ?? `${base.name}[]`
+		name = name ?? Name.fromArray(base)
 		super(`Array of ${name}.`)
 		this.name = name
 	}
-	is(value: V[] | any): value is V[] {
+	override is(value: V[] | any): value is V[] {
 		return globalThis.Array.isArray(value) && value.every(this.base.is)
 	}
 	override flawed(value: V[] | any): Flaw | false {
@@ -23,6 +24,9 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 				).filter((f: Flaw | false): f is Flaw => !f),
 			}
 		)
+	}
+	override prune(value: V[] | any): V[] | undefined {
+		return this.is(value) ? (value.map(this.base.prune.bind(this.base)) as V[]) : undefined
 	}
 	// restrict(...condition: Array.Condition): Array<V, B> {
 	// 	return Array.Condition.restrict(this, ...condition)

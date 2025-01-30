@@ -1,5 +1,5 @@
 import { Class } from "./Class"
-import { Condition as StringCondition } from "./Condition"
+import { Restriction as StringCondition } from "./Restriction"
 import { Definition as StringDefinition } from "./Definition"
 
 export type String<V extends string = string> = Class<V>

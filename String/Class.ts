@@ -1,5 +1,5 @@
 import { Base } from "../Base"
-import { Condition } from "./Condition"
+import { Restriction } from "./Restriction"
 
 export class Class<V extends string> extends Base<V> {
 	readonly class = "string"
@@ -13,11 +13,10 @@ export class Class<V extends string> extends Base<V> {
 	// restrict(...condition: Condition<V>): Number<V> {
 	// 	return Condition.restrict(this, ...condition)
 	// }
-	static create<V extends string = string>(...condition: Condition | []): Class<V> {
-		return new Class<V>()
-		// const result: Class<V> = Base.bind(new Class<V>())
-		// return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(condition)
-		// 	? result
-		// 	: Condition.restrict(result, ...condition)
+	static create<V extends string = string>(...condition: Restriction<V> | []): Class<V> {
+		const result = new Class<V>()
+		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(condition)
+			? result
+			: Restriction.restrict(result, ...condition)
 	}
 }

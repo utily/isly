@@ -14,31 +14,38 @@ describe('isly("union")', () => {
 		const type = isly("union", isly("number"), isly("string"))
 		expect(type.is(13.37)).toEqual(true)
 		expect(type.flawed({})).toEqual({
-			type: "number | string",
+			name: "(number | string)",
+			description: "Union of base types.",
 			flaws: [
 				{
-					type: "number",
+					description: "Any finite numeric value.",
+					name: "number",
 				},
 				{
-					type: "string",
+					description: "A string value.",
+					name: "string",
 				},
 			],
 		})
 	})
-	it("union (3)", () => {
+	it('isly("boolean"), isly("number"), isly("string")', () => {
 		const unionType = isly("union", isly("boolean"), isly("number"), isly("string"))
 		expect(unionType.is(13.37)).toEqual(true)
 		expect(unionType.flawed({})).toEqual({
-			type: "boolean | number | string",
+			name: "(boolean | number | string)",
+			description: "Union of base types.",
 			flaws: [
 				{
-					type: "boolean",
+					description: "Value has to be true or false.",
+					name: "boolean",
 				},
 				{
-					type: "number",
+					description: "Any finite numeric value.",
+					name: "number",
 				},
 				{
-					type: "string",
+					description: "A string value.",
+					name: "string",
 				},
 			],
 		})
@@ -58,31 +65,38 @@ describe('isly("union")', () => {
 		expect(unionType.is(13.37)).toEqual(false)
 
 		expect(unionType.flawed({})).toEqual({
-			type: '"a" | "b" | "c" | "d" | "e" | "f"',
+			name: "('a' | 'b' | 'c' | 'd' | 'e' | 'f')",
+			description: "Union of base types.",
 			flaws: [
 				{
-					type: '"a"',
-					condition: '"a"',
+					name: "'a'",
+					condition: ["value: 'a'"],
+					description: "One of: a.",
 				},
 				{
-					type: '"b"',
-					condition: '"b"',
+					name: "'b'",
+					condition: ["value: 'b'"],
+					description: "One of: b.",
 				},
 				{
-					type: '"c"',
-					condition: '"c"',
+					name: "'c'",
+					condition: ["value: 'c'"],
+					description: "One of: c.",
 				},
 				{
-					type: '"d"',
-					condition: '"d"',
+					name: "'d'",
+					condition: ["value: 'd'"],
+					description: "One of: d.",
 				},
 				{
-					type: '"e"',
-					condition: '"e"',
+					name: "'e'",
+					condition: ["value: 'e'"],
+					description: "One of: e.",
 				},
 				{
-					type: '"f"',
-					condition: '"f"',
+					name: "'f'",
+					condition: ["value: 'f'"],
+					description: "One of: f.",
 				},
 			],
 		})
@@ -111,40 +125,48 @@ describe('isly("union")', () => {
 		expect(letters.is(13.37)).toEqual(false)
 
 		expect(letters.flawed({})).toEqual({
+			name: "('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G')",
+			description: "Union of base types.",
 			flaws: [
 				{
-					condition: '"A"',
-					type: '"A"',
+					name: "'A'",
+					condition: ["value: 'A'"],
+					description: "One of: A.",
 				},
 				{
-					condition: '"B"',
-					type: '"B"',
+					name: "'B'",
+					condition: ["value: 'B'"],
+					description: "One of: B.",
 				},
 				{
-					condition: '"C"',
-					type: '"C"',
+					name: "'C'",
+					condition: ["value: 'C'"],
+					description: "One of: C.",
 				},
 				{
-					condition: '"D"',
-					type: '"D"',
+					name: "'D'",
+					condition: ["value: 'D'"],
+					description: "One of: D.",
 				},
 				{
-					condition: '"E"',
-					type: '"E"',
+					name: "'E'",
+					condition: ["value: 'E'"],
+					description: "One of: E.",
 				},
 				{
-					condition: '"F"',
-					type: '"F"',
+					name: "'F'",
+					condition: ["value: 'F'"],
+					description: "One of: F.",
 				},
 				{
-					condition: '"G"',
-					type: '"G"',
+					name: "'G'",
+					condition: ["value: 'G'"],
+					description: "One of: G.",
 				},
 			],
-			type: '"A" | "B" | "C" | "D" | "E" | "F" | "G"',
 		})
 	})
-	it("union.get", () => {
+	it("prune", () => {
 		type User = {
 			email: string
 		}
@@ -159,13 +181,13 @@ describe('isly("union")', () => {
 			email: `test@example.com`,
 			password: "shouldBeSecret",
 		}
-		const testData: MyUnion[] = [userWithPassword, { message: "Failed" }]
-		testData.forEach(data => {
-			const pureValue = unionType.get(data)
-			expect(pureValue).not.toBeFalsy()
-			if (pureValue) {
-				expect(data).toMatchObject(pureValue)
-				expect(pureValue).not.toHaveProperty("password")
+		const data: MyUnion[] = [userWithPassword, { message: "Failed" }]
+		data.forEach(data => {
+			const pruned = unionType.prune(data)
+			expect(pruned).not.toBeFalsy()
+			if (pruned) {
+				expect(data).toMatchObject(pruned)
+				expect(pruned).not.toHaveProperty("password")
 			}
 		})
 	})
