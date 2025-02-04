@@ -28,6 +28,12 @@ export class Class<
 			)
 		)
 	}
+	override prune(value: V | any): V | undefined {
+		return (
+			this.is(value) &&
+			Object.fromEntries(Object.entries(value).map(([key, value]) => [this.key.prune(key), this.value.prune(value)]))
+		)
+	}
 	static create<
 		V extends Record<string | number | symbol, any>,
 		KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
