@@ -13,6 +13,7 @@ import type { String } from "./String"
 import type { Tuple } from "./Tuple"
 import type { Undefined } from "./Undefined"
 import type { Union } from "./Union"
+import type { Unknown } from "./Unknown"
 
 export type Type = Base // Omit<Base, "constructor"> // Array | Boolean | Number | Object | Optional | Readonly | Undefined
 export namespace Type {
@@ -35,6 +36,6 @@ export namespace Type {
 		// type: Type
 		undefined: Undefined
 		union: Union
-		// unknown: Undefined
+		unknown: Unknown
 	}
 }

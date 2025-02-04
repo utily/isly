@@ -15,6 +15,7 @@ import type { Tuple } from "./Tuple"
 import type { Type } from "./Type"
 import type { Undefined } from "./Undefined"
 import type { Union } from "./Union"
+import type { Unknown } from "./Unknown"
 
 export type Definition =
 	| Any.Definition
@@ -30,6 +31,7 @@ export type Definition =
 	| Tuple.Definition
 	| Undefined.Definition
 	| Union.Definition
+	| Unknown.Definition
 export namespace Definition {
 	function base(type: Type): Base.Definition {
 		return {
@@ -52,6 +54,7 @@ export namespace Definition {
 		tuple: Tuple.Definition
 		undefined: Undefined.Definition
 		union: Union.Definition
+		unknown: Unknown.Definition
 	}>({
 		any: (type: Any): Any.Definition => ({ ...base(type) }),
 		array: (type: Array): Array.Definition => ({ ...base(type), base: type.base.definition }),
@@ -83,6 +86,7 @@ export namespace Definition {
 		tuple: (type: Tuple): Tuple.Definition => ({ ...base(type), base: type.base.map(b => b.definition) }),
 		undefined: (type: Undefined): Undefined.Definition => ({ ...base(type) }),
 		union: (type: Union): Union.Definition => ({ ...base(type), base: type.base.map(b => b.definition) }),
+		unknown: (type: Unknown): Unknown.Definition => ({ ...base(type) }),
 	})
 	export function create<T extends Type>(type: T): Definition {
 		return transformer.transform(type) as Definition

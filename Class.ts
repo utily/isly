@@ -19,6 +19,6 @@ export namespace Class {
 		// "type",
 		"undefined",
 		"union",
-		// "unknown",
+		"unknown",
 	] as const
 }
