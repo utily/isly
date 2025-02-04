@@ -3,6 +3,7 @@ import type { Array } from "./Array"
 import { Base } from "./Base"
 import type { Boolean } from "./Boolean"
 import type { Function } from "./Function"
+import type { Intersection } from "./Intersection"
 import type { Number } from "./Number"
 import { islyObject } from "./Object"
 import { Properties } from "./Object/Properties"
@@ -21,6 +22,7 @@ export type Definition =
 	| Boolean.Definition
 	| Function.Definition
 	| Number.Definition
+	| Intersection.Definition
 	| islyObject.Definition
 	| Optional.Definition
 	| Readonly.Definition
@@ -42,6 +44,7 @@ export namespace Definition {
 		boolean: Boolean.Definition
 		function: Function.Definition
 		number: Number.Definition
+		intersection: Intersection.Definition
 		object: islyObject.Definition
 		optional: Optional.Definition
 		readonly: Readonly.Definition
@@ -60,6 +63,10 @@ export namespace Definition {
 		number: (type: Number): Number.Definition => ({
 			...base(type),
 			...(type.allowed ? { allowed: [...type.allowed] } : {}),
+		}),
+		intersection: (type: Intersection): Intersection.Definition => ({
+			...base(type),
+			base: type.base.map(b => b.definition),
 		}),
 		object: (type: islyObject): islyObject.Definition => ({
 			...base(type),

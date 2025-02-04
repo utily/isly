@@ -7,7 +7,7 @@ export namespace Class {
 		// "from",
 		"function",
 		// "instance",
-		// "intersection",
+		"intersection",
 		// "null",
 		"number",
 		"object",

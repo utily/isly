@@ -14,17 +14,17 @@ describe("isly", () => {
 			new: boolean
 			fromServer: true
 
-			// myTuple: [string, number]
+			myTuple: [string, number]
 			myUnion: string | number
 			myArray: string[]
-			// myIntersection: { a: string } & { b: string }
+			myIntersection: { a: string } & { b: string }
 
 			// children?: DemoType[]
 			// regExp: RegExp
 			// testMethod: () => boolean
 		}
 
-		const type: isly.Object<DemoType> = isly("object", {
+		const type: isly.Object<DemoType> = isly<DemoType>("object", {
 			// number
 			anyNumber: isly("number"),
 			numberOf: isly("number", "positive"),
@@ -37,14 +37,14 @@ describe("isly", () => {
 			new: isly("boolean"),
 			fromServer: isly("boolean", true),
 
-			// TODO: Tuple myTuple: isly("tuple", isly("string"), isly("number")),
+			myTuple: isly("tuple", isly("string"), isly("number")),
 			myUnion: isly("union", isly("string"), isly("number")),
 			myArray: isly("array", isly("string"), "length", "minimum", 1),
-			// TODO: Intersection
-			// myIntersection: isly("intersection",
-			// isly<{ a: string }>("object", { a: isly("string") }),
-			// isly<{ b: string }>("object", { b: isly("string") })
-			// ),
+			myIntersection: isly(
+				"intersection",
+				isly<{ a: string }>("object", { a: isly("string") }),
+				isly<{ b: string }>("object", { b: isly("string") })
+			),
 
 			// Recursive
 			// TODO: lazy children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
@@ -65,10 +65,10 @@ describe("isly", () => {
 			new: false,
 			fromServer: true,
 
-			// myTuple: ["a", 1],
+			myTuple: ["a", 1],
 			myUnion: "a",
 			myArray: ["a"],
-			// myIntersection: { a: "A", b: "B" },
+			myIntersection: { a: "A", b: "B" },
 			//children?: DemoType[]
 			// regExp: /abc/,
 			// testMethod: () => true,

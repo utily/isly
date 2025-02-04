@@ -10,6 +10,8 @@ import { Definition as islyDefinition } from "./Definition"
 import { Flaw as islyFlaw } from "./Flaw"
 import { Function as islyFunction } from "./Function"
 import { Class as FunctionClass } from "./Function/Class"
+import { Intersection as islyIntersection } from "./Intersection"
+import { Class as IntersectionClass } from "./Intersection/Class"
 import { Number as islyNumber } from "./Number"
 import { Class as NumberClass } from "./Number/Class"
 import { islyObject } from "./Object"
@@ -42,6 +44,45 @@ export function isly<V extends number = number>(
 	type: "number",
 	...restriction: [] | isly.Number.Restriction<V> | Base.Restriction
 ): isly.Number<V>
+
+export function isly<T extends A & B, A, B>(type: "intersection", typeA: Base<A>, typeB: Base<B>): isly.Intersection<T>
+export function isly<T extends A & B & C, A, B, C>(
+	type: "intersection",
+	typeA: Base<A>,
+	typeB: Base<B>,
+	typeC: Base<C>
+): isly.Intersection<T>
+export function isly<T extends A & B & C, A, B, C>(
+	type: "intersection",
+	typeA: Base<A>,
+	typeB: Base<B>,
+	typeC: Base<C>
+): isly.Intersection<T>
+export function isly<T extends A & B & C & D, A, B, C, D>(
+	type: "intersection",
+	typeA: Base<A>,
+	typeB: Base<B>,
+	typeC: Base<C>,
+	typeD: Base<D>
+): isly.Intersection<T>
+export function isly<T extends A & B & C & D & E, A, B, C, D, E>(
+	type: "intersection",
+	typeA: Base<A>,
+	typeB: Base<B>,
+	typeC: Base<C>,
+	typeD: Base<D>,
+	typeE: Base<E>
+): isly.Intersection<T>
+export function isly<T extends A & B & C & D & E & F, A, B, C, D, E, F>(
+	type: "intersection",
+	typeA: Base<A>,
+	typeB: Base<B>,
+	typeC: Base<C>,
+	typeD: Base<D>,
+	typeE: Base<E>,
+	typeF: Base<F>
+): isly.Intersection<T>
+export function isly<V, B extends Base<V>>(type: "intersection", ...base: B[]): isly.Intersection<V, B>
 export function isly<V extends object = Record<string, any>>(
 	type: "object",
 	properties: isly.Object.Properties<V>,
@@ -87,6 +128,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 			boolean: BooleanClass.create,
 			function: FunctionClass.create,
 			number: NumberClass.create,
+			intersection: IntersectionClass.create,
 			object: ObjectClass.create,
 			optional: OptionalClass.create,
 			readonly: ReadonlyClass.create,
@@ -122,6 +164,7 @@ export namespace isly {
 	export import Flaw = islyFlaw
 	export import Function = islyFunction
 	export import Number = islyNumber
+	export import Intersection = islyIntersection
 	export import Object = islyObject
 	export import Optional = islyOptional
 	export import Readonly = islyReadonly
