@@ -24,7 +24,7 @@ describe('isly("from")', () => {
 		const customType = isly("from", "myName", specificIsFunction)
 		expect(customType.is("Specific")).toEqual(true)
 		expect(customType.is(13.37)).toEqual(false)
-		expect(customType.flawed({})).toEqual({ type: "myName" })
+		expect(customType.flawed({})).toEqual({ name: "myName", description: "Value has to fulfill custom predicate." })
 	})
 	it("Specific[]", () => {
 		const customType = isly("array", isly("from", "myName", specificIsFunction))
@@ -34,7 +34,16 @@ describe('isly("from")', () => {
 		expect(customType.is(["Specific", 0, "Specific"])).toEqual(false)
 		expect(customType.is("Specific")).toEqual(false)
 		expect(customType.is(13.37)).toEqual(false)
-		expect(customType.flawed({})).toEqual({ type: "myName[]" })
+		expect(customType.flawed({})).toEqual({
+			name: "myName[]",
+			description: "Array of myName[].",
+			flaws: [
+				{
+					name: "myName",
+					description: "Value has to fulfill custom predicate.",
+				},
+			],
+		})
 	})
 	it("Specific.array()", () => {
 		const customType = isly("from", "myName", specificIsFunction).array()
@@ -65,15 +74,13 @@ describe('isly("from")', () => {
 		expect(typeB.is(b)).toEqual(true)
 		expect(typeB.is(a)).toEqual(false)
 
-		expect(typeA.flawed(undefined)).toEqual({ type: "A" })
+		expect(typeA.flawed(undefined)).toEqual({ name: "A", description: "Value has to fulfill custom predicate." })
 	})
 	it("class, inherited", () => {
 		class A {
 			ab = 1 as const
 		}
-		class B {
-			ab = 1 as const
-		}
+		class B extends A {}
 		const a = new A()
 		const b = new B()
 
@@ -86,6 +93,6 @@ describe('isly("from")', () => {
 		expect(typeB.is(b)).toEqual(true)
 		expect(typeB.is(a)).toEqual(false)
 
-		expect(typeB.flawed(undefined)).toEqual({ type: "B" })
+		expect(typeB.flawed(undefined)).toEqual({ name: "B", description: "Value has to fulfill custom predicate." })
 	})
 })

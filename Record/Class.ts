@@ -1,3 +1,4 @@
+import { Flaw } from "Flaw"
 import { Base } from "../Base"
 import { Number } from "../Number"
 import { String } from "../String"
@@ -32,6 +33,18 @@ export class Class<
 		return (
 			this.is(value) &&
 			Object.fromEntries(Object.entries(value).map(([key, value]) => [this.key.prune(key), this.value.prune(value)]))
+		)
+	}
+	override flawed(value: V | any): Flaw | false {
+		const result = super.flawed(value)
+		return (
+			!!result && {
+				...result,
+				flaws: Object.entries(value)
+					.map(([key, value]) => [this.key.prune(key), this.value.prune(value)])
+					.filter((entry): entry is [keyof V, V[keyof V]] => !!entry[0] && !!entry[1])
+					.map(([key, value]) => Object.assign(value, { property: key })),
+			}
 		)
 	}
 	static create<

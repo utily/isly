@@ -23,7 +23,8 @@ describe('isly("record")', () => {
 		expect(type.is(undefined)).toBe(false)
 
 		expect(type.flawed({ currency: "SEK", a: 1 })).toEqual({
-			type: "Record<string, string>",
+			name: "Record<string, string>",
+			description: "Record of type string indexed by string.",
 			flaws: [{ property: "a (value)", type: "string" }],
 		})
 	})
@@ -35,11 +36,11 @@ describe('isly("record")', () => {
 		expect(type.is({ id: "abc001", number: "1337" })).toBe(false)
 
 		expect(type.flawed({ c: "hej" })).toEqual({
-			type: "Record<string, string>",
+			name: "Record<string, string>",
 			flaws: [
 				{
-					property: "c (key)",
-					type: "string",
+					property: "c",
+					name: "string",
 					condition: '"a" | "b"',
 				},
 			],
@@ -54,11 +55,11 @@ describe('isly("record")', () => {
 		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBe(false)
 
 		expect(type.flawed({ c: "hej" })).toEqual({
-			type: "Record<number, string>",
+			name: "Record<number, string>",
 			flaws: [
 				{
-					property: "c (key)",
-					type: "number",
+					property: "c",
+					name: "number",
 				},
 			],
 		})
@@ -71,12 +72,13 @@ describe('isly("record")', () => {
 		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBe(false)
 
 		expect(type.flawed({ c: "hej" })).toEqual({
-			type: "Record<number, string>",
+			name: "Record<number, string>",
+			description: "Record of type string indexed by number.",
 			flaws: [
 				{
-					property: "c (key)",
-					type: "number",
-					condition: "> 0 & Number.isInteger",
+					property: "c",
+					name: "number",
+					condition: ["> 0", "integer"],
 				},
 			],
 		})

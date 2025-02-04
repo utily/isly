@@ -12,7 +12,7 @@ describe("isly lazy", () => {
 	it("generic", () => {
 		const type = isly(() => isly("string"))
 		expect(type.is("42")).toBe(true)
-		expect(type.flawed(42)).toEqual({ type: "string" })
+		expect(type.flawed(42)).toEqual({ name: "string", description: "A string value." })
 	})
 	it("recursive", () => {
 		//TODO
