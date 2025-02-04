@@ -3,6 +3,7 @@ import type { Array } from "./Array"
 import type { Base } from "./Base"
 import type { Boolean } from "./Boolean"
 import type { Class } from "./Class"
+import type { From } from "./From"
 import type { Function } from "./Function"
 import type { Instance } from "./Instance"
 import type { Intersection } from "./Intersection"
@@ -24,7 +25,7 @@ export namespace Type {
 		any: Any
 		array: Array
 		boolean: Boolean
-		// from: Undefined
+		from: From
 		function: Function
 		instance: Instance
 		intersection: Intersection
@@ -36,7 +37,6 @@ export namespace Type {
 		record: Record
 		string: String
 		tuple: Tuple
-		// type: Type
 		undefined: Undefined
 		union: Union
 		unknown: Unknown
