@@ -29,7 +29,7 @@ export abstract class Base<V = unknown> {
 			!this.is(value) && {
 				name: this.name,
 				...(this.description ? { description: this.description } : {}),
-				...(this.condition ? { condition: this.condition } : {}),
+				...(this.condition && this.condition.length > 0 ? { condition: this.condition } : {}),
 			}
 		)
 	}

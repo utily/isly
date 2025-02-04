@@ -10,7 +10,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 	}
 	override is(value: V | any): value is V {
 		return (
-			value &&
+			!!value &&
 			typeof value == "object" &&
 			!Array.isArray(value) &&
 			globalThis.Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
@@ -27,7 +27,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 				flaws: Object.entries<Type>(this.properties)
 					.map(([property, type]) => [property, type.flawed(value[property])] as const)
 					.map(([property, flaw]) => flaw && ({ ...flaw, property } as Flaw))
-					.filter((f: Flaw | false): f is Flaw => !f),
+					.filter((f: Flaw | false): f is Flaw => !!f),
 			}
 		)
 	}
@@ -35,22 +35,22 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		properties: Properties<Omit<R, keyof V>> & Partial<Properties<V>>,
 		name?: string
 	): Class<R> {
-		return Class.create(
-			{ ...this.properties, ...properties } as unknown as Properties<R>,
-			name ?? `${this.name} & ${Properties.getName(properties)}`
-		)
+		return (this as unknown as Class<R>).modify({
+			properties: { ...this.properties, ...properties } as unknown as Properties<R>,
+			name: name ?? `${this.name} & ${Properties.getName(properties)}`,
+		})
 	}
 	omit<K extends keyof V>(omits: readonly K[], name?: string): Class<Omit<V, K>> {
-		return Class.create(
-			Class.omit<Properties<V>, K>(this.properties, omits) as Properties<Omit<V, K>>,
-			name ?? `Omit<${name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`
-		)
+		return (this as unknown as Class<Omit<V, K>>).modify({
+			properties: Class.omit<Properties<V>, K>(this.properties, omits) as Properties<Omit<V, K>>,
+			name: name ?? `Omit<${name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`,
+		})
 	}
 	pick<K extends keyof V>(picks: readonly K[], name?: string): Class<Pick<V, K>> {
-		return Class.create(
-			Class.pick<Properties<V>, K>(this.properties, picks) as Properties<Pick<V, K>>,
-			name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`
-		)
+		return (this as unknown as Class<Pick<V, K>>).modify({
+			properties: Class.pick<Properties<V>, K>(this.properties, picks) as Properties<Pick<V, K>>,
+			name: name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`,
+		})
 	}
 	override modify(type?: Partial<this>): this {
 		const result = super.modify(type)

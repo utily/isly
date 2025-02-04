@@ -21,8 +21,8 @@ describe('isly("object")', () => {
 			currency: string
 		}
 		const type = isly<Test>("object", { amount: isly("number"), currency: isly("string", "value", ["SEK", "EUR"]) })
-		expect(type.name).toBe("{amount: number, currency: string}")
-		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
+		expect(type.name).toBe("{ amount: number, currency: ('SEK' | 'EUR') }")
+		expect(type.is({ amount: 13.37, currency: "SEK" })).toBe(true)
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed({ currency: "SEK" })).toEqual({
 			type: "{amount: number, currency: string}",
@@ -31,7 +31,7 @@ describe('isly("object")', () => {
 	})
 	it("{}", () => {
 		const type = isly("object", {})
-		expect(type.name).toBe("{}")
+		expect(type.name).toBe("{  }")
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed(1)).toEqual({
@@ -46,17 +46,22 @@ describe('isly("object")', () => {
 			number: number
 		}
 		const type = isly<Item>("object", { id: isly("string"), number: isly("number") }, "Item")
-		expect(type.is({ id: "abc001", number: 1337 })).toEqual(true)
+		expect(type.is({ id: "abc001", number: 1337 })).toBe(true)
+		expect(type.is(undefined)).toBe(false)
+		expect(type.is({})).toBe(false)
 		expect(type.flawed({})).toEqual({
-			type: "Item",
+			name: "Item",
+			description: "Object of type Item.",
 			flaws: [
 				{
 					property: "id",
-					type: "string",
+					description: "A string value.",
+					name: "string",
 				},
 				{
 					property: "number",
-					type: "number",
+					description: "Any finite numeric value.",
+					name: "number",
 				},
 			],
 		})
@@ -90,22 +95,21 @@ describe('isly("object")', () => {
 		expect(type3.is({ i1: 400, i3: 42, str: "a" })).toBe(false)
 		expect(type3.is({ i1: 200, i2: 2, i3: 42, str: "a" })).toBe(false)
 		expect(type2.flawed({ str: "a" })).toEqual({
+			name: "Item2",
+			description: "Object of type Item1.",
 			flaws: [
 				{
 					property: "i1",
-					type: "number",
+					name: "number",
+					condition: ["minimum: 400"],
+					description: "Any finite numeric value.",
 				},
 				{
 					property: "i2",
-					type: "number",
-				},
-				{
-					condition: "custom",
-					property: "i1",
-					type: "number",
+					name: "number",
+					description: "Any finite numeric value.",
 				},
 			],
-			type: "Item2",
 		})
 	})
 	it("get", () => {
@@ -160,7 +164,7 @@ describe('isly("object")', () => {
 			name: "Joe",
 			password: "12345678",
 		}
-		expect(type.get(myUser)).toEqual({
+		expect(type.prune(myUser)).toEqual({
 			name: "Joe",
 		})
 	})
@@ -169,7 +173,7 @@ describe('isly("object")', () => {
 			a: { b: string }
 		}
 		const type = isly<Test>("object", { a: isly("object", { b: isly("string") }) })
-		expect(type.name).toBe("{a: {b: string}}")
+		expect(type.name).toBe("{ a: { b: string } }")
 	})
 	it("omit", () => {
 		interface Test {
@@ -188,7 +192,7 @@ describe('isly("object")', () => {
 		const test: Test = { a: { b: "test" }, b: 42, c: "test 2" }
 		const omittedTest: OmittedTest = { b: 42, c: "test 2" }
 		expect(omittedType.is(omittedTest)).toBe(true)
-		expect(omittedType.get(test)).toEqual(omittedTest)
+		expect(omittedType.prune(test)).toEqual(omittedTest)
 		expect(omittedType.is(omittedType.get(test))).toBe(true)
 	})
 	it("extend omit", () => {
@@ -226,7 +230,7 @@ describe('isly("object")', () => {
 			name: "Joe",
 			password: "12345678",
 		}
-		expect(userWithoutCredentialsType.get(myUser)).toEqual({
+		expect(userWithoutCredentialsType.prune(myUser)).toEqual({
 			name: "Joe",
 		})
 	})
