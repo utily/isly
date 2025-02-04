@@ -23,7 +23,7 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 			result && {
 				...result,
 				flaws: this.base
-					.map((type, index) => type.flawed(value[index]))
+					.map((type, index) => type.flawed(value?.[index]))
 					.map<false | (Flaw & { index: number })>((flaw, index) => (flaw ? { index, ...flaw } : flaw))
 					.filter((f: (Flaw & { index: number }) | false): f is Flaw & { index: number } => !!f),
 			}

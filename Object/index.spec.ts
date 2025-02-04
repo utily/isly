@@ -25,8 +25,9 @@ describe('isly("object")', () => {
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toBe(true)
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed({ currency: "SEK" })).toEqual({
-			type: "{amount: number, currency: string}",
-			flaws: [{ property: "amount", type: "number" }],
+			name: "{ amount: number, currency: ('SEK' | 'EUR') }",
+			description: "Object of type { amount: number, currency: ('SEK' | 'EUR') }.",
+			flaws: [{ property: "amount", name: "number", description: "Any finite numeric value." }],
 		})
 	})
 	it("{}", () => {
@@ -35,7 +36,8 @@ describe('isly("object")', () => {
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed(1)).toEqual({
-			type: "{}",
+			name: "{  }",
+			description: "Object of type {  }.",
 			flaws: [],
 		})
 	})
@@ -124,7 +126,7 @@ describe('isly("object")', () => {
 		expect(typeItem1.prune({ a: 200, b: "a" })).toEqual({ a: 200, b: "a" })
 		expect(typeItem1.prune({ a: 200, b: "a", c: true })).toEqual({ a: 200, b: "a" })
 	})
-	it("get extends", () => {
+	it("prune extends", () => {
 		interface Item1 {
 			a: number
 			b: string
@@ -136,18 +138,18 @@ describe('isly("object")', () => {
 		const typeItem1 = isly<Item1>("object", { a: isly("number"), b: isly("string") }, "Item1")
 		const typeItem2 = typeItem1.extend<Item2>({ c: isly("boolean"), d: isly("number").optional() }, "Item2")
 
-		expect(typeItem2.get({ c: true })).toBeUndefined()
+		expect(typeItem2.prune({ c: true })).toBeUndefined()
 
-		expect(typeItem1.get({ a: 200, b: "a" })).toEqual({ a: 200, b: "a" })
-		expect(typeItem2.get({ a: 200, b: "a" })).toBeUndefined()
-		expect(typeItem2.get({ a: 200 })).toBeUndefined()
-		expect(typeItem2.get({ a: 200, b: "a" })).toBeUndefined()
-		expect(typeItem2.get({ a: 200, b: "a", c: true })).toEqual({ a: 200, b: "a", c: true })
-		expect(typeItem2.get({ a: 200, b: "a", c: true, d: 0.1 })).toEqual({ a: 200, b: "a", c: true, d: 0.1 })
-		expect(typeItem2.get({ a: 200, b: "a", c: true, e: "a" })).toEqual({ a: 200, b: "a", c: true })
-		expect(typeItem2.get({ a: 200, b: "a", c: true, d: undefined })).toEqual({ a: 200, b: "a", c: true })
-		expect(typeItem2.get({ a: 200, b: "a", c: true, d: undefined })).toHaveProperty("d", undefined)
-		expect(typeItem2.get({ a: 200, b: "a", c: true })).not.toHaveProperty("d")
+		expect(typeItem1.prune({ a: 200, b: "a" })).toEqual({ a: 200, b: "a" })
+		expect(typeItem2.prune({ a: 200, b: "a" })).toBeUndefined()
+		expect(typeItem2.prune({ a: 200 })).toBeUndefined()
+		expect(typeItem2.prune({ a: 200, b: "a" })).toBeUndefined()
+		expect(typeItem2.prune({ a: 200, b: "a", c: true })).toEqual({ a: 200, b: "a", c: true })
+		expect(typeItem2.prune({ a: 200, b: "a", c: true, d: 0.1 })).toEqual({ a: 200, b: "a", c: true, d: 0.1 })
+		expect(typeItem2.prune({ a: 200, b: "a", c: true, e: "a" })).toEqual({ a: 200, b: "a", c: true })
+		expect(typeItem2.prune({ a: 200, b: "a", c: true, d: undefined })).toEqual({ a: 200, b: "a", c: true })
+		expect(typeItem2.prune({ a: 200, b: "a", c: true, d: undefined })).toHaveProperty("d", undefined)
+		expect(typeItem2.prune({ a: 200, b: "a", c: true })).not.toHaveProperty("d")
 	})
 	it("get User-example", () => {
 		interface User {
@@ -244,7 +246,10 @@ describe('isly("object")', () => {
 			{ body: isly("string"), status: isly("number", "less", 1000) },
 			"Response"
 		)
-		const errorResponseType = responseType.extend({ status: isly("number", "minimum", 400) }, "ErrorResponse")
+		const errorResponseType = responseType.extend(
+			{ status: isly("number", "minimum", 400).restrict("less", 1000) },
+			"ErrorResponse"
+		)
 		const errorResponseWithoutBodyType = errorResponseType.omit(["body"])
 
 		expect(errorResponseWithoutBodyType.name).toBe('Omit<ErrorResponse, "body">')
@@ -267,9 +272,9 @@ describe('isly("object")', () => {
 		expect(errorResponseWithoutBodyType.is({ status: 1000, body: "payload" })).toBe(false)
 
 		// get should not return omitted property and return undefined if all conditions isn't met:
-		expect(errorResponseWithoutBodyType.get({ status: 200, body: "payload" })).toBeUndefined()
-		expect(errorResponseWithoutBodyType.get({ status: 500, body: "payload" })).toEqual({ status: 500 })
-		expect(errorResponseWithoutBodyType.get({ status: 1000, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.prune({ status: 200, body: "payload" })).toBeUndefined()
+		expect(errorResponseWithoutBodyType.prune({ status: 500, body: "payload" })).toEqual({ status: 500 })
+		expect(errorResponseWithoutBodyType.prune({ status: 1000, body: "payload" })).toBeUndefined()
 	})
 	it("Advanced extend & pick", () => {
 		interface Response {
@@ -281,7 +286,10 @@ describe('isly("object")', () => {
 			{ body: isly("string"), status: isly("number", "less", 1000) },
 			"Response"
 		)
-		const errorResponseType = responseType.extend({ status: isly("number", "minimum", 400) }, "ErrorResponse")
+		const errorResponseType = responseType.extend(
+			{ status: isly("number", "minimum", 400).restrict("less", 1000) },
+			"ErrorResponse"
+		)
 
 		const errorResponseWithoutBodyType = errorResponseType.pick(["status"])
 

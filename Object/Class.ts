@@ -25,7 +25,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			result && {
 				...result,
 				flaws: Object.entries<Type>(this.properties)
-					.map(([property, type]) => [property, type.flawed(value[property])] as const)
+					.map(([property, type]) => [property, type.flawed(value?.[property])] as const)
 					.map(([property, flaw]) => flaw && ({ ...flaw, property } as Flaw))
 					.filter((f: Flaw | false): f is Flaw => !!f),
 			}
@@ -43,13 +43,13 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 	omit<K extends keyof V>(omits: readonly K[], name?: string): Class<Omit<V, K>> {
 		return (this as unknown as Class<Omit<V, K>>).modify({
 			properties: Class.omit<Properties<V>, K>(this.properties, omits) as Properties<Omit<V, K>>,
-			name: name ?? `Omit<${name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`,
+			name: name ?? `Omit<${this.name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`,
 		})
 	}
 	pick<K extends keyof V>(picks: readonly K[], name?: string): Class<Pick<V, K>> {
 		return (this as unknown as Class<Pick<V, K>>).modify({
 			properties: Class.pick<Properties<V>, K>(this.properties, picks) as Properties<Pick<V, K>>,
-			name: name ?? `Pick<${name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`,
+			name: name ?? `Pick<${this.name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`,
 		})
 	}
 	override modify(type?: Partial<this>): this {
