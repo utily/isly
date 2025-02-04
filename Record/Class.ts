@@ -1,13 +1,13 @@
 import { Base } from "../Base"
 import { Number } from "../Number"
 import { String } from "../String"
+import { Unknown } from "../Unknown"
 
 export class Class<
-	K extends string | number,
-	KType extends String | Number,
-	V extends any | undefined,
-	VType extends Base<V>
-> extends Base<Record<K, V>> {
+	V extends Record<string | number | symbol, any>,
+	KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
+	VType extends Base<V[keyof V]>
+> extends Base<V> {
 	readonly class = "record"
 	private constructor(
 		readonly key: KType,
@@ -16,24 +16,23 @@ export class Class<
 	) {
 		super(`Record of type ${value.name} indexed by ${key.name}.`)
 	}
-	override is(value: Record<K, V> | any): value is Record<K, V> {
+	override is(value: V | any): value is V {
 		return !!(
 			value &&
 			typeof value == "object" &&
 			!Array.isArray(value) &&
 			Object.entries(value).every(
 				this.key.class == "number"
-					? ([k, v]) => this.key.is(`${+k}` == k ? +k : k) && value.is(v)
-					: ([k, v]) => this.key.is(k) && value.is(v)
+					? ([k, v]) => this.key.is(`${+k}` == k ? +k : k) && this.value.is(v)
+					: ([k, v]) => this.key.is(k) && this.value.is(v)
 			)
 		)
 	}
 	static create<
-		K extends string | number,
-		KType extends String | Number,
-		V extends any | undefined,
-		VType extends Base<V>
-	>(key: KType, value: VType, name?: string): Class<K, KType, V, VType> {
-		return new Class<K, KType, V, VType>(key, value, name)
+		V extends Record<string | number | symbol, any>,
+		KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
+		VType extends Base<V[keyof V]>
+	>(key: KType, value: VType, name?: string): Class<V, KType, VType> {
+		return new Class<V, KType, VType>(key, value, name)
 	}
 }

@@ -112,11 +112,21 @@ export function isly<V extends any | undefined = unknown | undefined, B extends 
 	name?: string
 ): isly.Readonly<V, B>
 export function isly<
-	K extends string | number,
-	KType extends isly.String | isly.Number,
-	V extends any | undefined,
-	VType extends Base<V>
->(type: "record", key: KType, value: VType, name?: string): isly.Record<K, KType, V, VType>
+	V extends globalThis.Record<string, any> | globalThis.Record<number, any> | globalThis.Record<symbol, any> = Record<
+		string,
+		any
+	>,
+	KType extends keyof V extends string
+		? isly.String
+		: keyof V extends number
+		? isly.Number
+		: isly.Unknown<symbol> = keyof V extends string
+		? isly.String
+		: keyof V extends number
+		? isly.Number
+		: isly.Unknown<symbol>,
+	VType extends Base<V[keyof V]> = isly.Unknown<V[keyof V]>
+>(type: "record", key: KType, value: VType, name?: string): isly.Record<V, KType, VType>
 export function isly<V extends string = string>(type: "string"): isly.String<V>
 export function isly<V extends string = string>(
 	type: "string",
