@@ -10,6 +10,8 @@ import { Definition as islyDefinition } from "./Definition"
 import { Flaw as islyFlaw } from "./Flaw"
 import { Function as islyFunction } from "./Function"
 import { Class as FunctionClass } from "./Function/Class"
+import { Instance as islyInstance } from "./Instance"
+import { Class as InstanceClass } from "./Instance/Class"
 import { Intersection as islyIntersection } from "./Intersection"
 import { Class as IntersectionClass } from "./Intersection/Class"
 import { Null as islyNull } from "./Null"
@@ -51,7 +53,11 @@ export function isly<V extends number = number>(
 	type: "number",
 	...restriction: [] | isly.Number.Restriction<V> | Base.Restriction
 ): isly.Number<V>
-
+export function isly<V extends object = object>(
+	type: "instance",
+	constructor: new (...properties: any[]) => V,
+	name: string
+): isly.Instance<V>
 export function isly<T extends A & B, A, B>(type: "intersection", typeA: Base<A>, typeB: Base<B>): isly.Intersection<T>
 export function isly<T extends A & B & C, A, B, C>(
 	type: "intersection",
@@ -143,6 +149,7 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 			function: FunctionClass.create,
 			null: NullClass.create,
 			number: NumberClass.create,
+			instance: InstanceClass.create,
 			intersection: IntersectionClass.create,
 			object: ObjectClass.create,
 			optional: OptionalClass.create,
@@ -182,6 +189,7 @@ export namespace isly {
 	export import Function = islyFunction
 	export import Null = islyNull
 	export import Number = islyNumber
+	export import Instance = islyInstance
 	export import Intersection = islyIntersection
 	export import Object = islyObject
 	export import Optional = islyOptional

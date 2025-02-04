@@ -4,7 +4,9 @@ import type { Base } from "./Base"
 import type { Boolean } from "./Boolean"
 import type { Class } from "./Class"
 import type { Function } from "./Function"
+import type { Instance } from "./Instance"
 import type { Intersection } from "./Intersection"
+import type { Null } from "./Null"
 import type { Number } from "./Number"
 import type { islyObject } from "./Object"
 import type { Optional } from "./Optional"
@@ -24,9 +26,9 @@ export namespace Type {
 		boolean: Boolean
 		// from: Undefined
 		function: Function
-		// instance: Undefined
+		instance: Instance
 		intersection: Intersection
-		null: Undefined
+		null: Null
 		number: Number
 		object: islyObject
 		optional: Optional

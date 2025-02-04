@@ -6,7 +6,7 @@ export namespace Class {
 		"boolean",
 		// "from",
 		"function",
-		// "instance",
+		"instance",
 		"intersection",
 		"null",
 		"number",
