@@ -9,7 +9,7 @@ export namespace Properties {
 		return globalThis.Object.entries<Base>(properties) as [keyof T, Base<T[keyof T]>][]
 	}
 	export function getName(properties: Properties<any>): Name {
-		return `${Properties.entries(properties)
+		return `{ ${Properties.entries(properties)
 			.map(([p, t]) => `${p.toString()}: ${t.name}`)
 			.join(", ")} }`
 	}

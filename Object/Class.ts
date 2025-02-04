@@ -31,9 +31,12 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			}
 		)
 	}
-	extend<R extends object = Record<string, any>>(properties: Properties<R>, name?: string): Class<V & R> {
+	extend<R extends object = Record<string, any>>(
+		properties: Properties<Omit<R, keyof V>> & Partial<Properties<V>>,
+		name?: string
+	): Class<R> {
 		return Class.create(
-			{ ...this.properties, ...properties } as Properties<V & R>,
+			{ ...this.properties, ...properties } as unknown as Properties<R>,
 			name ?? `${this.name} & ${Properties.getName(properties)}`
 		)
 	}
