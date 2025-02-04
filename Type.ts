@@ -9,6 +9,7 @@ import type { Number } from "./Number"
 import type { islyObject } from "./Object"
 import type { Optional } from "./Optional"
 import type { Readonly } from "./Readonly"
+import type { Record } from "./Record"
 import type { String } from "./String"
 import type { Tuple } from "./Tuple"
 import type { Undefined } from "./Undefined"
@@ -17,7 +18,7 @@ import type { Unknown } from "./Unknown"
 
 export type Type = Base // Omit<Base, "constructor"> // Array | Boolean | Number | Object | Optional | Readonly | Undefined
 export namespace Type {
-	export interface FromClass extends Record<Class, Type> {
+	export interface FromClass extends globalThis.Record<Class, Type> {
 		any: Any
 		array: Array
 		boolean: Boolean
@@ -25,12 +26,12 @@ export namespace Type {
 		function: Function
 		// instance: Undefined
 		intersection: Intersection
-		// null: Undefined
+		null: Undefined
 		number: Number
 		object: islyObject
 		optional: Optional
 		readonly: Readonly
-		// record: Undefined
+		record: Record
 		string: String
 		tuple: Tuple
 		// type: Type

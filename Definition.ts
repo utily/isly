@@ -9,6 +9,7 @@ import { islyObject } from "./Object"
 import { Properties } from "./Object/Properties"
 import type { Optional } from "./Optional"
 import type { Readonly } from "./Readonly"
+import type { Record } from "./Record"
 import type { String } from "./String"
 import { Transformer } from "./Transformer"
 import type { Tuple } from "./Tuple"
@@ -27,6 +28,7 @@ export type Definition =
 	| islyObject.Definition
 	| Optional.Definition
 	| Readonly.Definition
+	| Record.Definition
 	| String.Definition
 	| Tuple.Definition
 	| Undefined.Definition
@@ -50,6 +52,7 @@ export namespace Definition {
 		object: islyObject.Definition
 		optional: Optional.Definition
 		readonly: Readonly.Definition
+		record: Record.Definition
 		string: String.Definition
 		tuple: Tuple.Definition
 		undefined: Undefined.Definition
@@ -79,6 +82,11 @@ export namespace Definition {
 		}),
 		optional: (type: Optional): Optional.Definition => ({ ...base(type), base: type.base.definition }),
 		readonly: (type: Readonly): Readonly.Definition => ({ ...base(type), base: type.base.definition }),
+		record: (type: Record): Record.Definition => ({
+			...base(type),
+			key: type.key.definition as String.Definition | Number.Definition,
+			value: type.value.definition,
+		}),
 		string: (type: String): String.Definition => ({
 			...base(type),
 			...(type.allowed != undefined ? { allowed: type.allowed } : {}),

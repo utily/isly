@@ -12,6 +12,8 @@ import { Function as islyFunction } from "./Function"
 import { Class as FunctionClass } from "./Function/Class"
 import { Intersection as islyIntersection } from "./Intersection"
 import { Class as IntersectionClass } from "./Intersection/Class"
+import { Null as islyNull } from "./Null"
+import { Class as NullClass } from "./Null/Class"
 import { Number as islyNumber } from "./Number"
 import { Class as NumberClass } from "./Number/Class"
 import { islyObject } from "./Object"
@@ -20,6 +22,8 @@ import { Optional as islyOptional } from "./Optional"
 import { Class as OptionalClass } from "./Optional/Class"
 import { Readonly as islyReadonly } from "./Readonly"
 import { Class as ReadonlyClass } from "./Readonly/Class"
+import { Record as islyRecord } from "./Record"
+import { Class as RecordClass } from "./Record/Class"
 import { String as islyString } from "./String"
 import { Class as StringClass } from "./String/Class"
 import { Tuple as islyTuple } from "./Tuple"
@@ -41,6 +45,7 @@ export function isly<V = unknown, B extends Base<V> = Base<V>>(
 export function isly<V extends boolean = boolean>(type: "boolean", allowed?: V): isly.Boolean<V>
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function isly<V extends Function = Function>(type: "function", name?: string): isly.Function<V>
+export function isly<V extends null = null>(type: "null"): isly.Null<V>
 export function isly<V extends number = number>(type: "number"): isly.Number<V>
 export function isly<V extends number = number>(
 	type: "number",
@@ -100,6 +105,12 @@ export function isly<V extends any | undefined = unknown | undefined, B extends 
 	base: B,
 	name?: string
 ): isly.Readonly<V, B>
+export function isly<
+	K extends string | number,
+	KType extends isly.String | isly.Number,
+	V extends any | undefined,
+	VType extends Base<V>
+>(type: "record", key: KType, value: VType, name?: string): isly.Record<K, KType, V, VType>
 export function isly<V extends string = string>(type: "string"): isly.String<V>
 export function isly<V extends string = string>(
 	type: "string",
@@ -130,11 +141,13 @@ export function isly(type: isly.Class, ...properties: any[]): isly.Type {
 			array: ArrayClass.create,
 			boolean: BooleanClass.create,
 			function: FunctionClass.create,
+			null: NullClass.create,
 			number: NumberClass.create,
 			intersection: IntersectionClass.create,
 			object: ObjectClass.create,
 			optional: OptionalClass.create,
 			readonly: ReadonlyClass.create,
+			record: RecordClass.create,
 			string: StringClass.create,
 			tuple: TupleClass.create,
 			undefined: UndefinedClass.create,
@@ -167,11 +180,13 @@ export namespace isly {
 	export import Definition = islyDefinition
 	export import Flaw = islyFlaw
 	export import Function = islyFunction
+	export import Null = islyNull
 	export import Number = islyNumber
 	export import Intersection = islyIntersection
 	export import Object = islyObject
 	export import Optional = islyOptional
 	export import Readonly = islyReadonly
+	export import Record = islyRecord
 	export import String = islyString
 	export import Tuple = islyTuple
 	export import Type = islyType

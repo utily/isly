@@ -1,12 +1,12 @@
 import { isly } from "../index"
 
-describe("isly.undefined", () => {
+describe('isly("undefined")', () => {
 	it("type narrowing", () => {
 		// compilation error if not working
-		const isNarrowingWorking = "garbage" as unknown
-		if (isly("undefined").is(isNarrowingWorking)) {
+		const value = "garbage" as unknown
+		if (isly("undefined").is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myUndefined: undefined = isNarrowingWorking
+			const data: undefined = value
 		}
 	})
 	it.each([
