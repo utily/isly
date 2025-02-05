@@ -20,9 +20,17 @@ export abstract class Base<V = unknown> {
 		}
 	}
 	constructor(creator: typeof isly, readonly description?: string, readonly condition?: string[]) {
-		this.optional = (name?: string): Optional<V | undefined, this> => creator("optional", this, name)
-		this.readonly = (name?: string): Readonly<V, this> => creator("readonly", this, name)
-		this.array = (...restriction: Array.Restriction | []): Array<V, this> => creator("array", this, ...restriction)
+		Object.assign(this, {
+			optional(name?: string): Optional<V | undefined, Base<V>> {
+				return creator("optional", this as Base<V>, name)
+			},
+			readonly(name?: string): Readonly<V, Base<V>> {
+				return creator("readonly", this as Base<V>, name)
+			},
+			array(...restriction: Array.Restriction | []): Array<V, Base<V>> {
+				return creator("array", this as Base<V>, ...restriction)
+			},
+		})
 	}
 	abstract is(value: V | any): value is V
 	get(value: V | any): V | undefined
@@ -57,9 +65,21 @@ export abstract class Base<V = unknown> {
 	describe(description: string): this {
 		return this.modify({ description } as Partial<this>)
 	}
-	readonly optional: (name?: string) => Optional<V | undefined, this>
-	readonly readonly: (name?: string) => Readonly<V, this>
-	readonly array: (...restriction: Array.Restriction | []) => Array<V, this>
+	optional(name?: string): Optional<V | undefined, this> {
+		throw Error("Not Implemented")
+	}
+	readonly(name?: string): Readonly<V, this> {
+		throw Error("Not Implemented")
+	}
+	array(...restriction: Array.Restriction | []): Array<V, this> {
+		throw Error("Not Implemented")
+	}
+	toString(): string {
+		return JSON.stringify(this.definition)
+	}
+	toJSON() {
+		return { class: this.class, ...this.definition }
+	}
 	modify(changes?: Partial<this>): this {
 		const result = { ...this }
 		Object.defineProperty(result, "definition", {
@@ -84,6 +104,8 @@ export abstract class Base<V = unknown> {
 			optional: changes?.optional ?? this.optional,
 			readonly: changes?.readonly ?? this.readonly,
 			array: changes?.array ?? this.array,
+			toString: changes?.toString ?? this.toString,
+			toJSON: changes?.toJSON ?? this.toJSON,
 			modify: changes?.modify ?? this.modify,
 		})
 	}

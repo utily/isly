@@ -53,7 +53,16 @@ describe('isly("from")', () => {
 		expect(customType.is(["Specific", 0, "Specific"])).toEqual(false)
 		expect(customType.is("Specific")).toEqual(false)
 		expect(customType.is(13.37)).toEqual(false)
-		expect(customType.flawed({})).toEqual({ type: "myName[]" })
+		expect(customType.flawed({})).toEqual({
+			name: "myName[]",
+			description: "Array of myName[].",
+			flaws: [
+				{
+					name: "myName",
+					description: "Value has to fulfill custom predicate.",
+				},
+			],
+		})
 	})
 	it("class", () => {
 		class A {

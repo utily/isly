@@ -14,6 +14,10 @@ export namespace Properties {
 			.join(", ")} }`
 	}
 	export function prune<T extends object>(properties: Properties<T>, value: T): T {
-		return globalThis.Object.fromEntries(Properties.entries(properties).map(([p, t]) => [p, t.prune(value[p])])) as T
+		return globalThis.Object.fromEntries(
+			Properties.entries(properties)
+				.map(([p, t]) => [p, t.prune(value[p])])
+				.filter(([p, v]) => v !== undefined)
+		) as T
 	}
 }

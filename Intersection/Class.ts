@@ -18,7 +18,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		return !this.is(value)
 			? undefined
 			: value && typeof value == "object"
-			? (this.base.reduce((r, b) => Object.assign(r, b.prune(value)), {}) as V)
+			? (this.base.reduce((r, b) => merge(r, b.prune(value)), {}) as V)
 			: value
 	}
 	override flawed(value: V | any): Flaw | false {
@@ -33,4 +33,23 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	static create<V, B extends Base<V>>(creator: typeof isly, ...base: B[]): Class<V, B> {
 		return new Class<V, B>(creator, base)
 	}
+}
+function merge<T, S>(target: T, source: S): T & S {
+	return Array.isArray(target) && Array.isArray(source)
+		? (target.map((item, index) => merge(item, source[index])) as S & T)
+		: target && typeof target == "object" && source && typeof source == "object"
+		? globalThis.Object.fromEntries(
+				globalThis.Object.assign(
+					target,
+					globalThis.Object.entries(source).map(([key, value]) => [
+						key,
+						globalThis.Object.getOwnPropertyDescriptor(target, key) &&
+						typeof target[key as keyof typeof target] == "object" &&
+						typeof value == "object"
+							? merge(target[key as keyof typeof target], value)
+							: value,
+					])
+				)
+		  )
+		: (target as T & S)
 }

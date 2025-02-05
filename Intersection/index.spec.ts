@@ -88,12 +88,27 @@ describe('isly("intersection")', () => {
 		expect(intersection.is({ shared: "shared string" })).toBe(true)
 		expect(intersection.is({ shared: "shared string", a: 12 })).toBe(true)
 		expect(intersection.name).toEqual(
-			"{a: number | undefined, shared: string} & {b: number | undefined, shared: string}"
+			"{ a: number | undefined, shared: string } & { b: number | undefined, shared: string }"
 		)
 		expect(intersection.is({ a: 42 })).toBe(false)
 		expect(intersection.flawed({ a: 42, b: 43 })).toBeTruthy()
 	})
-	it("intersection.get", () => {
+	it("prune Alpha & Beta", () => {
+		type Alpha = {
+			a: number
+			b: string[]
+		}
+		const alpha = isly<Alpha>("object", { a: isly("number"), b: isly("string").array() })
+		type Beta = {
+			c: string
+		}
+		const beta = isly<Beta>("object", { c: isly("string") })
+		type AlphaBeta = Alpha & Beta
+		const alphaBeta = isly("intersection", alpha, beta)
+		const value = { a: 42, b: ["power"], c: "attraction" }
+		expect(alphaBeta.is(value)).toBe(true)
+	})
+	it("prune Foo & Bar", () => {
 		type Foo = {
 			foo: "foo"
 			nesting: {
@@ -138,7 +153,7 @@ describe('isly("intersection")', () => {
 			},
 			array: [{ test: "a", b: "b" }],
 		}
-		expect(intersectionType.get({ ...intersection, extra: "world" })).toEqual(intersection)
+		expect(intersectionType.prune({ ...intersection, extra: "world" })).toEqual(intersection)
 	})
 	it("intersection<number>.prune", () => {
 		const type = isly("intersection", isly("number", "positive"), isly("number", "integer"))

@@ -148,7 +148,7 @@ describe('isly("object")', () => {
 		expect(typeItem2.prune({ a: 200, b: "a", c: true, d: 0.1 })).toEqual({ a: 200, b: "a", c: true, d: 0.1 })
 		expect(typeItem2.prune({ a: 200, b: "a", c: true, e: "a" })).toEqual({ a: 200, b: "a", c: true })
 		expect(typeItem2.prune({ a: 200, b: "a", c: true, d: undefined })).toEqual({ a: 200, b: "a", c: true })
-		expect(typeItem2.prune({ a: 200, b: "a", c: true, d: undefined })).toHaveProperty("d", undefined)
+		expect(typeItem2.prune({ a: 200, b: "a", c: true, d: undefined })).not.toHaveProperty("d", undefined)
 		expect(typeItem2.prune({ a: 200, b: "a", c: true })).not.toHaveProperty("d")
 	})
 	it("get User-example", () => {

@@ -40,6 +40,11 @@ describe("isly.boolean", () => {
 		expect(t2.is(false)).toBe(true)
 	})
 	it.each([
+		[true, "true"],
+		[false, "false"],
+		[undefined, "boolean"],
+	])('isly("boolean", %s).name == %s', (allowed, expected) => expect(isly("boolean", allowed).name).toBe(expected))
+	it.each([
 		[true, true],
 		[false, true],
 		[0, false],
