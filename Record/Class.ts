@@ -1,5 +1,6 @@
 import { Flaw } from "Flaw"
 import { Base } from "../Base"
+import type { isly } from "../index"
 import { Number } from "../Number"
 import { String } from "../String"
 import { Unknown } from "../Unknown"
@@ -10,12 +11,16 @@ export class Class<
 	VType extends Base<V[keyof V]>
 > extends Base<V> {
 	readonly class = "record"
+	override get definition(): isly.Definition {
+		return Object.assign(super.definition, { key: this.key.definition, value: this.value.definition })
+	}
 	private constructor(
+		creator: typeof isly,
 		readonly key: KType,
 		readonly value: VType,
 		readonly name: string = `Record<${key.name}, ${value.name}>`
 	) {
-		super(`Record of type ${value.name} indexed by ${key.name}.`)
+		super(creator, `Record of type ${value.name} indexed by ${key.name}.`)
 	}
 	override is(value: V | any): value is V {
 		return !!(
@@ -51,7 +56,7 @@ export class Class<
 		V extends Record<string | number | symbol, any>,
 		KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
 		VType extends Base<V[keyof V]>
-	>(key: KType, value: VType, name?: string): Class<V, KType, VType> {
-		return new Class<V, KType, VType>(key, value, name)
+	>(creator: typeof isly, key: KType, value: VType, name?: string): Class<V, KType, VType> {
+		return new Class<V, KType, VType>(creator, key, value, name)
 	}
 }

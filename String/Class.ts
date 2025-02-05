@@ -1,11 +1,15 @@
 import { Base } from "../Base"
+import type { isly } from "../index"
 import { Restriction } from "./Restriction"
 
 export class Class<V extends string> extends Base<V> {
 	readonly class = "string"
 	readonly name: string = "string"
-	constructor(readonly allowed?: readonly string[]) {
-		super("A string value.")
+	override get definition(): isly.Definition {
+		return Object.assign(super.definition, this.allowed === undefined ? {} : { allowed: this.allowed })
+	}
+	private constructor(creator: typeof isly, readonly allowed?: readonly string[]) {
+		super(creator, "A string value.")
 	}
 	is(value: V | any): value is V {
 		return typeof value == "string"
@@ -13,8 +17,11 @@ export class Class<V extends string> extends Base<V> {
 	override restrict(...restriction: Restriction | Base.Restriction) {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
-	static create<V extends string = string>(...restriction: [] | Restriction<V> | Base.Restriction): Class<V> {
-		const result = new Class<V>()
+	static create<V extends string = string>(
+		creator: typeof isly,
+		...restriction: [] | Restriction<V> | Base.Restriction
+	): Class<V> {
+		const result = new Class<V>(creator)
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)

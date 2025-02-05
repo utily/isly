@@ -1,12 +1,22 @@
 import { Base } from "../Base"
 import { Flaw } from "../Flaw"
+import type { isly } from "../index"
 import type { Type } from "../Type"
 import { Properties } from "./Properties"
 
 export class Class<V extends object = Record<string, any>> extends Base<V> {
 	override readonly class = "object"
-	private constructor(readonly properties: Properties<V>, readonly name: string = Properties.getName(properties)) {
-		super(`Object of type ${name}.`, [])
+	override get definition(): isly.Definition {
+		return Object.assign(super.definition, {
+			properties: globalThis.Object.fromEntries(Properties.entries(this.properties).map(([p, t]) => [p, t.definition])),
+		})
+	}
+	private constructor(
+		creator: typeof isly,
+		readonly properties: Properties<V>,
+		readonly name: string = Properties.getName(properties)
+	) {
+		super(creator, `Object of type ${name}.`, [])
 	}
 	override is(value: V | any): value is V {
 		return (
@@ -60,8 +70,12 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			pick: type?.pick ?? this.pick,
 		})
 	}
-	static create<V extends object = Record<string, any>>(properties: Properties<V>, name?: string): Class<V> {
-		return new Class<V>(properties, name)
+	static create<V extends object = Record<string, any>>(
+		creator: typeof isly,
+		properties: Properties<V>,
+		name?: string
+	): Class<V> {
+		return new Class<V>(creator, properties, name)
 	}
 }
 export namespace Class {

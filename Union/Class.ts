@@ -1,11 +1,15 @@
 import { Base } from "../Base"
 import { Flaw } from "../Flaw"
+import type { isly } from "../index"
 import { Name } from "../Name"
 
 export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "union"
-	private constructor(readonly base: B[], readonly name: string = Name.fromUnion(base)) {
-		super("Union of base types.")
+	override get definition(): isly.Definition {
+		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
+	}
+	private constructor(creator: typeof isly, readonly base: B[], readonly name: string = Name.fromUnion(base)) {
+		super(creator, "Union of base types.")
 	}
 	override is(value: V | any): value is V {
 		return this.base.some(b => b.is(value))
@@ -25,7 +29,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 			}
 		)
 	}
-	static create<V, B extends Base<V>>(...base: B[]): Class<V, B> {
-		return new Class<V, B>(base)
+	static create<V, B extends Base<V>>(creator: typeof isly, ...base: B[]): Class<V, B> {
+		return new Class<V, B>(creator, base)
 	}
 }

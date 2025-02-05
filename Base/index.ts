@@ -2,6 +2,7 @@ import type { Array } from "../Array"
 import { Class } from "../Class"
 import type { Definition } from "../Definition"
 import { Flaw } from "../Flaw"
+import { isly } from "../index"
 import { Name } from "../Name"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
@@ -12,9 +13,17 @@ export abstract class Base<V = unknown> {
 	abstract readonly class: Class
 	abstract readonly name: Name
 	get definition(): Definition {
-		throw new Error("Not implemented")
+		return {
+			name: this.name,
+			...(this.description ? { description: this.description } : {}),
+			...(this.condition ? { condition: this.condition } : {}),
+		}
 	}
-	constructor(readonly description?: string, readonly condition?: string[]) {}
+	constructor(creator: typeof isly, readonly description?: string, readonly condition?: string[]) {
+		this.optional = (name?: string): Optional<V | undefined, this> => creator("optional", this, name)
+		this.readonly = (name?: string): Readonly<V, this> => creator("readonly", this, name)
+		this.array = (...restriction: Array.Restriction | []): Array<V, this> => creator("array", this, ...restriction)
+	}
 	abstract is(value: V | any): value is V
 	get(value: V | any): V | undefined
 	get(value: V | any, fallback: V): V
@@ -48,17 +57,21 @@ export abstract class Base<V = unknown> {
 	describe(description: string): this {
 		return this.modify({ description } as Partial<this>)
 	}
-	optional(name?: string): Optional<V | undefined, this> {
-		throw new Error("Not implemented")
-	}
-	readonly(name?: string): Readonly<V, this> {
-		throw new Error("Not implemented")
-	}
-	array(...restriction: Array.Restriction | []): Array<V, this> {
-		throw new Error("Not implemented")
-	}
+	readonly optional: (name?: string) => Optional<V | undefined, this>
+	readonly readonly: (name?: string) => Readonly<V, this>
+	readonly array: (...restriction: Array.Restriction | []) => Array<V, this>
 	modify(changes?: Partial<this>): this {
 		const result = { ...this }
+		Object.defineProperty(result, "definition", {
+			get:
+				getPropertyDescriptor(changes, "definition")?.get ??
+				getPropertyDescriptor(this, "definition")?.get ??
+				((): any => {
+					throw Error("Not Implemented")
+				}),
+			enumerable: true,
+			configurable: false,
+		})
 		return Object.assign(result, {
 			...changes,
 			is: changes?.is ?? this.is,
@@ -78,4 +91,11 @@ export abstract class Base<V = unknown> {
 export namespace Base {
 	export import Definition = BaseDefinition
 	export import Restriction = BaseRestriction
+}
+
+function getPropertyDescriptor(object: any, property: string): PropertyDescriptor | undefined {
+	let result = object
+	while (result && !Object.prototype.hasOwnProperty.call(result, property))
+		result = Object.getPrototypeOf(result)
+	return result ? Object.getOwnPropertyDescriptor(result, property) : undefined
 }

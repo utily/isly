@@ -1,13 +1,17 @@
 import { Base } from "../Base"
 import { Flaw } from "../Flaw"
+import type { isly } from "../index"
 import { Name } from "../Name"
 
 export class Class<V extends any[] = unknown[]> extends Base<V> {
 	readonly class = "tuple"
 	override readonly name: string
-	private constructor(readonly base: { [I in keyof V]: Base<V[I]> }, name?: string) {
+	override get definition(): isly.Definition {
+		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
+	}
+	private constructor(creator: typeof isly, readonly base: { [I in keyof V]: Base<V[I]> }, name?: string) {
 		name = name ?? Name.fromTuple(base)
-		super(`Tuple of ${name}.`)
+		super(creator, `Tuple of ${name}.`)
 		this.name = name
 	}
 	override is(value: V | any): value is V {
@@ -32,7 +36,7 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 	override prune(value: V | any): V | undefined {
 		return this.is(value) ? (this.base.map((type, index) => type.prune(value[index])) as V) : undefined
 	}
-	static create<V extends any[] = unknown[]>(...base: { [I in keyof V]: Base<V[I]> }): Class<V> {
-		return new Class<V>(base)
+	static create<V extends any[] = unknown[]>(creator: typeof isly, ...base: { [I in keyof V]: Base<V[I]> }): Class<V> {
+		return new Class<V>(creator, base)
 	}
 }
