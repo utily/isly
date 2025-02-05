@@ -38,18 +38,17 @@ function merge<T, S>(target: T, source: S): T & S {
 	return Array.isArray(target) && Array.isArray(source)
 		? (target.map((item, index) => merge(item, source[index])) as S & T)
 		: target && typeof target == "object" && source && typeof source == "object"
-		? globalThis.Object.fromEntries(
-				globalThis.Object.assign(
-					target,
-					globalThis.Object.entries(source).map(([key, value]) => [
-						key,
-						globalThis.Object.getOwnPropertyDescriptor(target, key) &&
-						typeof target[key as keyof typeof target] == "object" &&
-						typeof value == "object"
-							? merge(target[key as keyof typeof target], value)
-							: value,
-					])
-				)
-		  )
+		? globalThis.Object.fromEntries([
+				...globalThis.Object.entries(target),
+
+				...globalThis.Object.entries(source).map(([key, value]) => [
+					key,
+					globalThis.Object.getOwnPropertyDescriptor(target, key) &&
+					typeof target[key as keyof typeof target] == "object" &&
+					typeof value == "object"
+						? merge(target[key as keyof typeof target], value)
+						: value,
+				]),
+		  ])
 		: (target as T & S)
 }
