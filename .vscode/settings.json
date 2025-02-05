@@ -1,7 +1,6 @@
 {
 	"files.exclude": {
 		".*": true,
-		"*.sh": true,
 		"*.json": true,
 		"CODEOWNERS": true,
 		"dist": true,
@@ -15,7 +14,6 @@
 	},
 	"search.exclude": {
 		".*": false,
-		"*.sh": false,
 		"*.json": false,
 		"CODEOWNERS": false,
 		"dist": false,
@@ -52,7 +50,6 @@
 		"langly",
 		"paramly",
 		"persistly",
-		"reassignable",
 		"selectivly",
 		"servly",
 		"servly-azure",
@@ -60,7 +57,8 @@
 		"tidily",
 		"transactly",
 		"typedly",
-		"uply"
+		"uply",
+		"paramly",
 	],
 	"typescript.tsdk": "node_modules/typescript/lib"
 }
