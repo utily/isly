@@ -43,12 +43,12 @@ export class Class<
 	override flawed(value: V | any): Flaw | false {
 		const result = super.flawed(value)
 		return (
-			!!result && {
+			result && {
 				...result,
 				flaws: Object.entries(value)
-					.map(([key, value]) => [this.key.prune(key), this.value.prune(value)])
-					.filter((entry): entry is [keyof V, V[keyof V]] => !!entry[0] && !!entry[1])
-					.map(([key, value]) => Object.assign(value, { property: key })),
+					.map(([key, value]) => [key, this.key.flawed(key) || this.value.flawed(value)] as const)
+					.map(([key, flaw]) => flaw && Object.assign(flaw, { property: key }))
+					.filter((flaw): flaw is Flaw & { property: string } => !!flaw),
 			}
 		)
 	}
