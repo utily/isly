@@ -9,6 +9,6 @@ export class Class<V = any> extends Base<V> {
 		return value != undefined
 	}
 	static create<V = any>(name?: string): Class<V> {
-		return new Class<V>(name)
+		return new Class<V>(name).modify()
 	}
 }

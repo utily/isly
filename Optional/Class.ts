@@ -16,6 +16,6 @@ export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 		return value === undefined ? undefined : this.base.prune(value)
 	}
 	static create<V, B extends Base<V>>(base: B, name?: string): Class<V, B> {
-		return new Class<V, B>(base, name)
+		return new Class<V, B>(base, name).modify()
 	}
 }

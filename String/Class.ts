@@ -18,7 +18,7 @@ export class Class<V extends string> extends Base<V> {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
 	static create<V extends string = string>(...restriction: [] | Restriction<V> | Base.Restriction): Class<V> {
-		const result = new Class<V>()
+		const result = new Class<V>().modify()
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)

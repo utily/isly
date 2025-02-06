@@ -12,11 +12,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			properties: globalThis.Object.fromEntries(Properties.entries(this.properties).map(([p, t]) => [p, t.definition])),
 		})
 	}
-	private constructor(
-
-		readonly properties: Properties<V>,
-		readonly name: string = Properties.getName(properties)
-	) {
+	private constructor(readonly properties: Properties<V>, readonly name: string = Properties.getName(properties)) {
 		super(`Object of type ${name}.`, [])
 	}
 	override is(value: V | any): value is V {
@@ -79,12 +75,8 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			pick: this.pick.bind(this),
 		})
 	}
-	static create<V extends object = Record<string, any>>(
-
-		properties: Properties<V>,
-		name?: string
-	): Class<V> {
-		return new Class<V>(properties, name)
+	static create<V extends object = Record<string, any>>(properties: Properties<V>, name?: string): Class<V> {
+		return new Class<V>(properties, name).modify()
 	}
 }
 export namespace Class {

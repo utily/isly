@@ -9,6 +9,6 @@ export class Class<V extends undefined = undefined> extends Base<undefined> {
 		return value === undefined
 	}
 	static create<V extends undefined = undefined>(name?: string): Class<V> {
-		return new Class<V>(name)
+		return new Class<V>(name).modify()
 	}
 }

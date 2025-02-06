@@ -31,7 +31,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		)
 	}
 	static create<V, B extends Base<V>>(...base: B[]): Class<V, B> {
-		return new Class<V, B>(base)
+		return new Class<V, B>(base).modify()
 	}
 }
 function merge<T, S>(target: T, source: S): T & S {

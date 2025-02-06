@@ -37,6 +37,6 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 		return this.is(value) ? (this.base.map((type, index) => type.prune(value[index])) as V) : undefined
 	}
 	static create<V extends any[] = unknown[]>(...base: { [I in keyof V]: Base<V[I]> }): Class<V> {
-		return new Class<V>(base)
+		return new Class<V>(base).modify()
 	}
 }

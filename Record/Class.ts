@@ -56,6 +56,6 @@ export class Class<
 		KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
 		VType extends Base<V[keyof V]>
 	>(key: KType, value: VType, name?: string): Class<V, KType, VType> {
-		return new Class<V, KType, VType>(key, value, name)
+		return new Class<V, KType, VType>(key, value, name).modify()
 	}
 }

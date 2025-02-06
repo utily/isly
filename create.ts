@@ -19,7 +19,7 @@ import { Class as Union } from "Union/Class"
 import { Class as Unknown } from "Unknown/Class"
 
 export function create(type: isly.Class, ...properties: any[]): isly.Type {
-	const result = (
+	return (
 		{
 			any: Any.create,
 			array: Array.create,
@@ -41,5 +41,4 @@ export function create(type: isly.Class, ...properties: any[]): isly.Type {
 			unknown: Unknown.create,
 		} as globalThis.Record<isly.Class, (...properties: any[]) => isly.Type>
 	)[type](...properties)
-	return result.modify() // decouple from prototype
 }

@@ -9,6 +9,6 @@ export class Class<V extends null = null> extends Base<null> {
 		return value === null
 	}
 	static create<V extends null = null>(): Class<V> {
-		return new Class<V>()
+		return new Class<V>().modify()
 	}
 }
