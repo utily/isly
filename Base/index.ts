@@ -1,4 +1,5 @@
 import type { Array } from "../Array"
+import { BindResult } from "../BindResult"
 import { Class } from "../Class"
 import type { Definition } from "../Definition"
 import { Flaw } from "../Flaw"
@@ -107,7 +108,28 @@ export abstract class Base<V = unknown> {
 			toString: changes?.toString ?? this.toString,
 			toJSON: changes?.toJSON ?? this.toJSON,
 			modify: changes?.modify ?? this.modify,
+			bind: changes?.bind ?? this.bind,
 		})
+	}
+	bind(): BindResult<V, this> {
+		return {
+			...this,
+			type: this,
+			is: this.is.bind(this),
+			get: this.get.bind(this),
+			prune: this.prune.bind(this),
+			flawed: this.flawed.bind(this),
+			restrict: this.restrict.bind(this),
+			rename: this.rename.bind(this),
+			describe: this.describe.bind(this),
+			optional: this.optional.bind(this),
+			readonly: this.readonly.bind(this),
+			array: this.array.bind(this),
+			toString: this.toString.bind(this),
+			toJSON: this.toJSON.bind(this),
+			modify: this.modify.bind(this),
+			// bind not included as you can't bind twice
+		}
 	}
 }
 export namespace Base {

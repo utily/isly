@@ -20,8 +20,8 @@ describe("isly", () => {
 			myIntersection: { a: string } & { b: string }
 
 			// children?: DemoType[]
-			// regExp: RegExp
-			// testMethod: () => boolean
+			regExp: RegExp
+			testMethod: () => boolean
 		}
 
 		const type: isly.Object<DemoType> = isly<DemoType>("object", {
@@ -47,10 +47,12 @@ describe("isly", () => {
 			),
 
 			// Recursive
-			// TODO: lazy children: isly.array(isly.lazy(() => type, "DemoType")).optional(),
-			// TODO: from regExp: isly.fromIs<RegExp>("RegExp", value => value instanceof RegExp),
+			// children: isly(() => type)
+			// 	.array()
+			// 	.optional(),
+			regExp: isly<RegExp>("from", "RegExp", value => value instanceof RegExp),
 			// function
-			// TODO: function testMethod: isly.function<DemoType["testMethod"]>(),
+			testMethod: isly<DemoType["testMethod"]>("function"),
 		})
 
 		const value: DemoType = {
@@ -69,9 +71,9 @@ describe("isly", () => {
 			myUnion: "a",
 			myArray: ["a"],
 			myIntersection: { a: "A", b: "B" },
-			//children?: DemoType[]
-			// regExp: /abc/,
-			// testMethod: () => true,
+			// children?: DemoType[],
+			regExp: /abc/,
+			testMethod: () => true,
 		}
 		expect(type.flawed(value)).toEqual(false)
 		expect(type.is(value)).toEqual(true)
@@ -154,8 +156,8 @@ describe("isly", () => {
 						},
 					],
 				},
-				// { property: "regExp", name: "RegExp" },
-				// { property: "testMethod", name: "function" },
+				{ property: "regExp", name: "RegExp" },
+				{ property: "testMethod", name: "function" },
 			],
 		})
 	})

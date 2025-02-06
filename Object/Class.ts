@@ -1,3 +1,4 @@
+import { BindResult } from "BindResult"
 import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
@@ -68,6 +69,14 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			extend: type?.extend ?? this.extend,
 			omit: type?.omit ?? this.omit,
 			pick: type?.pick ?? this.pick,
+		})
+	}
+	override bind(): BindResult<V, this> {
+		const result = super.bind()
+		return Object.assign(result, {
+			extend: this.extend.bind(this),
+			omit: this.omit.bind(this),
+			pick: this.pick.bind(this),
 		})
 	}
 	static create<V extends object = Record<string, any>>(
