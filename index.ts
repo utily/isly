@@ -148,17 +148,16 @@ export function isly<V = any, B extends Base<V> = Base<V>>(load: () => B): B
 export function isly(type: "ArrayBufferLike"): isly.Object<ArrayBufferLike>
 export function isly(type: "ArrayBufferView"): isly.Object<ArrayBufferView>
 export function isly(type: isly.Class | isly.Standard | (() => isly.Type), ...properties: any[]): isly.Type {
-	return typeof type == "function"
-		? lazy(type)
-		: isly.Standard.is(type)
-		? load(isly, type)
-		: create(isly, type, ...properties)
+	return typeof type == "function" ? lazy(type) : isly.Standard.is(type) ? load(type) : create(type, ...properties)
 }
+Base.isly = isly
+
 export namespace isly {
 	export import Any = islyAny
 	export import Array = islyArray
 	export import Boolean = islyBoolean
 	export import Class = islyClass
+	export type Creator = typeof isly
 	export import Definition = islyDefinition
 	export import Flaw = islyFlaw
 	export import From = islyFrom

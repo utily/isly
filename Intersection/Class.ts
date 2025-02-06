@@ -8,8 +8,8 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(creator: typeof isly, readonly base: B[], readonly name: string = Name.fromIntersection(base)) {
-		super(creator, "Intersection of base types.")
+	private constructor(readonly base: B[], readonly name: string = Name.fromIntersection(base)) {
+		super("Intersection of base types.")
 	}
 	override is(value: V | any): value is V {
 		return this.base.every(b => b.is(value))
@@ -30,8 +30,8 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 			}
 		)
 	}
-	static create<V, B extends Base<V>>(creator: typeof isly, ...base: B[]): Class<V, B> {
-		return new Class<V, B>(creator, base)
+	static create<V, B extends Base<V>>(...base: B[]): Class<V, B> {
+		return new Class<V, B>(base)
 	}
 }
 function merge<T, S>(target: T, source: S): T & S {

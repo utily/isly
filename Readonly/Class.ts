@@ -6,8 +6,8 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
-	private constructor(creator: typeof isly, readonly base: B, readonly name: string = `Readonly<${base.name}>`) {
-		super(creator, "Readonly version of base type.")
+	private constructor(readonly base: B, readonly name: string = `Readonly<${base.name}>`) {
+		super("Readonly version of base type.")
 	}
 	override is(value: V | any): value is V {
 		return value === undefined || this.base.is(value)
@@ -16,10 +16,10 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 		return this.base.prune(value)
 	}
 	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
-		creator: typeof isly,
+
 		base: B,
 		name?: string
 	): Class<V, B> {
-		return new Class<V, B>(creator, base, name)
+		return new Class<V, B>(base, name)
 	}
 }

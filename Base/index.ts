@@ -3,7 +3,7 @@ import { BindResult } from "../BindResult"
 import { Class } from "../Class"
 import type { Definition } from "../Definition"
 import { Flaw } from "../Flaw"
-import { isly } from "../index"
+import type { isly } from "../index"
 import { Name } from "../Name"
 import type { Optional } from "../Optional"
 import type { Readonly } from "../Readonly"
@@ -20,16 +20,16 @@ export abstract class Base<V = unknown> {
 			...(this.condition ? { condition: this.condition } : {}),
 		}
 	}
-	constructor(creator: typeof isly, readonly description?: string, readonly condition?: string[]) {
+	constructor(readonly description?: string, readonly condition?: string[]) {
 		Object.assign(this, {
 			optional(name?: string): Optional<V | undefined, Base<V>> {
-				return creator("optional", this as Base<V>, name)
+				return Base.isly("optional", this as Base<V>, name)
 			},
 			readonly(name?: string): Readonly<V, Base<V>> {
-				return creator("readonly", this as Base<V>, name)
+				return Base.isly("readonly", this as Base<V>, name)
 			},
 			array(...restriction: Array.Restriction | []): Array<V, Base<V>> {
-				return creator("array", this as Base<V>, ...restriction)
+				return Base.isly("array", this as Base<V>, ...restriction)
 			},
 		})
 	}
@@ -131,6 +131,7 @@ export abstract class Base<V = unknown> {
 			// bind not included as you can't bind twice
 		}
 	}
+	static isly: isly.Creator
 }
 export namespace Base {
 	export import Definition = BaseDefinition

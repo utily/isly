@@ -1,20 +1,21 @@
+import { Base } from "./Base"
 import type { isly } from "./index"
 
-export function load(creator: typeof isly, type: isly.Standard): isly.Type {
+export function load(type: isly.Standard): isly.Type {
 	return {
 		ArrayBufferLike: () =>
-			creator<ArrayBufferLike>(
+			Base.isly<ArrayBufferLike>(
 				"union",
-				creator("instance", ArrayBuffer, "ArrayBuffer"),
-				creator("instance", SharedArrayBuffer, "SharedArrayBuffer")
+				Base.isly("instance", ArrayBuffer, "ArrayBuffer"),
+				Base.isly("instance", SharedArrayBuffer, "SharedArrayBuffer")
 			),
 		ArrayBufferView: () =>
-			creator<ArrayBufferView>(
+			Base.isly<ArrayBufferView>(
 				"object",
 				{
-					buffer: creator("ArrayBufferLike"),
-					byteLength: creator("number"),
-					byteOffset: creator("number"),
+					buffer: Base.isly("ArrayBufferLike"),
+					byteLength: Base.isly("number"),
+					byteOffset: Base.isly("number"),
 				},
 				"ArrayBufferView"
 			),

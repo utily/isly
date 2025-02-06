@@ -10,9 +10,9 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
-	private constructor(creator: typeof isly, readonly base: B, name?: string) {
+	private constructor(readonly base: B, name?: string) {
 		name = name ?? Name.fromArray(base)
-		super(creator, `Array of ${name}.`)
+		super(`Array of ${name}.`)
 		this.name = name
 	}
 	override is(value: V[] | any): value is V[] {
@@ -37,11 +37,10 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
 	static create<V = unknown, B extends Base<V> = Base<V>>(
-		creator: typeof isly,
 		base: B,
 		...restriction: [] | Restriction | Base.Restriction
 	): Class<V, B> {
-		const result: Class<V, B> = new Class<V, B>(creator, base)
+		const result: Class<V, B> = new Class<V, B>(base)
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)
