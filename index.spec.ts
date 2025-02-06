@@ -1,89 +1,84 @@
 import { isly } from "./index"
 
+export interface DemoType {
+	anyNumber: number
+	numberOf: number
+	temperature: number
+
+	message: string
+	email: string
+	currency: "SEK" | "EUR"
+
+	new: boolean
+	fromServer: true
+
+	myTuple: [string, number]
+	myUnion: string | number
+	myArray: string[]
+	myIntersection: { a: string } & { b: string }
+
+	// children?: DemoType[]
+	regExp: RegExp
+	testMethod: () => boolean
+}
+export namespace DemoType {
+	export const type: isly.Object<DemoType> = isly<DemoType>("object", {
+		// number
+		anyNumber: isly("number"),
+		numberOf: isly("number", "positive"),
+		temperature: isly("number", "greater", -273.15),
+		// string
+		message: isly("string"),
+		email: isly("string", "value", /\S+@\S+\.\S+/),
+		currency: isly("string", "value", "SEK", "EUR"),
+		// boolean
+		new: isly("boolean"),
+		fromServer: isly("boolean", true),
+
+		myTuple: isly("tuple", isly("string"), isly("number")),
+		myUnion: isly("union", isly("string"), isly("number")),
+		myArray: isly("array", isly("string"), "length", "minimum", 1),
+		myIntersection: isly(
+			"intersection",
+			isly<{ a: string }>("object", { a: isly("string") }),
+			isly<{ b: string }>("object", { b: isly("string") })
+		),
+
+		// Recursive
+		// children: isly(() => type)
+		// 	.array()
+		// 	.optional(),
+		regExp: isly<RegExp>("from", "RegExp", value => value instanceof RegExp),
+		// function
+		testMethod: isly<DemoType["testMethod"]>("function"),
+	})
+}
 describe("isly", () => {
-	it("object", () => {
-		type DemoType = {
-			anyNumber: number
-			numberOf: number
-			temperature: number
-
-			message: string
-			email: string
-			currency: "SEK" | "EUR"
-
-			new: boolean
-			fromServer: true
-
-			myTuple: [string, number]
-			myUnion: string | number
-			myArray: string[]
-			myIntersection: { a: string } & { b: string }
-
-			// children?: DemoType[]
-			regExp: RegExp
-			testMethod: () => boolean
-		}
-
-		const type: isly.Object<DemoType> = isly<DemoType>("object", {
-			// number
-			anyNumber: isly("number"),
-			numberOf: isly("number", "positive"),
-			temperature: isly("number", "greater", -273.15),
-			// string
-			message: isly("string"),
-			email: isly("string", "value", /\S+@\S+\.\S+/),
-			currency: isly("string", "value", "SEK", "EUR"),
-			// boolean
-			new: isly("boolean"),
-			fromServer: isly("boolean", true),
-
-			myTuple: isly("tuple", isly("string"), isly("number")),
-			myUnion: isly("union", isly("string"), isly("number")),
-			myArray: isly("array", isly("string"), "length", "minimum", 1),
-			myIntersection: isly(
-				"intersection",
-				isly<{ a: string }>("object", { a: isly("string") }),
-				isly<{ b: string }>("object", { b: isly("string") })
-			),
-
-			// Recursive
-			// children: isly(() => type)
-			// 	.array()
-			// 	.optional(),
-			regExp: isly<RegExp>("from", "RegExp", value => value instanceof RegExp),
-			// function
-			testMethod: isly<DemoType["testMethod"]>("function"),
-		})
-
-		const value: DemoType = {
-			anyNumber: -12,
-			numberOf: 10,
-			temperature: 25,
-
-			message: "d",
-			email: "info@example.com",
-			currency: "SEK",
-
-			new: false,
-			fromServer: true,
-
-			myTuple: ["a", 1],
-			myUnion: "a",
-			myArray: ["a"],
-			myIntersection: { a: "A", b: "B" },
-			// children?: DemoType[],
-			regExp: /abc/,
-			testMethod: () => true,
-		}
-		expect(type.flawed(value)).toEqual(false)
-		expect(type.is(value)).toEqual(true)
-
-		expect(type.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false)
-
-		expect(type.flawed({ currency: "SEK" })).toEqual({
-			name: "{ anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string } }",
+	const value: DemoType = {
+		anyNumber: -12,
+		numberOf: 10,
+		temperature: 25,
+		message: "d",
+		email: "info@example.com",
+		currency: "SEK",
+		new: false,
+		fromServer: true,
+		myTuple: ["a", 1],
+		myUnion: "a",
+		myArray: ["a"],
+		myIntersection: { a: "A", b: "B" },
+		// children?: DemoType[],
+		regExp: /abc/,
+		testMethod: () => true,
+	}
+	it("flawed(value) == false", () => expect(DemoType.type.flawed(value)).toEqual(false))
+	it("is(value) == true", () => expect(DemoType.type.is(value)).toEqual(true))
+	it("is() == false", () => expect(DemoType.type.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false))
+	it("flawed({ currency: SEK })", () =>
+		expect(DemoType.type.flawed({ currency: "SEK" })).toEqual({
+			name: "{ anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }",
 			description:
-				"Object of type { anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string } }.",
+				"Object of type { anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }.",
 			flaws: [
 				{ property: "anyNumber", name: "number", description: "Any finite numeric value." },
 				{ property: "numberOf", name: "number", condition: ["positive"], description: "Any finite numeric value." },
@@ -156,9 +151,8 @@ describe("isly", () => {
 						},
 					],
 				},
-				{ property: "regExp", name: "RegExp" },
-				{ property: "testMethod", name: "function" },
+				{ property: "regExp", name: "RegExp", description: "Value has to fulfill custom predicate." },
+				{ property: "testMethod", name: "function", description: "Value has to be a function." },
 			],
-		})
-	})
+		}))
 })
