@@ -1,6 +1,6 @@
 import type { islyObject } from "../Object"
 
-export type Creator = {
+export interface Creator {
 	(type: "ArrayBufferLike"): islyObject<ArrayBufferLike>
 	(type: "ArrayBufferView"): islyObject<ArrayBufferView>
 }

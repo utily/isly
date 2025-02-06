@@ -3,6 +3,7 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import type { Type } from "../Type"
+import type { islyObject } from "."
 import { Properties } from "./Properties"
 
 export class Class<V extends object = Record<string, any>> extends Base<V> {
@@ -84,7 +85,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		properties: Properties<V>,
 		name?: string
 	): Class<V> {
-		return new Class<V>(creator, properties, name)
+		return new Class<V>(creator, properties, name).modify()
 	}
 }
 export namespace Class {
@@ -94,5 +95,12 @@ export namespace Class {
 	}
 	export function pick<T extends globalThis.Object, K extends keyof T>(object: T, picks: readonly K[]): Pick<T, K> {
 		return globalThis.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
+	}
+	export interface Creator {
+		<V extends object = Record<string, any>>(
+			type: "object",
+			properties: islyObject.Properties<V>,
+			name?: string
+		): islyObject<V>
 	}
 }

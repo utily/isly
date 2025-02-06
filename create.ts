@@ -43,3 +43,23 @@ export function create(creator: isly.Creator, type: isly.Class, ...properties: a
 	)[type](creator, ...properties)
 	return result.modify() // decouple from prototype
 }
+export const creator = {
+	any: ((...properties: any[]) => Any.create(creator, ...properties)) as Any.Creator,
+	array: ((...properties: any[]) => Array.create(creator, ...properties)) as Array.Creator,
+	boolean: ((...properties: any) => Boolean.create(creator, ...properties)) as Boolean.Creator,
+	from: ((...properties: any[]) => From.create(creator, ...properties)) as From.Creator,
+	function: ((...properties: any[]) => Function.create(creator, ...properties)) as Function.Creator,
+	null: ((...properties: any[]) => Null.create(creator, ...properties)) as Null.Creator,
+	number: ((...properties: any[]) => Number.create(creator, ...properties)) as Number.Creator,
+	instance: ((...properties: any[]) => Instance.create(creator, ...properties)) as Instance.Creator,
+	intersection: ((...properties: any[]) => Intersection.create(creator, ...properties)) as Intersection.Creator,
+	object: ((...properties: any[]) => Object.create(creator, ...properties)) as Object.Creator,
+	optional: ((...properties: any[]) => Optional.create(creator, ...properties)) as Optional.Creator,
+	readonly: ((...properties: any[]) => Readonly.create(creator, ...properties)) as Readonly.Creator,
+	record: ((...properties: any[]) => Record.create(creator, ...properties)) as Record.Creator,
+	string: ((...properties: any[]) => String.create(creator, ...properties)) as String.Creator,
+	tuple: ((...properties: any[]) => Tuple.create(creator, ...properties)) as Tuple.Creator,
+	undefined: ((...properties: any[]) => Undefined.create(creator, ...properties)) as Undefined.Creator,
+	union: ((...properties: any[]) => Union.create(creator, ...properties)) as Union.Creator,
+	unknown: ((...properties: any[]) => Unknown.create(creator, ...properties)) as Unknown.Creator,
+} as const

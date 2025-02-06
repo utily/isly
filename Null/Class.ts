@@ -1,5 +1,6 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Null } from "."
 
 export class Class<V extends null = null> extends Base<null> {
 	readonly class = "null"
@@ -10,6 +11,11 @@ export class Class<V extends null = null> extends Base<null> {
 		return value === null
 	}
 	static create<V extends null = null>(creator: isly.Creator): Class<V> {
-		return new Class<V>(creator)
+		return new Class<V>(creator).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V extends null = null>(type: "null"): Null<V>
 	}
 }

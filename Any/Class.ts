@@ -1,5 +1,6 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Any } from "."
 
 export class Class<V = any> extends Base<V> {
 	readonly class = "any"
@@ -10,6 +11,11 @@ export class Class<V = any> extends Base<V> {
 		return value != undefined
 	}
 	static create<V = any>(creator: isly.Creator, name?: string): Class<V> {
-		return new Class<V>(creator, name)
+		return new Class<V>(creator, name).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V = any>(type: "any", name?: string): Any<V>
 	}
 }

@@ -2,6 +2,7 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
+import type { Array } from "."
 import { Restriction } from "./Restriction"
 
 export class Class<V, B extends Base<V>> extends Base<V[]> {
@@ -23,7 +24,7 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 		return (
 			result && {
 				...result,
-				flaws: (Array.isArray(value)
+				flaws: (globalThis.Array.isArray(value)
 					? value.map(this.base.flawed.bind(this.base)).map((flaw, index) => flaw && { ...flaw, index })
 					: [this.base.flawed(undefined)]
 				).filter((f: Flaw | false): f is Flaw => !!f),
@@ -38,12 +39,18 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	}
 	static create<V = unknown, B extends Base<V> = Base<V>>(
 		creator: isly.Creator,
-		base: B,
-		...restriction: [] | Restriction | Base.Restriction
+		properties: [base: B, ...restriction: [] | Restriction | Base.Restriction]
 	): Class<V, B> {
-		const result: Class<V, B> = new Class<V, B>(creator, base)
-		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
+		const base = properties[0]
+		const restriction = properties.slice(1) as [] | Restriction | Base.Restriction
+		const result: Class<V, B> = new Class<V, B>(creator, base).modify()
+		return ((value: any): value is [] => globalThis.Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V = unknown, B extends Base<V> = Base<V>>(base: B, ...restriction: Array.Restriction | []): Array<V, B>
 	}
 }

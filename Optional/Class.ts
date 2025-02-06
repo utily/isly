@@ -1,5 +1,6 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Optional } from "."
 
 export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 	readonly class = "optional"
@@ -16,6 +17,15 @@ export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 		return value === undefined ? undefined : this.base.prune(value)
 	}
 	static create<V, B extends Base<V>>(creator: isly.Creator, base: B, name?: string): Class<V, B> {
-		return new Class<V, B>(creator, base, name)
+		return new Class<V, B>(creator, base, name).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
+			type: "optional",
+			base: B,
+			name?: string
+		): Optional<V, B>
 	}
 }

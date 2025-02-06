@@ -1,5 +1,6 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Unknown } from "."
 
 export class Class<V = unknown> extends Base<V> {
 	readonly class = "unknown"
@@ -10,6 +11,11 @@ export class Class<V = unknown> extends Base<V> {
 		return value != undefined
 	}
 	static create<V extends undefined = undefined>(creator: isly.Creator, name?: string): Class<V> {
-		return new Class<V>(creator, name)
+		return new Class<V>(creator, name).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V extends undefined = undefined>(type: "unknown", name?: string): Unknown<V>
 	}
 }

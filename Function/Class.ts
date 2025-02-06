@@ -1,8 +1,8 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Function } from "."
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-export class Class<V extends Function = Function> extends Base<Function> {
+export class Class<V extends globalThis.Function = globalThis.Function> extends Base<globalThis.Function> {
 	readonly class = "function"
 	private constructor(creator: isly.Creator, readonly name: string = "function") {
 		super(creator, "Value has to be a function.")
@@ -10,8 +10,12 @@ export class Class<V extends Function = Function> extends Base<Function> {
 	override is(value: V | any): value is V {
 		return typeof value == "function"
 	}
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-	static create<V extends Function = Function>(creator: isly.Creator, name?: string): Class<V> {
-		return new Class<V>(creator)
+	static create<V extends globalThis.Function = globalThis.Function>(creator: isly.Creator, name?: string): Class<V> {
+		return new Class<V>(creator, name).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V extends globalThis.Function = globalThis.Function>(type: "function", name?: string): Function<V>
 	}
 }

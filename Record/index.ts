@@ -3,7 +3,6 @@ import { Number } from "../Number"
 import { String } from "../String"
 import { Unknown } from "../Unknown"
 import { Class } from "./Class"
-import { Creator as RecordCreator } from "./Creator"
 import { Definition as RecordDefinition } from "./Definition"
 
 export type Record<
@@ -20,6 +19,5 @@ export type Record<
 > = Omit<Class<V, KType, VType>, "constructor">
 
 export namespace Record {
-	export import Creator = RecordCreator
 	export import Definition = RecordDefinition
 }

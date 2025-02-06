@@ -4,9 +4,10 @@ import type { isly } from "../index"
 import { Number } from "../Number"
 import { String } from "../String"
 import { Unknown } from "../Unknown"
+import type { Record } from "."
 
 export class Class<
-	V extends Record<string | number | symbol, any>,
+	V extends globalThis.Record<string | number | symbol, any>,
 	KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
 	VType extends Base<V[keyof V]>
 > extends Base<V> {
@@ -53,10 +54,31 @@ export class Class<
 		)
 	}
 	static create<
-		V extends Record<string | number | symbol, any>,
+		V extends globalThis.Record<string | number | symbol, any>,
 		KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
 		VType extends Base<V[keyof V]>
 	>(creator: isly.Creator, key: KType, value: VType, name?: string): Class<V, KType, VType> {
-		return new Class<V, KType, VType>(creator, key, value, name)
+		return new Class<V, KType, VType>(creator, key, value, name).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<
+			V extends
+				| globalThis.Record<string, any>
+				| globalThis.Record<number, any>
+				| globalThis.Record<symbol, any> = Record<string, any>,
+			KType extends keyof V extends string
+				? String
+				: keyof V extends number
+				? Number
+				: Unknown<symbol> = keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
+			VType extends Base<V[keyof V]> = Unknown<V[keyof V]>
+		>(
+			type: "record",
+			key: KType,
+			value: VType,
+			name?: string
+		): Record<V, KType, VType>
 	}
 }

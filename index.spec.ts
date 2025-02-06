@@ -22,36 +22,38 @@ export interface DemoType {
 	testMethod: () => boolean
 }
 export namespace DemoType {
-	export const { type, is, flawed } = isly<DemoType>("object", {
-		// number
-		anyNumber: isly("number"),
-		numberOf: isly("number", "positive"),
-		temperature: isly("number", "greater", -273.15),
-		// string
-		message: isly("string"),
-		email: isly("string", "value", /\S+@\S+\.\S+/),
-		currency: isly("string", "value", "SEK", "EUR"),
-		// boolean
-		new: isly("boolean"),
-		fromServer: isly("boolean", true),
+	export const { type, is, flawed } = isly
+		.create<DemoType>("object", {
+			// number
+			anyNumber: isly.create("number"),
+			numberOf: isly("number", "positive"),
+			temperature: isly("number", "greater", -273.15),
+			// string
+			message: isly("string"),
+			email: isly("string", "value", /\S+@\S+\.\S+/),
+			currency: isly("string", "value", "SEK", "EUR"),
+			// boolean
+			new: isly("boolean"),
+			fromServer: isly("boolean", true),
 
-		myTuple: isly("tuple", isly("string"), isly("number")),
-		myUnion: isly("union", isly("string"), isly("number")),
-		myArray: isly("array", isly("string"), "length", "minimum", 1),
-		myIntersection: isly(
-			"intersection",
-			isly<{ a: string }>("object", { a: isly("string") }),
-			isly<{ b: string }>("object", { b: isly("string") })
-		),
+			myTuple: isly("tuple", isly("string"), isly("number")),
+			myUnion: isly("union", isly("string"), isly("number")),
+			myArray: isly("array", isly("string"), "length", "minimum", 1),
+			myIntersection: isly(
+				"intersection",
+				isly<{ a: string }>("object", { a: isly("string") }),
+				isly<{ b: string }>("object", { b: isly("string") })
+			),
 
-		// Recursive
-		// children: isly(() => type)
-		// 	.array()
-		// 	.optional(),
-		regExp: isly<RegExp>("from", "RegExp", value => value instanceof RegExp),
-		// function
-		testMethod: isly<DemoType["testMethod"]>("function"),
-	}).bind()
+			// Recursive
+			// children: isly(() => type)
+			// 	.array()
+			// 	.optional(),
+			regExp: isly<RegExp>("from", "RegExp", value => value instanceof RegExp),
+			// function
+			testMethod: isly<DemoType["testMethod"]>("function"),
+		})
+		.bind()
 }
 describe("isly", () => {
 	const value: DemoType = {

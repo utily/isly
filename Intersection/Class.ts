@@ -2,6 +2,7 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
+import type { Intersection } from "."
 
 export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "intersection"
@@ -31,7 +32,48 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		)
 	}
 	static create<V, B extends Base<V>>(creator: isly.Creator, ...base: B[]): Class<V, B> {
-		return new Class<V, B>(creator, base)
+		return new Class<V, B>(creator, base).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<T extends A & B, A, B>(type: "intersection", typeA: Base<A>, typeB: Base<B>): Intersection<T>
+		<T extends A & B & C, A, B, C>(
+			type: "intersection",
+			typeA: Base<A>,
+			typeB: Base<B>,
+			typeC: Base<C>
+		): Intersection<T>
+		<T extends A & B & C, A, B, C>(
+			type: "intersection",
+			typeA: Base<A>,
+			typeB: Base<B>,
+			typeC: Base<C>
+		): Intersection<T>
+		<T extends A & B & C & D, A, B, C, D>(
+			type: "intersection",
+			typeA: Base<A>,
+			typeB: Base<B>,
+			typeC: Base<C>,
+			typeD: Base<D>
+		): Intersection<T>
+		<T extends A & B & C & D & E, A, B, C, D, E>(
+			type: "intersection",
+			typeA: Base<A>,
+			typeB: Base<B>,
+			typeC: Base<C>,
+			typeD: Base<D>,
+			typeE: Base<E>
+		): Intersection<T>
+		<T extends A & B & C & D & E & F, A, B, C, D, E, F>(
+			type: "intersection",
+			typeA: Base<A>,
+			typeB: Base<B>,
+			typeC: Base<C>,
+			typeD: Base<D>,
+			typeE: Base<E>,
+			typeF: Base<F>
+		): Intersection<T>
 	}
 }
 function merge<T, S>(target: T, source: S): T & S {

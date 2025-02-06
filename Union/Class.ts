@@ -2,6 +2,7 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
+import type { Union } from "."
 
 export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "union"
@@ -30,6 +31,18 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		)
 	}
 	static create<V, B extends Base<V>>(creator: isly.Creator, ...base: B[]): Class<V, B> {
-		return new Class<V, B>(creator, base)
+		return new Class<V, B>(creator, base).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V>(...types: Base<V>[]): Union<V>
+		<T extends A | B, A, B>(...types: [Base<A>, Base<B>]): Union<T>
+		<T extends A | B | C, A, B, C>(...types: [Base<A>, Base<B>, Base<C>]): Union<T>
+		<T extends A | B | C | D, A, B, C, D>(...types: [Base<A>, Base<B>, Base<C>, Base<D>]): Union<T>
+		<T extends A | B | C | D | E, A, B, C, D, E>(...types: [Base<A>, Base<B>, Base<C>, Base<D>, Base<E>]): Union<T>
+		<T extends A | B | C | D | E | F, A, B, C, D, E, F>(
+			...types: [Base<A>, Base<B>, Base<C>, Base<D>, Base<E>, Base<F>]
+		): Union<T>
 	}
 }

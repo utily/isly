@@ -1,7 +1,10 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Readonly } from "."
 
-export class Class<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>> extends Base<V> {
+export class Class<V = unknown, B extends Base<globalThis.Readonly<V>> = Base<globalThis.Readonly<V>>> extends Base<
+	globalThis.Readonly<V>
+> {
 	readonly class = "readonly"
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
@@ -20,6 +23,11 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 		base: B,
 		name?: string
 	): Class<V, B> {
-		return new Class<V, B>(creator, base, name)
+		return new Class<V, B>(creator, base, name).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V = unknown, B extends Base<V> = Base<globalThis.Readonly<V>>>(base: B, name?: string): Readonly<V, B>
 	}
 }

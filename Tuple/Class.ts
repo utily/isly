@@ -2,6 +2,7 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
+import type { Tuple } from "."
 
 export class Class<V extends any[] = unknown[]> extends Base<V> {
 	readonly class = "tuple"
@@ -37,6 +38,11 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 		return this.is(value) ? (this.base.map((type, index) => type.prune(value[index])) as V) : undefined
 	}
 	static create<V extends any[] = unknown[]>(creator: isly.Creator, ...base: { [I in keyof V]: Base<V[I]> }): Class<V> {
-		return new Class<V>(creator, base)
+		return new Class<V>(creator, base).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V extends any[] = unknown[]>(...base: { [I in keyof V]: Base<V[I]> }): Tuple<V>
 	}
 }

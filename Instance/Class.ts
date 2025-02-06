@@ -1,5 +1,6 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Instance } from "."
 
 export class Class<V extends object = object> extends Base<V> {
 	readonly class = "instance"
@@ -14,6 +15,15 @@ export class Class<V extends object = object> extends Base<V> {
 		constructor: new (...properties: any[]) => V,
 		name: string
 	): Class<V> {
-		return new Class<V>(creator, constructor, name)
+		return new Class<V>(creator, constructor, name).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V extends object = object>(
+			type: "instance",
+			constructor: new (...properties: any[]) => V,
+			name: string
+		): Instance<V>
 	}
 }

@@ -1,5 +1,6 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { From } from "."
 
 export class Class<V = unknown> extends Base<V> {
 	readonly class = "from"
@@ -17,6 +18,16 @@ export class Class<V = unknown> extends Base<V> {
 		is: (value: V | any) => value is V,
 		prune?: (value: V | any) => V | undefined
 	): Class<V> {
-		return new Class<V>(creator, name, is, prune)
+		return new Class<V>(creator, name, is, prune).modify()
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V = unknown>(
+			type: "from",
+			name: string,
+			is: (value: V | any) => value is V,
+			prune?: (value: V | any) => V | undefined
+		): From<V>
 	}
 }

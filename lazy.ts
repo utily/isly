@@ -9,5 +9,7 @@ export function lazy<V = any, B extends Base<V> = Base<V>>(creator: () => B): B 
 	})
 }
 export namespace lazy {
-	export type Creator = { <V = any, B extends Base<V> = Base<V>>(load: () => B): B }
+	export interface Creator {
+		<V = any, B extends Base<V> = Base<V>>(load: () => B): B
+	}
 }

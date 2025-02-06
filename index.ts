@@ -25,12 +25,12 @@ import { Undefined as islyUndefined } from "./Undefined"
 import { Union as islyUnion } from "./Union"
 import { Unknown as islyUnknown } from "./Unknown"
 
-export function isly(type: isly.Class | isly.Standard | (() => isly.Type), ...properties: any[]): isly.Type {
+export function c(type: isly.Class | isly.Standard | (() => isly.Type), ...properties: any[]): isly.Type {
 	return typeof type === "function"
 		? lazy(type)
 		: isly.Standard.is(type)
-		? load(isly as isly.Creator, type)
-		: create(isly as isly.Creator, type, ...properties)
+		? load(c as isly.Creator, type)
+		: create(c as isly.Creator, type, ...properties)
 }
 
 export namespace isly {
@@ -77,4 +77,5 @@ export namespace isly {
 		| isly.Undefined.Creator
 		| isly.Union.Creator
 		| isly.Unknown.Creator
+	export const create = c as Creator
 }

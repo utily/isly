@@ -1,5 +1,6 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
+import type { Number } from "."
 import { Restriction } from "./Restriction"
 
 export class Class<V extends number> extends Base<V> {
@@ -21,9 +22,18 @@ export class Class<V extends number> extends Base<V> {
 		creator: isly.Creator,
 		...restriction: [] | Restriction<V> | Base.Restriction
 	): Class<V> {
-		const result: Class<V> = new Class<V>(creator)
+		const result: Class<V> = new Class<V>(creator).modify()
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)
+	}
+}
+export namespace Class {
+	export interface Creator {
+		<V extends number = number>(type: "number"): Number<V>
+		<V extends number = number>(
+			type: "number",
+			...restriction: [] | Number.Restriction<V> | Base.Restriction
+		): Number<V>
 	}
 }
