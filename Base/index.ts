@@ -20,19 +20,7 @@ export abstract class Base<V = unknown> {
 			...(this.condition ? { condition: this.condition } : {}),
 		}
 	}
-	constructor(readonly description?: string, readonly condition?: string[]) {
-		Object.assign(this, {
-			optional(name?: string): Optional<V | undefined, Base<V>> {
-				return Base.isly("optional", this as Base<V>, name)
-			},
-			readonly(name?: string): Readonly<V, Base<V>> {
-				return Base.isly("readonly", this as Base<V>, name)
-			},
-			array(...restriction: Array.Restriction | []): Array<V, Base<V>> {
-				return Base.isly("array", this as Base<V>, ...restriction)
-			},
-		})
-	}
+	constructor(readonly description?: string, readonly condition?: string[]) {}
 	abstract is(value: V | any): value is V
 	get(value: V | any): V | undefined
 	get(value: V | any, fallback: V): V
@@ -67,13 +55,13 @@ export abstract class Base<V = unknown> {
 		return this.modify({ description } as Partial<this>)
 	}
 	optional(name?: string): Optional<V | undefined, this> {
-		throw Error("Not Implemented")
+		return Base.isly("optional", this, name)
 	}
 	readonly(name?: string): Readonly<V, this> {
-		throw Error("Not Implemented")
+		return Base.isly("readonly", this, name)
 	}
 	array(...restriction: Array.Restriction | []): Array<V, this> {
-		throw Error("Not Implemented")
+		return Base.isly("array", this, ...restriction)
 	}
 	toString(): string {
 		return JSON.stringify(this.definition)
