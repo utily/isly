@@ -5,6 +5,6 @@ import { String } from "../String"
 
 export interface Definition extends Base.Definition {
 	readonly key: String.Definition | Number.Definition
-	readonly value: islyDefinition
+	export import Creator = AnyCreatorreadonly value: islyDefinition
 }
 export namespace Definition {}

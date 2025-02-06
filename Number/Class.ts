@@ -8,7 +8,7 @@ export class Class<V extends number> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, this.allowed === undefined ? {} : { allowed: this.allowed })
 	}
-	private constructor(creator: typeof isly, readonly allowed?: readonly number[]) {
+	private constructor(creator: isly.Creator, readonly allowed?: readonly number[]) {
 		super(creator, "Any finite numeric value.")
 	}
 	is(value: V | any): value is V {
@@ -18,7 +18,7 @@ export class Class<V extends number> extends Base<V> {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
 	static create<V extends number = number>(
-		creator: typeof isly,
+		creator: isly.Creator,
 		...restriction: [] | Restriction<V> | Base.Restriction
 	): Class<V> {
 		const result: Class<V> = new Class<V>(creator)

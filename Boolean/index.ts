@@ -1,8 +1,10 @@
 import { Class } from "./Class"
-import { Definition as BaseDefinition } from "./Definition"
+import { Creator as BooleanCreator } from "./Creator"
+import { Definition as BooleanDefinition } from "./Definition"
 
 export type Boolean<V extends boolean = boolean> = Omit<Class<V>, "constructor">
 
 export namespace Boolean {
-	export import Definition = BaseDefinition
+	export import Creator = BooleanCreator
+	export import Definition = BooleanDefinition
 }

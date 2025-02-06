@@ -1,8 +1,10 @@
 import { Class } from "./Class"
-import { Definition as BaseDefinition } from "./Definition"
+import { Creator as NullCreator } from "./Creator"
+import { Definition as NullDefinition } from "./Definition"
 
 export type Null<V extends null = null> = Class<V>
 
 export namespace Null {
-	export import Definition = BaseDefinition
+	export import Creator = NullCreator
+	export import Definition = NullDefinition
 }

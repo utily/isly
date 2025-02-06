@@ -9,7 +9,7 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(creator: typeof isly, readonly base: { [I in keyof V]: Base<V[I]> }, name?: string) {
+	private constructor(creator: isly.Creator, readonly base: { [I in keyof V]: Base<V[I]> }, name?: string) {
 		name = name ?? Name.fromTuple(base)
 		super(creator, `Tuple of ${name}.`)
 		this.name = name
@@ -36,7 +36,7 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 	override prune(value: V | any): V | undefined {
 		return this.is(value) ? (this.base.map((type, index) => type.prune(value[index])) as V) : undefined
 	}
-	static create<V extends any[] = unknown[]>(creator: typeof isly, ...base: { [I in keyof V]: Base<V[I]> }): Class<V> {
+	static create<V extends any[] = unknown[]>(creator: isly.Creator, ...base: { [I in keyof V]: Base<V[I]> }): Class<V> {
 		return new Class<V>(creator, base)
 	}
 }

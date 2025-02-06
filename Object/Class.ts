@@ -13,7 +13,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		})
 	}
 	private constructor(
-		creator: typeof isly,
+		creator: isly.Creator,
 		readonly properties: Properties<V>,
 		readonly name: string = Properties.getName(properties)
 	) {
@@ -80,7 +80,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		})
 	}
 	static create<V extends object = Record<string, any>>(
-		creator: typeof isly,
+		creator: isly.Creator,
 		properties: Properties<V>,
 		name?: string
 	): Class<V> {

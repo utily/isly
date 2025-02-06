@@ -20,7 +20,7 @@ export abstract class Base<V = unknown> {
 			...(this.condition ? { condition: this.condition } : {}),
 		}
 	}
-	constructor(creator: typeof isly, readonly description?: string, readonly condition?: string[]) {
+	constructor(creator: isly.Creator, readonly description?: string, readonly condition?: string[]) {
 		Object.assign(this, {
 			optional(name?: string): Optional<V | undefined, Base<V>> {
 				return creator("optional", this as Base<V>, name)

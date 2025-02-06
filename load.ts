@@ -1,6 +1,6 @@
 import type { isly } from "./index"
 
-export function load(creator: typeof isly, type: isly.Standard): isly.Type {
+export function load(creator: isly.Creator, type: isly.Standard): isly.Type {
 	return {
 		ArrayBufferLike: () =>
 			creator<ArrayBufferLike>(

@@ -8,3 +8,6 @@ export function lazy<V = any, B extends Base<V> = Base<V>>(creator: () => B): B 
 		has: (_, property) => Reflect.has((target ??= creator()), property),
 	})
 }
+export namespace lazy {
+	export type Creator = { <V = any, B extends Base<V> = Base<V>>(load: () => B): B }
+}

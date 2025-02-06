@@ -8,7 +8,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(creator: typeof isly, readonly base: B[], readonly name: string = Name.fromIntersection(base)) {
+	private constructor(creator: isly.Creator, readonly base: B[], readonly name: string = Name.fromIntersection(base)) {
 		super(creator, "Intersection of base types.")
 	}
 	override is(value: V | any): value is V {
@@ -30,7 +30,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 			}
 		)
 	}
-	static create<V, B extends Base<V>>(creator: typeof isly, ...base: B[]): Class<V, B> {
+	static create<V, B extends Base<V>>(creator: isly.Creator, ...base: B[]): Class<V, B> {
 		return new Class<V, B>(creator, base)
 	}
 }

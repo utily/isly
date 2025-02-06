@@ -8,7 +8,7 @@ export class Class<V extends boolean> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, this.allowed === undefined ? {} : { allowed: this.allowed })
 	}
-	private constructor(creator: typeof isly, readonly allowed?: V) {
+	private constructor(creator: isly.Creator, readonly allowed?: V) {
 		super(creator, "Value has to be true or false.")
 	}
 	override is(value: V | any): value is V {
@@ -17,7 +17,7 @@ export class Class<V extends boolean> extends Base<V> {
 	override restrict(...restriction: Restriction | Base.Restriction) {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
-	static create<V extends boolean>(creator: typeof isly, allowed?: V): Class<V> {
+	static create<V extends boolean>(creator: isly.Creator, allowed?: V): Class<V> {
 		const result = new Class<V>(creator, allowed)
 		return allowed == undefined ? result : result.restrict(allowed)
 	}
