@@ -22,7 +22,7 @@ export interface DemoType {
 	testMethod: () => boolean
 }
 export namespace DemoType {
-	export const type: isly.Object<DemoType> = isly<DemoType>("object", {
+	export const { type, is, flawed } = isly<DemoType>("object", {
 		// number
 		anyNumber: isly("number"),
 		numberOf: isly("number", "positive"),
@@ -51,7 +51,7 @@ export namespace DemoType {
 		regExp: isly<RegExp>("from", "RegExp", value => value instanceof RegExp),
 		// function
 		testMethod: isly<DemoType["testMethod"]>("function"),
-	})
+	}).bind()
 }
 describe("isly", () => {
 	const value: DemoType = {
@@ -71,11 +71,11 @@ describe("isly", () => {
 		regExp: /abc/,
 		testMethod: () => true,
 	}
-	it("flawed(value) == false", () => expect(DemoType.type.flawed(value)).toEqual(false))
-	it("is(value) == true", () => expect(DemoType.type.is(value)).toEqual(true))
-	it("is() == false", () => expect(DemoType.type.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false))
+	it("flawed(value) == false", () => expect(DemoType.flawed(value)).toEqual(false))
+	it("is(value) == true", () => expect(DemoType.is(value)).toEqual(true))
+	it("is() == false", () => expect(DemoType.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false))
 	it("flawed({ currency: SEK })", () =>
-		expect(DemoType.type.flawed({ currency: "SEK" })).toEqual({
+		expect(DemoType.flawed({ currency: "SEK" })).toEqual({
 			name: "{ anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }",
 			description:
 				"Object of type { anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }.",
