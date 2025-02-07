@@ -55,13 +55,13 @@ export abstract class Base<V = unknown> {
 		return this.modify({ description } as Partial<this>)
 	}
 	optional(name?: string): Optional<V | undefined, this> {
-		return Base.isly("optional", this, name)
+		return Base.isly.optional(this, name)
 	}
 	readonly(name?: string): Readonly<V, this> {
-		return Base.isly("readonly", this, name)
+		return Base.isly.readonly(this, name)
 	}
 	array(...restriction: Array.Restriction | []): Array<V, this> {
-		return Base.isly("array", this, ...restriction)
+		return Base.isly.array(this, ...restriction)
 	}
 	toString(): string {
 		return JSON.stringify(this.definition)

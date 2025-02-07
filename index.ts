@@ -171,15 +171,36 @@ export function isly(type: isly.Class | isly.Standard | (() => isly.Type), ...pr
 		? load(type)
 		: (isly.creator as globalThis.Record<isly.Class, (...properties: any[]) => isly.Type>)[type](...properties)
 }
-Base.isly = isly
-
+const creators = {
+	any: AnyClass.create,
+	array: ArrayClass.create,
+	boolean: BooleanClass.create,
+	from: FromClass.create,
+	function: FunctionClass.create,
+	null: NullClass.create,
+	number: NumberClass.create,
+	instance: InstanceClass.create,
+	intersection: IntersectionClass.create,
+	object: ObjectClass.create,
+	optional: OptionalClass.create,
+	readonly: ReadonlyClass.create,
+	record: RecordClass.create,
+	string: StringClass.create,
+	tuple: TupleClass.create,
+	undefined: UndefinedClass.create,
+	union: UnionClass.create,
+	unknown: UnknownClass.create,
+	lazy,
+	standard: load,
+}
+Base.isly = creators
 
 export namespace isly {
 	export import Any = islyAny
 	export import Array = islyArray
 	export import Boolean = islyBoolean
 	export import Class = islyClass
-	export type Creator = typeof isly
+	export type Creator = typeof creators
 	export import Definition = islyDefinition
 	export import Flaw = islyFlaw
 	export import From = islyFrom
@@ -199,26 +220,5 @@ export namespace isly {
 	export import Undefined = islyUndefined
 	export import Union = islyUnion
 	export import Unknown = islyUnknown
-	export const creator = {
-		any: AnyClass.create,
-		array: ArrayClass.create,
-		boolean: BooleanClass.create,
-		from: FromClass.create,
-		function: FunctionClass.create,
-		null: NullClass.create,
-		number: NumberClass.create,
-		instance: InstanceClass.create,
-		intersection: IntersectionClass.create,
-		object: ObjectClass.create,
-		optional: OptionalClass.create,
-		readonly: ReadonlyClass.create,
-		record: RecordClass.create,
-		string: StringClass.create,
-		tuple: TupleClass.create,
-		undefined: UndefinedClass.create,
-		union: UnionClass.create,
-		unknown: UnknownClass.create,
-		lazy,
-		standard: load,
-	}
+	export const creator = creators
 }
