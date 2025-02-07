@@ -1,4 +1,4 @@
-import { creator as isly } from "./index"
+import { isly } from "./index"
 
 describe("isly lazy", () => {
 	// compile error if not working

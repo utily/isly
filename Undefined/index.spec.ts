@@ -1,4 +1,4 @@
-import { creator as isly } from "../index"
+import { isly } from "../index"
 
 describe("isly.undefined()", () => {
 	it("type narrowing", () => {

@@ -1,4 +1,4 @@
-import { creator as isly } from "./index"
+import { isly } from "./index"
 
 export interface DemoType {
 	anyNumber: number

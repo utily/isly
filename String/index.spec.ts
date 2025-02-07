@@ -1,4 +1,4 @@
-import { creator as isly } from "../index"
+import { isly } from "../index"
 
 describe("isly.string", () => {
 	// TypeScript compile error if not working

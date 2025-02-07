@@ -1,4 +1,4 @@
-import { creator as isly } from "../index"
+import { isly } from "../index"
 
 describe("isly.intersection", () => {
 	// compile error if not working
