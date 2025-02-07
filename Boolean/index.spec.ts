@@ -1,16 +1,16 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
 describe("isly.boolean", () => {
 	it("type narrowing", () => {
 		// compile error if not working
 		const isNarrowingWorking: boolean | string | any = "garbage" as any
-		if (isly("boolean").is(isNarrowingWorking)) {
+		if (isly.boolean().is(isNarrowingWorking)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const myBoolean: boolean = isNarrowingWorking
 		}
 	})
 	it("restrict & describe", () => {
-		const t1 = isly("boolean")
+		const t1 = isly.boolean()
 		expect(t1.is(false)).toBe(true)
 		expect(t1.description).toBe("Value has to be true or false.")
 		const t2 = t1.describe("Any boolean value.")
@@ -32,7 +32,7 @@ describe("isly.boolean", () => {
 		expect(t5.name).toBe("true")
 	})
 	it("modify", () => {
-		const t1 = isly("boolean")
+		const t1 = isly.boolean()
 		expect(t1.is(false)).toBe(true)
 		expect(t1.description).toBe("Value has to be true or false.")
 		const t2 = t1.modify({ description: "Any boolean value." })
@@ -43,7 +43,7 @@ describe("isly.boolean", () => {
 		[true, "true"],
 		[false, "false"],
 		[undefined, "boolean"],
-	])('isly("boolean", %s).name == %s', (allowed, expected) => expect(isly("boolean", allowed).name).toBe(expected))
+	])("isly.boolean(%s).name == %s", (allowed, expected) => expect(isly.boolean(allowed).name).toBe(expected))
 	it.each([
 		[true, true],
 		[false, true],
@@ -53,14 +53,15 @@ describe("isly.boolean", () => {
 		[undefined, false],
 		[{}, false],
 		[[], false],
-	])("is(%s) == %s", (input, expected) => expect(isly("boolean").is(input)).toBe(expected))
+	])("is(%s) == %s", (input, expected) => expect(isly.boolean().is(input)).toBe(expected))
 	it.each([
 		[true, true],
 		[false, false],
 		[0, false],
 	])("true: is(%s) == %s", (input, expected) =>
 		expect(
-			isly("boolean")
+			isly
+				.boolean()
 				.restrict(value => value == true, "true", "true")
 				.is(input)
 		).toBe(expected)
@@ -71,19 +72,20 @@ describe("isly.boolean", () => {
 		[0, false],
 	])("false: is(%s) == %s", (input, expected) =>
 		expect(
-			isly("boolean")
+			isly
+				.boolean()
 				.restrict(value => value == false, "false", "false")
 				.is(input)
 		).toBe(expected)
 	)
 	it.each([
-		[isly("boolean"), { name: "boolean", description: "Value has to be true or false." }],
+		[isly.boolean(), { name: "boolean", description: "Value has to be true or false." }],
 		[
-			isly("boolean", true),
+			isly.boolean(true),
 			{ name: "true", description: "Value has to be true.", condition: ["value: true"], allowed: true },
 		],
 		[
-			isly("boolean", false),
+			isly.boolean(false),
 			{ name: "false", description: "Value has to be false.", condition: ["value: false"], allowed: false },
 		],
 	] as const)("definition == %s", (type, expected) => expect(type.definition).toEqual(expected))
@@ -96,7 +98,7 @@ describe("isly.boolean", () => {
 		[undefined, undefined],
 		[{}, undefined],
 		[[], undefined],
-	])("get(%s) == %s", (input, expected) => expect(isly("boolean").get(input)).toBe(expected))
+	])("get(%s) == %s", (input, expected) => expect(isly.boolean().get(input)).toBe(expected))
 	it.each([
 		[true, true],
 		[false, false],
@@ -106,5 +108,5 @@ describe("isly.boolean", () => {
 		[undefined, undefined],
 		[{}, undefined],
 		[[], undefined],
-	])("extract(%s) == %s", (input, expected) => expect(isly("boolean").prune(input)).toBe(expected))
+	])("extract(%s) == %s", (input, expected) => expect(isly.boolean().prune(input)).toBe(expected))
 })

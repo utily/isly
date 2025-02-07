@@ -1,13 +1,13 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
 describe("isly.tuple", () => {
 	// TypeScript compile error if not working
 	it("type narrowing", () => {
 		type TestTuple = [string, number]
 		// With generic provided
-		isly<TestTuple>("tuple", isly("string"), isly("number"))
+		isly.tuple<TestTuple>(isly.string(), isly.number())
 		// without:
-		const type = isly("tuple", isly("string"), isly("number"))
+		const type = isly.tuple(isly.string(), isly.number())
 		const value: boolean | string | any = "garbage" as any
 		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -15,7 +15,7 @@ describe("isly.tuple", () => {
 		}
 	})
 	it("[string, string]", () => {
-		const type = isly("tuple", isly("string"), isly("string"))
+		const type = isly.tuple(isly.string(), isly.string())
 		expect(type.is([])).toBe(false)
 		expect(type.is(["foo", "bar"])).toBe(true)
 		expect(type.flawed([5, "bar"])).toEqual({
@@ -34,7 +34,7 @@ describe("isly.tuple", () => {
 		type User = {
 			email: string
 		}
-		const userStringTupleType = isly("tuple", isly<User>("object", { email: isly("string") }), isly("string"))
+		const userStringTupleType = isly.tuple(isly.object<User>({ email: isly.string() }), isly.string())
 
 		const value: [User, string] = [
 			{

@@ -1,9 +1,9 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
 describe("isly.any", () => {
 	// TypeScript compile error if not working
 	it("type narrowing", () => {
-		const type = isly("any")
+		const type = isly.any()
 		const value: boolean | string | any = "garbage" as any
 		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -11,7 +11,7 @@ describe("isly.any", () => {
 		}
 	})
 	it("generic", () => {
-		const type = isly("any")
+		const type = isly.any()
 		expect(type.is("42")).toBe(true)
 		expect(type.is(null)).toBe(false)
 		expect(type.is(undefined)).toBe(false)

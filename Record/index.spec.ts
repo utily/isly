@@ -1,10 +1,10 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
-describe('isly("record")', () => {
+describe("isly.record()", () => {
 	// compile error if not working
 	it("type narrowing", () => {
 		type Type = Record<string, string>
-		const type = isly<Type>("record", isly("string"), isly("string"))
+		const type = isly.record<Type>(isly.string(), isly.string())
 		const value: boolean | string | any = "garbage" as any
 		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -13,7 +13,7 @@ describe('isly("record")', () => {
 	})
 
 	it("record", () => {
-		const type = isly("record", isly("string"), isly("string"))
+		const type = isly.record(isly.string(), isly.string())
 		expect(type.name).toBe("Record<string, string>")
 
 		expect(type.is({ amount: "13.37", currency: "SEK" })).toBe(true)
@@ -29,7 +29,7 @@ describe('isly("record")', () => {
 		})
 	})
 	it("record, union as key", () => {
-		const type = isly("record", isly("string", "value", "a", "b"), isly("string"))
+		const type = isly.record(isly.string("value", "a", "b"), isly.string())
 
 		expect(type.is({ a: "abc001", b: "1337" })).toBe(true)
 		expect(type.is({ a: "abc001", b: "1337", c: 42 })).toBe(false)
@@ -49,7 +49,7 @@ describe('isly("record")', () => {
 		})
 	})
 	it("record, number as key", () => {
-		const type = isly("record", isly("number"), isly("string"))
+		const type = isly.record(isly.number(), isly.string())
 
 		expect(type.is({ 1: "abc001", 2: "1337" })).toBe(true)
 		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBe(true)
@@ -69,7 +69,7 @@ describe('isly("record")', () => {
 		})
 	})
 	it("record, positive integer as key", () => {
-		const type = isly("record", isly("number", "positive").restrict("integer"), isly("string"))
+		const type = isly.record(isly.number("positive").restrict("integer"), isly.string())
 
 		expect(type.is({ 1: "abc001", 2: "1337" })).toBe(true)
 		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBe(false)
@@ -92,7 +92,7 @@ describe('isly("record")', () => {
 		type User = {
 			email: string
 		}
-		const userRecordType = isly("record", isly("string"), isly<User>("object", { email: isly("string") }))
+		const userRecordType = isly.record(isly.string(), isly.object<User>({ email: isly.string() }))
 		const usersRecords: Record<string, User> = globalThis.Object.fromEntries(
 			[...Array(5).keys()].map(id => [
 				`${id}`,

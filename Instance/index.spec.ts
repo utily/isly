@@ -1,4 +1,4 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
 describe("isly.instanceOf", () => {
 	it.each([
@@ -11,7 +11,7 @@ describe("isly.instanceOf", () => {
 		["ArrayBuffer", ArrayBuffer],
 		["SharedArrayBuffer", SharedArrayBuffer],
 	] as const)("is instanceOf %s", (name, constructor) => {
-		const type = isly("instance", constructor, name)
+		const type = isly.instance(constructor, name)
 		expect(type.is(new constructor())).toBe(true)
 	})
 })

@@ -1,25 +1,25 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
 describe("isly.Array", () => {
 	// TypeScript compile error if not working
-	it('type narrowing isly("number").array()', () => {
-		const type = isly("number").array()
+	it("type narrowing isly.number().array()", () => {
+		const type = isly.number().array()
 		const value: boolean | string | any = "garbage" as any
 		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const data: number[] = value
 		}
 	})
-	it('type narrowing isly<number>("array", isly("number"))', () => {
-		const type = isly<number>("array", isly("number"))
+	it("type narrowing isly.array<number>(isly.number())", () => {
+		const type = isly.array<number>(isly.number())
 		const value: boolean | string | any = "garbage" as any
 		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const data: number[] = value
 		}
 	})
-	it('type narrowing isly("number").array()', () => {
-		const type = isly("number").array()
+	it("type narrowing isly.number().array()", () => {
+		const type = isly.number().array()
 		const value: boolean | string | any = "garbage" as any
 		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -27,12 +27,12 @@ describe("isly.Array", () => {
 		}
 	})
 	it.each([
-		[isly("number").array(), [42, 13.37], true],
-		[isly("number").array(), [42, "test"], false],
+		[isly.number().array(), [42, 13.37], true],
+		[isly.number().array(), [42, "test"], false],
 	] as const)("is($2) == $3", (type, value, expected) => expect(type.is(value)).toBe(expected))
 	it.each([
 		[
-			isly("number").array(),
+			isly.number().array(),
 			{
 				name: "number[]",
 				description: "Array of number[].",
@@ -46,7 +46,7 @@ describe("isly.Array", () => {
 			},
 		],
 		[
-			isly("number", "value", 42, 1337).array(),
+			isly.number("value", 42, 1337).array(),
 			{
 				name: "(42 | 1337)[]",
 				description: "Array of (42 | 1337)[].",
@@ -84,12 +84,12 @@ describe("isly.Array", () => {
 				],
 			},
 		],
-		[isly("union", isly("number"), isly("string")).array(), false],
+		[isly.union(isly.number(), isly.string()).array(), false],
 	] as const)("flawed(%s) == %s", (type, expected) =>
 		expect(type.flawed([13.37, 42, 0, 1, 3.1415, "attraction"])).toEqual(expected)
 	)
 	it("number[]", () => {
-		const type = isly("array", isly("number"))
+		const type = isly.array(isly.number())
 		expect(type.is([])).toBe(true)
 		expect(type.is([1, 2, 3])).toBe(true)
 		expect(type.is(0)).toBe(false)
@@ -132,7 +132,7 @@ describe("isly.Array", () => {
 		})
 	})
 	it("(number | string)[]", () => {
-		const arrayType = isly("union", isly("string"), isly("number")).array()
+		const arrayType = isly.union(isly.string(), isly.number()).array()
 		expect(arrayType.flawed(undefined)).toEqual({
 			description: "Array of (string | number)[].",
 			name: "(string | number)[]",
@@ -156,7 +156,7 @@ describe("isly.Array", () => {
 	})
 
 	it("number[] with length criteria", () => {
-		const type = isly("number").array().restrict("length", "value", 3)
+		const type = isly.number().array().restrict("length", "value", 3)
 		expect(type.is([3, 4, 5])).toBe(true)
 
 		expect(type.is([])).toBe(false)
@@ -192,7 +192,7 @@ describe("isly.Array", () => {
 		})
 	})
 	it("number[] with minLength & maxLength criteria", () => {
-		const type = isly("number").array().restrict("length", "range", 1, 3)
+		const type = isly.number().array().restrict("length", "range", 1, 3)
 		expect(type.is([3, 4, 5])).toBe(true)
 
 		expect(type.is([1, 2, 3, 4])).toBe(false)
@@ -214,7 +214,7 @@ describe("isly.Array", () => {
 		type User = {
 			email: string
 		}
-		const userArrayType = isly<User>("object", { email: isly("string") }).array()
+		const userArrayType = isly.object<User>({ email: isly.string() }).array()
 		const usersWithPassword: (User & { password: string })[] = [...Array(5).keys()].map(id => ({
 			email: `${id}@example.com`,
 			password: "shouldBeSecret",

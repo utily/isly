@@ -1,6 +1,6 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
-describe('isly("intersection")', () => {
+describe("isly.intersection", () => {
 	// compile error if not working
 	it("type narrowing", () => {
 		type A = { a?: number; shared: string }
@@ -9,15 +9,14 @@ describe('isly("intersection")', () => {
 		type AB = A & B
 		// With generic provided
 		{
-			const type = isly<AB, A, B>(
-				"intersection",
-				isly<A>("object", {
-					a: isly("number").optional(),
-					shared: isly("string"),
+			const type = isly.intersection<AB, A, B>(
+				isly.object<A>({
+					a: isly.number().optional(),
+					shared: isly.string(),
 				}),
-				isly<B>("object", {
-					b: isly("number").optional(),
-					shared: isly("string"),
+				isly.object<B>({
+					b: isly.number().optional(),
+					shared: isly.string(),
 				})
 			)
 			const value: boolean | string | any = "garbage" as any
@@ -28,15 +27,14 @@ describe('isly("intersection")', () => {
 		}
 		// without generic provided
 		{
-			const type = isly(
-				"intersection",
-				isly<A>("object", {
-					a: isly("number").optional(),
-					shared: isly("string"),
+			const type = isly.intersection(
+				isly.object<A>({
+					a: isly.number().optional(),
+					shared: isly.string(),
 				}),
-				isly<B>("object", {
-					b: isly("number").optional(),
-					shared: isly("string"),
+				isly.object<B>({
+					b: isly.number().optional(),
+					shared: isly.string(),
 				})
 			)
 			const value: boolean | string | any = "garbage" as any
@@ -49,19 +47,18 @@ describe('isly("intersection")', () => {
 		type Abc = A & B & C
 		// With triple generic provided
 		{
-			const type = isly<Abc, A, B, C>(
-				"intersection",
-				isly<A>("object", {
-					a: isly("number").optional(),
-					shared: isly("string"),
+			const type = isly.intersection<Abc, A, B, C>(
+				isly.object<A>({
+					a: isly.number().optional(),
+					shared: isly.string(),
 				}),
-				isly<B>("object", {
-					b: isly("number").optional(),
-					shared: isly("string"),
+				isly.object<B>({
+					b: isly.number().optional(),
+					shared: isly.string(),
 				}),
-				isly<C>("object", {
-					c: isly("number").optional(),
-					shared: isly("string"),
+				isly.object<C>({
+					c: isly.number().optional(),
+					shared: isly.string(),
 				})
 			)
 			const value: boolean | string | any = "garbage" as any
@@ -74,15 +71,14 @@ describe('isly("intersection")', () => {
 	it("A & B", () => {
 		type A = { a?: number; shared: string }
 		type B = { b?: number; shared: string }
-		const intersection = isly(
-			"intersection",
-			isly<A>("object", {
-				a: isly("number").optional(),
-				shared: isly("string"),
+		const intersection = isly.intersection(
+			isly.object<A>({
+				a: isly.number().optional(),
+				shared: isly.string(),
 			}),
-			isly<B>("object", {
-				b: isly("number").optional(),
-				shared: isly("string"),
+			isly.object<B>({
+				b: isly.number().optional(),
+				shared: isly.string(),
 			})
 		)
 		expect(intersection.is({ shared: "shared string" })).toBe(true)
@@ -98,13 +94,13 @@ describe('isly("intersection")', () => {
 			a: number
 			b: string[]
 		}
-		const alpha = isly<Alpha>("object", { a: isly("number"), b: isly("string").array() })
+		const alpha = isly.object<Alpha>({ a: isly.number(), b: isly.string().array() })
 		type Beta = {
 			c: string
 		}
-		const beta = isly<Beta>("object", { c: isly("string") })
+		const beta = isly.object<Beta>({ c: isly.string() })
 		type AlphaBeta = Alpha & Beta
-		const alphaBeta = isly("intersection", alpha, beta)
+		const alphaBeta = isly.intersection(alpha, beta)
 		const value = { a: 42, b: ["power"], c: "attraction" }
 		expect(alphaBeta.is(value)).toBe(true)
 	})
@@ -117,13 +113,13 @@ describe('isly("intersection")', () => {
 			}
 			array: { b: string }[]
 		}
-		const fooType = isly<Foo>("object", {
-			foo: isly("string", "value", "foo"),
-			nesting: isly("object", {
-				foo: isly("string", "value", "foo"),
-				array: isly("number").array(),
+		const fooType = isly.object<Foo>({
+			foo: isly.string("value", "foo"),
+			nesting: isly.object({
+				foo: isly.string("value", "foo"),
+				array: isly.number().array(),
 			}),
-			array: isly("array", isly("object", { b: isly("string") })),
+			array: isly.array(isly.object({ b: isly.string() })),
 		})
 		type Bar = {
 			bar: "bar"
@@ -133,16 +129,16 @@ describe('isly("intersection")', () => {
 			}
 			array: { test: string }[]
 		}
-		const barType = isly<Bar>("object", {
-			bar: isly("string", "value", "bar"),
-			nesting: isly("object", {
-				bar: isly("string", "value", "bar"),
-				array: isly("number").array(),
+		const barType = isly.object<Bar>({
+			bar: isly.string("value", "bar"),
+			nesting: isly.object({
+				bar: isly.string("value", "bar"),
+				array: isly.number().array(),
 			}),
-			array: isly("array", isly("object", { test: isly("string") })),
+			array: isly.array(isly.object({ test: isly.string() })),
 		})
 		type Intersection = Foo & Bar
-		const intersectionType = isly<Intersection, Foo, Bar>("intersection", fooType, barType)
+		const intersectionType = isly.intersection<Intersection, Foo, Bar>(fooType, barType)
 		const intersection: Intersection = {
 			foo: "foo",
 			bar: "bar",
@@ -156,7 +152,7 @@ describe('isly("intersection")', () => {
 		expect(intersectionType.prune({ ...intersection, extra: "world" })).toEqual(intersection)
 	})
 	it("intersection<number>.prune", () => {
-		const type = isly("intersection", isly("number", "positive"), isly("number", "integer"))
+		const type = isly.intersection(isly.number("positive"), isly.number("integer"))
 
 		expect(type.prune(1)).toBe(1)
 		expect(type.prune(100)).toBe(100)
@@ -168,7 +164,7 @@ describe('isly("intersection")', () => {
 		expect(type.prune(Infinity)).toBeUndefined()
 	})
 	it("intersection name", () => {
-		const type = isly("intersection", isly("object", { a: isly("string") }), isly("object", { b: isly("string") }, "B"))
+		const type = isly.intersection(isly.object({ a: isly.string() }), isly.object({ b: isly.string() }, "B"))
 		expect(type.name).toBe(`{ a: string } & B`)
 	})
 })

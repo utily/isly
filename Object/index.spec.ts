@@ -1,13 +1,13 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
-describe('isly("object")', () => {
+describe("isly.object()", () => {
 	// compile error if not working
 	it("type narrowing", () => {
 		interface Test {
 			amount: number
 			currency: string
 		}
-		const type = isly<Test>("object", { amount: isly("number"), currency: isly("string", "value", ["SEK", "EUR"]) })
+		const type = isly.object({ amount: isly.number(), currency: isly.string("value", ["SEK", "EUR"]) })
 		const value: boolean | string | any = "garbage" as any
 		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -20,7 +20,7 @@ describe('isly("object")', () => {
 			amount: number
 			currency: string
 		}
-		const type = isly<Test>("object", { amount: isly("number"), currency: isly("string", "value", ["SEK", "EUR"]) })
+		const type = isly.object<Test>({ amount: isly.number(), currency: isly.string("value", ["SEK", "EUR"]) })
 		expect(type.name).toBe("{ amount: number, currency: ('SEK' | 'EUR') }")
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toBe(true)
 		expect(type.is(undefined)).toBe(false)
@@ -31,7 +31,7 @@ describe('isly("object")', () => {
 		})
 	})
 	it("{}", () => {
-		const type = isly("object", {})
+		const type = isly.object({})
 		expect(type.name).toBe("{  }")
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
 		expect(type.is(undefined)).toBe(false)
@@ -47,7 +47,7 @@ describe('isly("object")', () => {
 			id: string
 			number: number
 		}
-		const type = isly<Item>("object", { id: isly("string"), number: isly("number") }, "Item")
+		const type = isly.object<Item>({ id: isly.string(), number: isly.number() }, "Item")
 		expect(type.is({ id: "abc001", number: 1337 })).toBe(true)
 		expect(type.is(undefined)).toBe(false)
 		expect(type.is({})).toBe(false)
@@ -80,9 +80,9 @@ describe('isly("object")', () => {
 			i3: number
 		}
 
-		const type1 = isly<Item1>("object", { i1: isly("number"), str: isly("string") }, "Item1")
-		const type2 = type1.extend<Item2>({ i2: isly("number"), i1: isly("number", "minimum", 400) }, "Item2")
-		const type3 = type2.extend<Item3>({ i3: isly("number") }, "Item3")
+		const type1 = isly.object<Item1>({ i1: isly.number(), str: isly.string() }, "Item1")
+		const type2 = type1.extend<Item2>({ i2: isly.number(), i1: isly.number("minimum", 400) }, "Item2")
+		const type3 = type2.extend<Item3>({ i3: isly.number() }, "Item3")
 
 		expect(type1.is({ i1: 200, str: "a" })).toBe(true)
 		expect(type1.is({ i1: 200, i2: 2, str: "a" })).toBe(true)
@@ -119,7 +119,7 @@ describe('isly("object")', () => {
 			a: number
 			b: string
 		}
-		const typeItem1 = isly<Item1>("object", { a: isly("number"), b: isly("string") }, "Item1")
+		const typeItem1 = isly.object<Item1>({ a: isly.number(), b: isly.string() }, "Item1")
 
 		expect(typeItem1.prune({ i1: 200, str: "a" })).toBeUndefined()
 		expect(typeItem1.prune({ a: 200 })).toBeUndefined()
@@ -135,8 +135,8 @@ describe('isly("object")', () => {
 			c: boolean
 			d?: number
 		}
-		const typeItem1 = isly<Item1>("object", { a: isly("number"), b: isly("string") }, "Item1")
-		const typeItem2 = typeItem1.extend<Item2>({ c: isly("boolean"), d: isly("number").optional() }, "Item2")
+		const typeItem1 = isly.object<Item1>({ a: isly.number(), b: isly.string() }, "Item1")
+		const typeItem2 = typeItem1.extend<Item2>({ c: isly.boolean(), d: isly.number().optional() }, "Item2")
 
 		expect(typeItem2.prune({ c: true })).toBeUndefined()
 
@@ -159,8 +159,8 @@ describe('isly("object")', () => {
 			password: string
 		}
 
-		const type = isly<User>("object", { name: isly("string") })
-		const userWithCredentialsType = type.extend<UserWithCredentials>({ password: isly("string") })
+		const type = isly.object<User>({ name: isly.string() })
+		const userWithCredentialsType = type.extend<UserWithCredentials>({ password: isly.string() })
 
 		const myUser: UserWithCredentials = {
 			name: "Joe",
@@ -174,7 +174,7 @@ describe('isly("object")', () => {
 		interface Test {
 			a: { b: string }
 		}
-		const type = isly<Test>("object", { a: isly("object", { b: isly("string") }) })
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }) })
 		expect(type.name).toBe("{ a: { b: string } }")
 	})
 	it("omit", () => {
@@ -183,10 +183,10 @@ describe('isly("object")', () => {
 			b: number
 			c: string
 		}
-		const type = isly<Test>("object", {
-			a: isly("object", { b: isly("string") }),
-			b: isly("number"),
-			c: isly("string"),
+		const type = isly.object<Test>({
+			a: isly.object({ b: isly.string() }),
+			b: isly.number(),
+			c: isly.string(),
 		})
 		type OmittedTest = Omit<Test, "a">
 		const omittedType = type.omit(["a"])
@@ -203,15 +203,15 @@ describe('isly("object")', () => {
 			b: number
 			c: string
 		}
-		const type = isly<Test>("object", {
-			a: isly("object", { b: isly("string") }),
-			b: isly("number"),
-			c: isly("string"),
+		const type = isly.object<Test>({
+			a: isly.object({ b: isly.string() }),
+			b: isly.number(),
+			c: isly.string(),
 		})
 		interface OmittedTest extends Omit<Test, "a"> {
 			a: boolean[]
 		}
-		const omittedType = type.omit<"a">(["a"]).extend<OmittedTest>({ a: isly("boolean").array() })
+		const omittedType = type.omit<"a">(["a"]).extend<OmittedTest>({ a: isly.boolean().array() })
 		const omittedTest: OmittedTest = { a: [true, false, true], b: 42, c: "test 2" }
 		expect(omittedType.is(omittedTest)).toBe(true)
 		expect(omittedType.is(omittedType.get(omittedTest))).toBe(true)
@@ -223,8 +223,8 @@ describe('isly("object")', () => {
 		interface UserWithCredentials extends User {
 			password: string
 		}
-		const userType = isly<User>("object", { name: isly("string") })
-		const userWithCredentialsType = userType.extend<UserWithCredentials>({ password: isly("string") })
+		const userType = isly.object<User>({ name: isly.string() })
+		const userWithCredentialsType = userType.extend<UserWithCredentials>({ password: isly.string() })
 
 		const userWithoutCredentialsType = userWithCredentialsType.omit(["password"])
 
@@ -241,13 +241,9 @@ describe('isly("object")', () => {
 			status: number
 			body: string
 		}
-		const responseType = isly<Response>(
-			"object",
-			{ body: isly("string"), status: isly("number", "less", 1000) },
-			"Response"
-		)
+		const responseType = isly.object<Response>({ body: isly.string(), status: isly.number("less", 1000) }, "Response")
 		const errorResponseType = responseType.extend(
-			{ status: isly("number", "minimum", 400).restrict("less", 1000) },
+			{ status: isly.number("minimum", 400).restrict("less", 1000) },
 			"ErrorResponse"
 		)
 		const errorResponseWithoutBodyType = errorResponseType.omit(["body"])
@@ -281,13 +277,9 @@ describe('isly("object")', () => {
 			status: number
 			body: string
 		}
-		const responseType = isly<Response>(
-			"object",
-			{ body: isly("string"), status: isly("number", "less", 1000) },
-			"Response"
-		)
+		const responseType = isly.object<Response>({ body: isly.string(), status: isly.number("less", 1000) }, "Response")
 		const errorResponseType = responseType.extend(
-			{ status: isly("number", "minimum", 400).restrict("less", 1000) },
+			{ status: isly.number("minimum", 400).restrict("less", 1000) },
 			"ErrorResponse"
 		)
 

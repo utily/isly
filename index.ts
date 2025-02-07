@@ -169,9 +169,9 @@ export function isly(type: isly.Class | isly.Standard | (() => isly.Type), ...pr
 		? lazy(type)
 		: isly.Standard.is(type)
 		? load(type)
-		: (isly.creator as globalThis.Record<isly.Class, (...properties: any[]) => isly.Type>)[type](...properties)
+		: (creator as globalThis.Record<isly.Class, (...properties: any[]) => isly.Type>)[type](...properties)
 }
-const creators = {
+export const creator = {
 	any: AnyClass.create,
 	array: ArrayClass.create,
 	boolean: BooleanClass.create,
@@ -193,14 +193,14 @@ const creators = {
 	lazy,
 	standard: load,
 }
-Base.isly = creators
+Base.isly = creator
 
 export namespace isly {
 	export import Any = islyAny
 	export import Array = islyArray
 	export import Boolean = islyBoolean
 	export import Class = islyClass
-	export type Creator = typeof creators
+	export type Creator = typeof creator
 	export import Definition = islyDefinition
 	export import Flaw = islyFlaw
 	export import From = islyFrom
@@ -220,5 +220,4 @@ export namespace isly {
 	export import Undefined = islyUndefined
 	export import Union = islyUnion
 	export import Unknown = islyUnknown
-	export const creator = creators
 }

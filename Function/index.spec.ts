@@ -1,8 +1,8 @@
-import { isly } from "../index"
+import { creator as isly } from "../index"
 
-describe('isly("function")', () => {
+describe("isly.function()", () => {
 	it("generic", () => {
-		const functionType = isly("function")
+		const functionType = isly.function()
 
 		expect(
 			functionType.is(function test() {
