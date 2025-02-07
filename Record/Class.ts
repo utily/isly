@@ -1,5 +1,5 @@
-import { Flaw } from "Flaw"
 import { Base } from "../Base"
+import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 
 export class Class<

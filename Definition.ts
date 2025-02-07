@@ -5,7 +5,7 @@ import type { Function } from "./Function"
 import type { Instance } from "./Instance"
 import type { Intersection } from "./Intersection"
 import type { Number } from "./Number"
-import { islyObject } from "./Object"
+import { _Object } from "./Object"
 import type { Optional } from "./Optional"
 import type { Readonly } from "./Readonly"
 import type { Record } from "./Record"
@@ -23,7 +23,7 @@ export type Definition =
 	| Instance.Definition
 	| Number.Definition
 	| Intersection.Definition
-	| islyObject.Definition
+	| _Object.Definition
 	| Optional.Definition
 	| Readonly.Definition
 	| Record.Definition

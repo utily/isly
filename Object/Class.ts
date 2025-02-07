@@ -1,5 +1,5 @@
-import { BindResult } from "BindResult"
 import { Base } from "../Base"
+import { BindResult } from "../BindResult"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import type { Type } from "../Type"
