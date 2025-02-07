@@ -24,7 +24,7 @@ export interface DemoType {
 export namespace DemoType {
 	export const { type, is, flawed } = isly<DemoType>("object", {
 		// number
-		anyNumber: isly("number"),
+		anyNumber: isly.creator.number(), // isly("number"),
 		numberOf: isly("number", "positive"),
 		temperature: isly("number", "greater", -273.15),
 		// string

@@ -59,6 +59,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			name: name ?? `Pick<${this.name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`,
 		})
 	}
+	// partial
 	override modify(type?: Partial<this>): this {
 		const result = super.modify(type)
 		return Object.assign(result, {
