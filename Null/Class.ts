@@ -1,4 +1,5 @@
 import { Base } from "../Base"
+import type { isly } from "../index"
 
 export class Class<V extends null = null> extends Base<null> {
 	readonly class = "null"
@@ -8,7 +9,7 @@ export class Class<V extends null = null> extends Base<null> {
 	override is(value: V | any): value is V {
 		return value === null
 	}
-	static create<V extends null = null>(): Class<V> {
+	static create<V extends null = null>(type: "null"): isly.Null<V> {
 		return new Class<V>().modify()
 	}
 }

@@ -52,10 +52,21 @@ export class Class<
 		)
 	}
 	static create<
-		V extends Record<string | number | symbol, any>,
-		KType extends keyof V extends string ? String : keyof V extends number ? Number : Unknown<symbol>,
-		VType extends Base<V[keyof V]>
-	>(key: KType, value: VType, name?: string): Class<V, KType, VType> {
+		V extends globalThis.Record<string, any> | globalThis.Record<number, any> | globalThis.Record<symbol, any> = Record<
+			string,
+			any
+		>,
+		KType extends keyof V extends string
+			? isly.String
+			: keyof V extends number
+			? isly.Number
+			: isly.Unknown<symbol> = keyof V extends string
+			? isly.String
+			: keyof V extends number
+			? isly.Number
+			: isly.Unknown<symbol>,
+		VType extends Base<V[keyof V]> = isly.Unknown<V[keyof V]>
+	>(key: KType, value: VType, name?: string): isly.Record<V, KType, VType> {
 		return new Class<V, KType, VType>(key, value, name).modify()
 	}
 }

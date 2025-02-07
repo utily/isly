@@ -1,3 +1,4 @@
+import type { isly } from ".."
 import { Base } from "../Base"
 
 export class Class<V extends undefined = undefined> extends Base<undefined> {
@@ -8,7 +9,7 @@ export class Class<V extends undefined = undefined> extends Base<undefined> {
 	override is(value: V | any): value is V {
 		return value === undefined
 	}
-	static create<V extends undefined = undefined>(name?: string): Class<V> {
+	static create<V extends undefined = undefined>(type: "undefined", name?: string): isly.Undefined<V> {
 		return new Class<V>(name).modify()
 	}
 }

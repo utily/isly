@@ -29,6 +29,16 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 			}
 		)
 	}
+	static create<T extends A | B, A, B>(...types: [Base<A>, Base<B>]): isly.Union<T>
+	static create<T extends A | B | C, A, B, C>(...types: [Base<A>, Base<B>, Base<C>]): isly.Union<T>
+	static create<T extends A | B | C | D, A, B, C, D>(...types: [Base<A>, Base<B>, Base<C>, Base<D>]): isly.Union<T>
+	static create<T extends A | B | C | D | E, A, B, C, D, E>(
+		...types: [Base<A>, Base<B>, Base<C>, Base<D>, Base<E>]
+	): isly.Union<T>
+	static create<T extends A | B | C | D | E | F, A, B, C, D, E, F>(
+		...types: [Base<A>, Base<B>, Base<C>, Base<D>, Base<E>, Base<F>]
+	): isly.Union<T>
+	static create<V>(...types: Base<V>[]): isly.Union<V>
 	static create<V, B extends Base<V>>(...base: B[]): Class<V, B> {
 		return new Class<V, B>(base).modify()
 	}

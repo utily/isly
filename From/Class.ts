@@ -1,3 +1,4 @@
+import type { isly } from "../"
 import { Base } from "../Base"
 
 export class Class<V = unknown> extends Base<V> {
@@ -13,7 +14,7 @@ export class Class<V = unknown> extends Base<V> {
 		name: string,
 		is: (value: V | any) => value is V,
 		prune?: (value: V | any) => V | undefined
-	): Class<V> {
+	): isly.From<V> {
 		return new Class<V>(name, is, prune).modify()
 	}
 }

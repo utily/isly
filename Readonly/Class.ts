@@ -18,7 +18,7 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 		base: B,
 		name?: string
-	): Class<V, B> {
+	): isly.Readonly<V, B> {
 		return new Class<V, B>(base, name).modify()
 	}
 }

@@ -1,4 +1,5 @@
 import { Base } from "../Base"
+import type { isly } from "../index"
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export class Class<V extends Function = Function> extends Base<Function> {
@@ -10,7 +11,7 @@ export class Class<V extends Function = Function> extends Base<Function> {
 		return typeof value == "function"
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-	static create<V extends Function = Function>(name?: string): Class<V> {
+	static create<V extends Function = Function>(type: "function", name?: string): isly.Function<V> {
 		return new Class<V>(name).modify()
 	}
 }

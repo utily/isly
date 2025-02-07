@@ -38,8 +38,8 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	}
 	static create<V = unknown, B extends Base<V> = Base<V>>(
 		base: B,
-		...restriction: [] | Restriction | Base.Restriction
-	): Class<V, B> {
+		...restriction: isly.Array.Restriction | []
+	): isly.Array<V, B> {
 		const result: Class<V, B> = new Class<V, B>(base).modify()
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result

@@ -75,7 +75,10 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			pick: this.pick.bind(this),
 		})
 	}
-	static create<V extends object = Record<string, any>>(properties: Properties<V>, name?: string): Class<V> {
+	static create<V extends object = Record<string, any>>(
+		properties: isly.Object.Properties<V>,
+		name?: string
+	): isly.Object<V> {
 		return new Class<V>(properties, name).modify()
 	}
 }

@@ -15,7 +15,10 @@ export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 	override prune(value: V | undefined | any): V | undefined {
 		return value === undefined ? undefined : this.base.prune(value)
 	}
-	static create<V, B extends Base<V>>(base: B, name?: string): Class<V, B> {
+	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
+		base: B,
+		name?: string
+	): isly.Optional<V, B> {
 		return new Class<V, B>(base, name).modify()
 	}
 }

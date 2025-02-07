@@ -30,6 +30,30 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 			}
 		)
 	}
+	static create<T extends A & B, A, B>(typeA: Base<A>, typeB: Base<B>): isly.Intersection<T>
+	static create<T extends A & B & C, A, B, C>(typeA: Base<A>, typeB: Base<B>, typeC: Base<C>): isly.Intersection<T>
+	static create<T extends A & B & C, A, B, C>(typeA: Base<A>, typeB: Base<B>, typeC: Base<C>): isly.Intersection<T>
+	static create<T extends A & B & C & D, A, B, C, D>(
+		typeA: Base<A>,
+		typeB: Base<B>,
+		typeC: Base<C>,
+		typeD: Base<D>
+	): isly.Intersection<T>
+	static create<T extends A & B & C & D & E, A, B, C, D, E>(
+		typeA: Base<A>,
+		typeB: Base<B>,
+		typeC: Base<C>,
+		typeD: Base<D>,
+		typeE: Base<E>
+	): isly.Intersection<T>
+	static create<T extends A & B & C & D & E & F, A, B, C, D, E, F>(
+		typeA: Base<A>,
+		typeB: Base<B>,
+		typeC: Base<C>,
+		typeD: Base<D>,
+		typeE: Base<E>,
+		typeF: Base<F>
+	): isly.Intersection<T>
 	static create<V, B extends Base<V>>(...base: B[]): Class<V, B> {
 		return new Class<V, B>(base).modify()
 	}
