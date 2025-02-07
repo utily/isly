@@ -1,16 +1,15 @@
-export { creator } from "./creator"
-import { creator } from "./creator"
-
 export { Any } from "./Any"
 export { Array } from "./Array"
 export { Boolean } from "./Boolean"
 export { Class } from "./Class"
+export { creator } from "./creator"
 export { Definition } from "./Definition"
 export { Flaw } from "./Flaw"
 export { From } from "./From"
 export { Function } from "./Function"
 export { Instance } from "./Instance"
 export { Intersection } from "./Intersection"
+export { Name } from "./Name"
 export { Null } from "./Null"
 export { Number } from "./Number"
 export { _Object as Object } from "./Object"
@@ -24,6 +23,8 @@ export { Type } from "./Type"
 export { Undefined } from "./Undefined"
 export { Union } from "./Union"
 export { Unknown } from "./Unknown"
+
+import { creator } from "./creator"
 
 export type Creator = typeof creator
 

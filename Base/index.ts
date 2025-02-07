@@ -1,19 +1,15 @@
-import type { Array } from "../Array"
 import { BindResult } from "../BindResult"
 import { Class } from "../Class"
-import type { Definition } from "../Definition"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
-import type { Optional } from "../Optional"
-import type { Readonly } from "../Readonly"
 import { Definition as BaseDefinition } from "./Definition"
 import { Restriction as BaseRestriction } from "./Restriction"
 
 export abstract class Base<V = unknown> {
 	abstract readonly class: Class
 	abstract readonly name: Name
-	get definition(): Definition {
+	get definition(): isly.Definition {
 		return {
 			name: this.name,
 			...(this.description ? { description: this.description } : {}),
@@ -54,13 +50,13 @@ export abstract class Base<V = unknown> {
 	describe(description: string): this {
 		return this.modify({ description } as Partial<this>)
 	}
-	optional(name?: string): Optional<V | undefined, this> {
+	optional(name?: string): isly.Optional<V | undefined, this> {
 		return Base.isly.optional(this, name)
 	}
-	readonly(name?: string): Readonly<V, this> {
+	readonly(name?: string): isly.Readonly<V, this> {
 		return Base.isly.readonly(this, name)
 	}
-	array(...restriction: Array.Restriction | []): Array<V, this> {
+	array(...restriction: isly.Array.Restriction | []): isly.Array<V, this> {
 		return Base.isly.array(this, ...restriction)
 	}
 	toString(): string {

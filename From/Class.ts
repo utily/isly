@@ -1,5 +1,5 @@
-import type { isly } from "../"
 import { Base } from "../Base"
+import type { isly } from "../index"
 
 export class Class<V = unknown> extends Base<V> {
 	readonly class = "from"
