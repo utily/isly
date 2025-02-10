@@ -81,4 +81,24 @@ describe("isly.number", () => {
 		expect(isly.number("value", [1, 2, 3]).is(0)).toEqual(false))
 	it('isly.number", "value<1 | 2 | 3>([1, 2, 3] as const).is(2) == true', () =>
 		expect(isly.number<1 | 2 | 3>("value", [1, 2, 3] as const).is(2)).toEqual(true))
+	it.each([
+		[13.37, "13.37"],
+		[0, "0"],
+		[-42, "-42"],
+		[NaN, undefined],
+		[Infinity, undefined],
+		[-Infinity, undefined],
+	] as const)("isly.number().serialize(%s) == %s", (input, expected) =>
+		expect(isly.number().serialize(input)).toEqual(expected)
+	)
+	it.each([
+		["13.37", 13.37],
+		["0", 0],
+		["-42", -42],
+		["NaN", undefined],
+		["Infinity", undefined],
+		["-Infinity", undefined],
+	] as const)("isly.number().parse(%s) == %s", (input, expected) =>
+		expect(isly.number().parse(input)).toEqual(expected)
+	)
 })

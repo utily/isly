@@ -70,4 +70,18 @@ describe("isly.string", () => {
 			description: "A string value.",
 		})
 	})
+	it.each([
+		["hello", "hello"],
+		["world", "world"],
+		["", ""],
+	] as const)("isly.string().serialize(%s) == %s", (input, expected) =>
+		expect(isly.string().serialize(input)).toEqual(expected)
+	)
+	it.each([
+		["hello", "hello"],
+		["world", "world"],
+		["", ""],
+	] as const)("isly.string().parse(%s) == %s", (input, expected) =>
+		expect(isly.string().parse(input)).toEqual(expected)
+	)
 })
