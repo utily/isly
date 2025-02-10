@@ -8,10 +8,12 @@ interface Mapping {
 }
 const creator: { [P in Standard]: () => Mapping[P] } = {
 	ArrayBufferLike: () =>
-		Base.isly.union<ArrayBufferLike>(
-			Base.isly.instance(ArrayBuffer, "ArrayBuffer"),
-			Base.isly.instance(SharedArrayBuffer, "SharedArrayBuffer")
-		),
+		Base.isly
+			.union<ArrayBufferLike>(
+				Base.isly.instance(ArrayBuffer, "ArrayBuffer"),
+				Base.isly.instance(SharedArrayBuffer, "SharedArrayBuffer")
+			)
+			.rename("ArrayBufferLike"),
 	ArrayBufferView: () =>
 		Base.isly.object(
 			{
