@@ -1,24 +1,23 @@
 import { isly } from "../index"
 
-describe("isly.null", () => {
+describe("isly.null()", () => {
 	it("TypeScript narrowing", () => {
-		const nullType = isly.null()
-		const isNarrowingWorking = "garbage" as unknown
-		if (nullType.is(isNarrowingWorking)) {
+		const value = "garbage" as unknown
+		if (isly.null().is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myNull: null = isNarrowingWorking
+			const data: null = value
 		}
 	})
 	it("generic", () => {
-		const nullType = isly.null()
-		expect(nullType.is(null)).toEqual(true)
-		expect(nullType.is(42)).toEqual(false)
-		expect(nullType.flaw(42)).toEqual({ type: "null" })
-		expect(nullType.is(undefined)).toEqual(false)
+		const type = isly.null()
+		expect(type.is(null)).toEqual(true)
+		expect(type.is(42)).toEqual(false)
+		expect(type.flawed(42)).toEqual({ name: "null", description: "Value has to be null." })
+		expect(type.is(undefined)).toEqual(false)
 	})
-	it("get", () => {
-		const nullType = isly.null()
-		expect(nullType.get("42")).toEqual(undefined)
-		expect(nullType.get(null)).toEqual(null)
+	it("prune", () => {
+		const type = isly.null()
+		expect(type.prune("42")).toEqual(undefined)
+		expect(type.prune(null)).toEqual(null)
 	})
 })

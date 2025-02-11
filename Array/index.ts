@@ -1,12 +1,11 @@
-import { Type } from "../Type"
+import { Base } from "../Base"
+import { Class } from "./Class"
+import { Definition as ArrayDefinition } from "./Definition"
+import { Restriction as ArrayRestriction } from "./Restriction"
+
+export type Array<V = unknown, B extends Base<V> = Base<V>> = Omit<Class<V, B>, "constructor">
 
 export namespace Array {
-	export function create<T = any>(base: Type<T>, name?: string): Type<T[]> {
-		return Type.create<T[]>({
-			class: "array",
-			name: name ?? `${base.name}[]`,
-			is: (value: T[] | any): value is T[] => global.Array.isArray(value) && value.every(base.is),
-		})
-	}
+	export import Restriction = ArrayRestriction
+	export import Definition = ArrayDefinition
 }
-Type.Methods.register("array", Array.create)

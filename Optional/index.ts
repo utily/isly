@@ -1,12 +1,9 @@
-import { Type } from "../Type"
+import { Base } from "../Base"
+import { Class } from "./Class"
+import { Definition as BaseDefinition } from "./Definition"
+
+export type Optional<V = unknown, B extends Base<V> = Base<V>> = Omit<Class<V, B>, "constructor">
 
 export namespace Optional {
-	export function create<T>(base: Type<T>): Type<T | undefined> {
-		return Type.create<T | undefined>({
-			class: "optional",
-			name: `${base.name} | undefined`,
-			is: (value: (T | undefined) | any): value is T | undefined => value == undefined || base.is(value),
-		})
-	}
+	export import Definition = BaseDefinition
 }
-Type.Methods.register("optional", Optional.create)

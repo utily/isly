@@ -2,25 +2,35 @@ import { isly } from "../index"
 
 describe("isly.tuple", () => {
 	// TypeScript compile error if not working
-	it("TypeScript narrowing", () => {
+	it("type narrowing", () => {
 		type TestTuple = [string, number]
 		// With generic provided
 		isly.tuple<TestTuple>(isly.string(), isly.number())
 		// without:
-		const testTupleType = isly.tuple(isly.string(), isly.number())
-		const isNarrowingWorking: boolean | string | any = "garbage" as any
-		if (testTupleType.is(isNarrowingWorking)) {
+		const type = isly.tuple(isly.string(), isly.number())
+		const value: boolean | string | any = "garbage" as any
+		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myTestTuple: TestTuple = isNarrowingWorking
+			const data: TestTuple = value
 		}
 	})
 	it("[string, string]", () => {
-		const tuple = isly.tuple(isly.string(), isly.string())
-		expect(tuple.is([])).toBe(false)
-		expect(tuple.is(["foo", "bar"])).toBe(true)
-		expect(tuple.flaw([5, "bar"])).toEqual({ flaws: [{ property: 0, type: "string" }], type: "[string, string]" })
+		const type = isly.tuple(isly.string(), isly.string())
+		expect(type.is([])).toBe(false)
+		expect(type.is(["foo", "bar"])).toBe(true)
+		expect(type.flawed([5, "bar"])).toEqual({
+			name: "[string, string]",
+			description: "Tuple of [string, string].",
+			flaws: [
+				{
+					description: "A string value.",
+					index: 0,
+					name: "string",
+				},
+			],
+		})
 	})
-	it("[object, string] get", () => {
+	it("[object, string] prune", () => {
 		type User = {
 			email: string
 		}
@@ -34,7 +44,7 @@ describe("isly.tuple", () => {
 			"abc",
 		]
 
-		const userStringTuple = userStringTupleType.get(value)
+		const userStringTuple = userStringTupleType.prune(value)
 		expect(userStringTuple).toHaveLength(2)
 		expect(userStringTuple?.[0]).toHaveProperty("email")
 		expect(userStringTuple?.[0]).not.toHaveProperty("password")

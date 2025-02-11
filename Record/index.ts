@@ -1,23 +1,13 @@
-import { Type } from "../Type"
+import { Base } from "../Base"
+import { Class } from "./Class"
+import { Definition as BaseDefinition } from "./Definition"
+
+export type Record<
+	V extends globalThis.Record<string | number | symbol, any> = globalThis.Record<string, any>,
+	KType extends Base<keyof V> = Base<keyof V>,
+	VType extends Base<V[keyof V]> = Base<V[keyof V]>
+> = Omit<Class<V, KType, VType>, "constructor">
 
 export namespace Record {
-	export function record<T extends Record<string | number, any>>(key: Type<keyof T>, value: Type<T[keyof T]>): Type<T>
-	export function record<K extends string | number, V>(key: Type<K>, value: Type<V>): Type<Record<K, V>>
-	export function record<T extends Record<string | number, any>>(key: Type<keyof T>, value: Type<T[keyof T]>): Type<T> {
-		return Type.create<T>({
-			class: "record",
-			name: `Record<${key.name}, ${value.name}>`,
-			is: (value: T | any): value is T =>
-				!!(
-					value &&
-					typeof value == "object" &&
-					!Array.isArray(value) &&
-					Object.entries(value).every(
-						key.class == "number"
-							? ([k, v]) => key.is(`${+k}` == k ? +k : k) && value.is(v)
-							: ([k, v]) => key.is(k) && value.is(v)
-					)
-				),
-		})
-	}
+	export import Definition = BaseDefinition
 }

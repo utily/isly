@@ -2,21 +2,19 @@ import { isly } from "../index"
 
 describe("isly.any", () => {
 	// TypeScript compile error if not working
-	it("TypeScript narrowing", () => {
-		const anyType = isly.any()
-
-		const isNarrowingWorking: boolean | string | any = "garbage" as any
-		if (anyType.is(isNarrowingWorking)) {
+	it("type narrowing", () => {
+		const type = isly.any()
+		const value: boolean | string | any = "garbage" as any
+		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myArray: { a: 1 } = isNarrowingWorking
+			const data: { a: 1 } = value
 		}
 	})
 	it("generic", () => {
-		const anyType = isly.any()
-
-		expect(anyType.is("42")).toBe(true)
-		expect(anyType.is(null)).toBe(false)
-		expect(anyType.is(undefined)).toBe(false)
-		expect(anyType.flaw(undefined)).toEqual({ type: "any" })
+		const type = isly.any()
+		expect(type.is("42")).toBe(true)
+		expect(type.is(null)).toBe(false)
+		expect(type.is(undefined)).toBe(false)
+		expect(type.flawed(undefined)).toEqual({ name: "any", description: "Anything except undefined." })
 	})
 })

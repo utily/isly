@@ -1,11 +1,8 @@
-import { Type } from "../Type"
+import { Class } from "./Class"
+import { Definition as BaseDefinition } from "./Definition"
+
+export type Undefined<V extends undefined = undefined> = Class<V>
 
 export namespace Undefined {
-	export function create<T = undefined>(name?: string): Type<T> {
-		return Type.create<T>({
-			class: "undefined",
-			name: name ?? "undefined",
-			is: (value: T | any): value is T => value === undefined,
-		})
-	}
+	export import Definition = BaseDefinition
 }

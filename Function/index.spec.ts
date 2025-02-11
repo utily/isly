@@ -1,6 +1,6 @@
 import { isly } from "../index"
 
-describe("isly.function", () => {
+describe("isly.function()", () => {
 	it("generic", () => {
 		const functionType = isly.function()
 
@@ -12,6 +12,6 @@ describe("isly.function", () => {
 		expect(functionType.is(() => 0)).toBe(true)
 		expect(functionType.is(null)).toBe(false)
 		expect(functionType.is(undefined)).toBe(false)
-		expect(functionType.flaw(undefined)).toEqual({ type: "function" })
+		expect(functionType.flawed(undefined)).toEqual({ name: "function", description: "Value has to be a function." })
 	})
 })

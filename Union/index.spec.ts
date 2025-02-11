@@ -1,87 +1,101 @@
 import { isly } from "../index"
 
-describe("isly.union", () => {
+describe("isly.union()", () => {
 	// TypeScript compile error if not working
-	it("TypeScript narrowing", () => {
-		const testTupleType = isly.union(isly.string(), isly.number())
-		const isNarrowingWorking: boolean | string | any = "garbage" as any
-		if (testTupleType.is(isNarrowingWorking)) {
+	it("type narrowing", () => {
+		const type = isly.union(isly.string(), isly.number())
+		const value: boolean | string | any = "garbage" as any
+		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myTestTuple: string | number = isNarrowingWorking
+			const union: string | number = value
 		}
 	})
 	it("union (2)", () => {
-		const unionType = isly.union(isly.number(), isly.string())
-		expect(unionType.is(13.37)).toEqual(true)
-		expect(unionType.flaw({})).toEqual({
-			type: "number | string",
+		const type = isly.union(isly.number(), isly.string())
+		expect(type.is(13.37)).toEqual(true)
+		expect(type.flawed({})).toEqual({
+			name: "(number | string)",
+			description: "Union of base types.",
 			flaws: [
 				{
-					type: "number",
+					description: "Any finite numeric value.",
+					name: "number",
 				},
 				{
-					type: "string",
+					description: "A string value.",
+					name: "string",
 				},
 			],
 		})
 	})
-	it("union (3)", () => {
+	it("isly.boolean(), isly.number(), isly.string()", () => {
 		const unionType = isly.union(isly.boolean(), isly.number(), isly.string())
 		expect(unionType.is(13.37)).toEqual(true)
-		expect(unionType.flaw({})).toEqual({
-			type: "boolean | number | string",
+		expect(unionType.flawed({})).toEqual({
+			name: "(boolean | number | string)",
+			description: "Union of base types.",
 			flaws: [
 				{
-					type: "boolean",
+					description: "Value has to be true or false.",
+					name: "boolean",
 				},
 				{
-					type: "number",
+					description: "Any finite numeric value.",
+					name: "number",
 				},
 				{
-					type: "string",
+					description: "A string value.",
+					name: "string",
 				},
 			],
 		})
 	})
 	it("union (6)", () => {
 		const unionType = isly.union(
-			isly.string("a"),
-			isly.string("b"),
-			isly.string("c"),
-			isly.string("d"),
-			isly.string("e"),
-			isly.string("f")
+			isly.string("value", "a"),
+			isly.string("value", "b"),
+			isly.string("value", "c"),
+			isly.string("value", "d"),
+			isly.string("value", "e"),
+			isly.string("value", "f")
 		)
 		expect(unionType.is("b")).toEqual(true)
 		expect(unionType.is(13.37)).toEqual(false)
 		expect(unionType.is(13.37)).toEqual(false)
 
-		expect(unionType.flaw({})).toEqual({
-			type: '"a" | "b" | "c" | "d" | "e" | "f"',
+		expect(unionType.flawed({})).toEqual({
+			name: "('a' | 'b' | 'c' | 'd' | 'e' | 'f')",
+			description: "Union of base types.",
 			flaws: [
 				{
-					type: '"a"',
-					condition: '"a"',
+					name: "'a'",
+					condition: ["value: 'a'"],
+					description: "One of: a.",
 				},
 				{
-					type: '"b"',
-					condition: '"b"',
+					name: "'b'",
+					condition: ["value: 'b'"],
+					description: "One of: b.",
 				},
 				{
-					type: '"c"',
-					condition: '"c"',
+					name: "'c'",
+					condition: ["value: 'c'"],
+					description: "One of: c.",
 				},
 				{
-					type: '"d"',
-					condition: '"d"',
+					name: "'d'",
+					condition: ["value: 'd'"],
+					description: "One of: d.",
 				},
 				{
-					type: '"e"',
-					condition: '"e"',
+					name: "'e'",
+					condition: ["value: 'e'"],
+					description: "One of: e.",
 				},
 				{
-					type: '"f"',
-					condition: '"f"',
+					name: "'f'",
+					condition: ["value: 'f'"],
+					description: "One of: f.",
 				},
 			],
 		})
@@ -95,54 +109,62 @@ describe("isly.union", () => {
 		type F = "F"
 		type G = "G"
 		type Letters = A | B | C | D | E | F | G
-		const Letters = isly.union<Letters>(
-			isly.string<A>("A"),
-			isly.string<B>("B"),
-			isly.string<C>("C"),
-			isly.string<D>("D"),
-			isly.string<E>("E"),
-			isly.string<F>("F"),
-			isly.string<G>("G")
+		const letters = isly.union<Letters>(
+			isly.string<A>("value", "A"),
+			isly.string<B>("value", "B"),
+			isly.string<C>("value", "C"),
+			isly.string<D>("value", "D"),
+			isly.string<E>("value", "E"),
+			isly.string<F>("value", "F"),
+			isly.string<G>("value", "G")
 		)
-		expect(Letters.is("B")).toEqual(true)
-		expect(Letters.is(13.37)).toEqual(false)
-		expect(Letters.is(13.37)).toEqual(false)
+		expect(letters.is("B")).toEqual(true)
+		expect(letters.is(13.37)).toEqual(false)
+		expect(letters.is(13.37)).toEqual(false)
 
-		expect(Letters.flaw({})).toEqual({
+		expect(letters.flawed({})).toEqual({
+			name: "('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G')",
+			description: "Union of base types.",
 			flaws: [
 				{
-					condition: '"A"',
-					type: '"A"',
+					name: "'A'",
+					condition: ["value: 'A'"],
+					description: "One of: A.",
 				},
 				{
-					condition: '"B"',
-					type: '"B"',
+					name: "'B'",
+					condition: ["value: 'B'"],
+					description: "One of: B.",
 				},
 				{
-					condition: '"C"',
-					type: '"C"',
+					name: "'C'",
+					condition: ["value: 'C'"],
+					description: "One of: C.",
 				},
 				{
-					condition: '"D"',
-					type: '"D"',
+					name: "'D'",
+					condition: ["value: 'D'"],
+					description: "One of: D.",
 				},
 				{
-					condition: '"E"',
-					type: '"E"',
+					name: "'E'",
+					condition: ["value: 'E'"],
+					description: "One of: E.",
 				},
 				{
-					condition: '"F"',
-					type: '"F"',
+					name: "'F'",
+					condition: ["value: 'F'"],
+					description: "One of: F.",
 				},
 				{
-					condition: '"G"',
-					type: '"G"',
+					name: "'G'",
+					condition: ["value: 'G'"],
+					description: "One of: G.",
 				},
 			],
-			type: '"A" | "B" | "C" | "D" | "E" | "F" | "G"',
 		})
 	})
-	it("union.get", () => {
+	it("prune", () => {
 		type User = {
 			email: string
 		}
@@ -153,17 +175,17 @@ describe("isly.union", () => {
 		const userType = isly.object<User>({ email: isly.string() })
 		const errorType = isly.object<Error>({ message: isly.string() })
 		const unionType = isly.union(userType, errorType)
-		const userWithPassord: User & { password: string } = {
+		const userWithPassword: User & { password: string } = {
 			email: `test@example.com`,
 			password: "shouldBeSecret",
 		}
-		const testData: MyUnion[] = [userWithPassord, { message: "Failed" }]
-		testData.forEach(data => {
-			const pureValue = unionType.get(data)
-			expect(pureValue).not.toBeFalsy()
-			if (pureValue) {
-				expect(data).toMatchObject(pureValue)
-				expect(pureValue).not.toHaveProperty("password")
+		const data: MyUnion[] = [userWithPassword, { message: "Failed" }]
+		data.forEach(data => {
+			const pruned = unionType.prune(data)
+			expect(pruned).not.toBeFalsy()
+			if (pruned) {
+				expect(data).toMatchObject(pruned)
+				expect(pruned).not.toHaveProperty("password")
 			}
 		})
 	})

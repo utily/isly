@@ -1,6 +1,6 @@
 import { isly } from "../index"
 
-describe("isly.unknown", () => {
+describe("isly.unknown()", () => {
 	it("TypeScript narrowing", () => {
 		const unknown = isly.unknown()
 
@@ -20,7 +20,7 @@ describe("isly.unknown", () => {
 		expect(unknown.is("42")).toEqual(true)
 		expect(unknown.is(null)).toEqual(false)
 		expect(unknown.is(undefined)).toEqual(false)
-		expect(unknown.flaw(undefined)).toEqual({ type: "unknown" })
+		expect(unknown.flawed(undefined)).toEqual({ name: "unknown", description: "Value can be anything not undefined." })
 	})
 	it("get", () => {
 		const unknown = isly.unknown()

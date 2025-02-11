@@ -1,24 +1,31 @@
 import { isly } from "../index"
 
-describe("isly.undefined", () => {
-	it("TypeScript narrowing", () => {
-		const undefinedType = isly.undefined()
-		const isNarrowingWorking = "garbage" as unknown
-		if (undefinedType.is(isNarrowingWorking)) {
+describe("isly.undefined()", () => {
+	it("type narrowing", () => {
+		// compilation error if not working
+		const value = "garbage" as unknown
+		if (isly.undefined().is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myUndefined: undefined = isNarrowingWorking
+			const data: undefined = value
 		}
 	})
-	it("generic", () => {
-		const undefinedType = isly.undefined()
-		expect(undefinedType.is(undefined)).toEqual(true)
-		expect(undefinedType.is(42)).toEqual(false)
-		expect(undefinedType.flaw(42)).toEqual({ type: "undefined" })
-		expect(undefinedType.is(null)).toEqual(false)
-	})
-	it("get", () => {
-		const undefinedType = isly.undefined()
-		expect(undefinedType.get("42")).toEqual(undefined)
-		expect(undefinedType.get(undefined)).toEqual(undefined)
-	})
+	it.each([
+		[undefined, true],
+		[42, false],
+		[null, false],
+	])("is(%s) == %s", (input, expected) => expect(isly.undefined().is(input)).toEqual(expected))
+	it.each([
+		["42", undefined],
+		[undefined, undefined],
+	])("get(%s)", (input, expected) => expect(isly.undefined().get(input)).toEqual(expected))
+	it.each([
+		[undefined, undefined],
+		[42, undefined],
+		[null, undefined],
+	])("extract %s", (input, expected) => expect(isly.undefined().prune(input)).toEqual(expected))
+	it("definition", () =>
+		expect(isly.undefined().definition).toEqual({
+			name: "undefined",
+			description: "Value has to be undefined.",
+		}))
 })

@@ -1,7 +1,8 @@
-import { Type } from "../Type"
+import { Class } from "./Class"
+import { Definition as BaseDefinition } from "./Definition"
+
+export type Null<V extends null = null> = Class<V>
 
 export namespace Null {
-	export function create<T = null>(name?: string): Type<T> {
-		return Type.create({ class: "null", name: name ?? "null", is: (value: T | any): value is T => value === null })
-	}
+	export import Definition = BaseDefinition
 }

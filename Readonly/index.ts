@@ -1,12 +1,12 @@
-import { Type } from "../Type"
+import { Base } from "../Base"
+import { Class } from "./Class"
+import { Definition as BaseDefinition } from "./Definition"
+
+export type Readonly<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>> = Omit<
+	Class<V, B>,
+	"constructor"
+>
 
 export namespace Readonly {
-	export function create<T>(base: Type<T>): Type<Readonly<T>> {
-		return Type.create<Readonly<T>>({
-			class: "readonly",
-			name: `Readonly<${base.name}>`,
-			is: (value: Readonly<T> | any): value is Readonly<T> => base.is(value),
-		})
-	}
-	Type.Methods.register("readonly", create)
+	export import Definition = BaseDefinition
 }

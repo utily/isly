@@ -1,66 +1,81 @@
 import { isly } from "../index"
 
-describe("isly.fromIs", () => {
+describe("isly.from()", () => {
 	type Specific = "Specific"
 	const specificIsFunction = (value: any): value is "Specific" => value == "Specific"
 
-	// TypeScript compile error if not working
-	it("TypeScript narrowing, without generic", () => {
-		const customType = isly.fromIs("test", specificIsFunction)
-		const isNarrowingWorking: boolean | string | any = "garbage" as any
-		if (customType.is(isNarrowingWorking)) {
+	// compile error if not working
+	it("type narrowing, without generic", () => {
+		const value: boolean | string | any = "garbage" as any
+		if (isly.from("test", specificIsFunction)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myCustom: Specific = isNarrowingWorking
+			const data: Specific = value
 		}
 	})
-	// TypeScript compile error if not working
-	it("TypeScript narrowing, with generic", () => {
-		const customType = isly.fromIs<Specific>("test", value => value == "Specific")
-		const isNarrowingWorking: boolean | string | any = "garbage" as any
-		if (customType.is(isNarrowingWorking)) {
+	// compile error if not working
+	it("type narrowing, with generic", () => {
+		const value: boolean | string | any = "garbage" as any
+		if (isly.from<Specific>("test", (value: Specific | any): value is Specific => value == "Specific").is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myCustom: Specific = isNarrowingWorking
+			const data: Specific = value
 		}
 	})
-	it("isly.fromIs(Specific)", () => {
-		const customType = isly.fromIs("myName", specificIsFunction)
+	it("Specific", () => {
+		const customType = isly.from("myName", specificIsFunction)
 		expect(customType.is("Specific")).toEqual(true)
 		expect(customType.is(13.37)).toEqual(false)
-		expect(customType.flaw({})).toEqual({ type: "myName" })
+		expect(customType.flawed({})).toEqual({ name: "myName", description: "Value has to fulfill custom predicate." })
 	})
-	it("isly.fromIs(Specific[])", () => {
-		const customType = isly.array(isly.fromIs("myName", specificIsFunction))
+	it("Specific[]", () => {
+		const customType = isly.array(isly.from("myName", specificIsFunction))
 		expect(customType.is([])).toEqual(true)
 		expect(customType.is(["Specific", "Specific"])).toEqual(true)
 
 		expect(customType.is(["Specific", 0, "Specific"])).toEqual(false)
 		expect(customType.is("Specific")).toEqual(false)
 		expect(customType.is(13.37)).toEqual(false)
-		expect(customType.flaw({})).toEqual({ type: "myName[]" })
+		expect(customType.flawed({})).toEqual({
+			name: "myName[]",
+			description: "Array of myName[].",
+			flaws: [
+				{
+					name: "myName",
+					description: "Value has to fulfill custom predicate.",
+				},
+			],
+		})
 	})
-	it("isly.fromIs(Specific).array()", () => {
-		const customType = isly.fromIs("myName", specificIsFunction).array()
+	it("Specific.array()", () => {
+		const customType = isly.from("myName", specificIsFunction).array()
 		expect(customType.is([])).toEqual(true)
 		expect(customType.is(["Specific", "Specific"])).toEqual(true)
 
 		expect(customType.is(["Specific", 0, "Specific"])).toEqual(false)
 		expect(customType.is("Specific")).toEqual(false)
 		expect(customType.is(13.37)).toEqual(false)
-		expect(customType.flaw({})).toEqual({ type: "myName[]" })
+		expect(customType.flawed({})).toEqual({
+			name: "myName[]",
+			description: "Array of myName[].",
+			flaws: [
+				{
+					name: "myName",
+					description: "Value has to fulfill custom predicate.",
+				},
+			],
+		})
 	})
 	it("class", () => {
 		class A {
-			ab: 1
+			ab = 1 as const
 		}
 		class B {
-			ab: 1
+			ab = 1 as const
 		}
 		const a = new A()
 		const b = new B()
 
-		const typeA = isly.fromIs<A>("A", value => value instanceof A)
-
-		const typeB = isly.fromIs<B>("B", value => value instanceof B)
+		const typeA = isly.from<A>("A", value => value instanceof A)
+		const typeB = isly.from<B>("B", value => value instanceof B)
 
 		expect(typeA.is(a)).toEqual(true)
 		expect(typeA.is(b)).toEqual(false)
@@ -68,20 +83,18 @@ describe("isly.fromIs", () => {
 		expect(typeB.is(b)).toEqual(true)
 		expect(typeB.is(a)).toEqual(false)
 
-		expect(typeA.flaw(undefined)).toEqual({ type: "A" })
+		expect(typeA.flawed(undefined)).toEqual({ name: "A", description: "Value has to fulfill custom predicate." })
 	})
 	it("class, inherited", () => {
 		class A {
-			a: 1
+			ab = 1 as const
 		}
-		class B extends A {
-			b: 1
-		}
+		class B extends A {}
 		const a = new A()
 		const b = new B()
 
-		const typeA = isly.fromIs<A>("A", value => value instanceof A)
-		const typeB = isly.fromIs<B>("B", value => value instanceof B)
+		const typeA = isly.from<A>("A", value => value instanceof A)
+		const typeB = isly.from<B>("B", value => value instanceof B)
 
 		expect(typeA.is(a)).toEqual(true)
 		expect(typeA.is(b)).toEqual(true)
@@ -89,6 +102,6 @@ describe("isly.fromIs", () => {
 		expect(typeB.is(b)).toEqual(true)
 		expect(typeB.is(a)).toEqual(false)
 
-		expect(typeB.flaw(undefined)).toEqual({ type: "B" })
+		expect(typeB.flawed(undefined)).toEqual({ name: "B", description: "Value has to fulfill custom predicate." })
 	})
 })

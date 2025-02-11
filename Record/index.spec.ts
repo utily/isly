@@ -1,15 +1,14 @@
 import { isly } from "../index"
 
-describe("isly.record", () => {
-	// TypeScript compile error if not working
-	it("TypeScript narrowing", () => {
-		type TestRecord = Record<string, string>
-
-		const testRecordType = isly.record<TestRecord>(isly.string(), isly.string())
-		const isNarrowingWorking: boolean | string | any = "garbage" as any
-		if (testRecordType.is(isNarrowingWorking)) {
+describe("isly.record()", () => {
+	// compile error if not working
+	it("type narrowing", () => {
+		type Type = Record<string, string>
+		const type = isly.record<Type>(isly.string(), isly.string())
+		const value: boolean | string | any = "garbage" as any
+		if (type.is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const myTestObject: TestRecord = isNarrowingWorking
+			const data: Type = value
 		}
 	})
 
@@ -23,25 +22,28 @@ describe("isly.record", () => {
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toBe(false)
 		expect(type.is(undefined)).toBe(false)
 
-		expect(type.flaw({ currency: "SEK", a: 1 })).toEqual({
-			type: "Record<string, string>",
-			flaws: [{ property: "a (value)", type: "string" }],
+		expect(type.flawed({ currency: "SEK", a: 1 })).toEqual({
+			name: "Record<string, string>",
+			description: "Record of type string indexed by string.",
+			flaws: [{ property: "a", name: "string", description: "A string value." }],
 		})
 	})
 	it("record, union as key", () => {
-		const type = isly.record(isly.string(["a", "b"] as const), isly.string())
+		const type = isly.record(isly.string("value", "a", "b"), isly.string())
 
 		expect(type.is({ a: "abc001", b: "1337" })).toBe(true)
 		expect(type.is({ a: "abc001", b: "1337", c: 42 })).toBe(false)
 		expect(type.is({ id: "abc001", number: "1337" })).toBe(false)
 
-		expect(type.flaw({ c: "hej" })).toEqual({
-			type: "Record<string, string>",
+		expect(type.flawed({ c: "hej" })).toEqual({
+			name: "Record<('a' | 'b'), string>",
+			description: "Record of type string indexed by ('a' | 'b').",
 			flaws: [
 				{
-					property: "c (key)",
-					type: "string",
-					condition: '"a" | "b"',
+					property: "c",
+					name: "('a' | 'b')",
+					description: "One of: a, b.",
+					condition: ["value: ['a', 'b']"],
 				},
 			],
 		})
@@ -54,35 +56,39 @@ describe("isly.record", () => {
 		expect(type.is({ 0.1: "abc001", "-12.2": "1337", "-100": "abc" })).toBe(true)
 		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBe(false)
 
-		expect(type.flaw({ c: "hej" })).toEqual({
-			type: "Record<number, string>",
+		expect(type.flawed({ c: "hej" })).toEqual({
+			name: "Record<number, string>",
+			description: "Record of type string indexed by number.",
 			flaws: [
 				{
-					property: "c (key)",
-					type: "number",
+					property: "c",
+					name: "number",
+					description: "Any finite numeric value.",
 				},
 			],
 		})
 	})
 	it("record, positive integer as key", () => {
-		const type = isly.record(isly.number(["positive", "integer"]), isly.string())
+		const type = isly.record(isly.number("positive").restrict("integer"), isly.string())
 
 		expect(type.is({ 1: "abc001", 2: "1337" })).toBe(true)
 		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBe(false)
 		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBe(false)
 
-		expect(type.flaw({ c: "hej" })).toEqual({
-			type: "Record<number, string>",
+		expect(type.flawed({ c: "hej" })).toEqual({
+			name: "Record<number, string>",
+			description: "Record of type string indexed by number.",
 			flaws: [
 				{
-					property: "c (key)",
-					type: "number",
-					condition: "> 0 & Number.isInteger",
+					property: "c",
+					name: "number",
+					description: "Any finite numeric value.",
+					condition: ["positive", "integer"],
 				},
 			],
 		})
 	})
-	it("record.get", () => {
+	it("record.prune", () => {
 		type User = {
 			email: string
 		}
@@ -100,7 +106,7 @@ describe("isly.record", () => {
 		expect(usersRecords["2"]).toHaveProperty("email")
 		expect(usersRecords["2"]).toHaveProperty("password")
 
-		const pureUserRecord = userRecordType.get(usersRecords)
+		const pureUserRecord = userRecordType.prune(usersRecords)
 		expect(pureUserRecord).toBeTruthy()
 		if (pureUserRecord) {
 			expect(userRecordType.is(pureUserRecord)).toBe(true)

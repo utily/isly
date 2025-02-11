@@ -1,141 +1,159 @@
 import { isly } from "./index"
 
-describe("isly", () => {
-	it("object", () => {
-		type DemoType = {
-			anyNumber: number
-			numberOf: number
-			temperature: number
+export interface DemoType {
+	anyNumber: number
+	numberOf: number
+	temperature: number
 
-			message: string
-			email: string
-			currency: "SEK" | "EUR"
+	message: string
+	email: string
+	currency: "SEK" | "EUR"
 
-			new: boolean
-			fromServer: true
+	new: boolean
+	fromServer: true
 
-			myTuple: [string, number]
-			myUnion: string | number
-			myArray: string[]
-			myIntersection: { a: string } & { b: string }
+	myTuple: [string, number]
+	myUnion: string | number
+	myArray: string[]
+	myIntersection: { a: string } & { b: string }
 
-			children?: DemoType[]
-			regExp: RegExp
-			testMethod: () => boolean
-		}
-
-		const type: isly.Type<DemoType> = isly("object", {
+	// children?: DemoType[]
+	regExp: RegExp
+	testMethod: () => boolean
+}
+export namespace DemoType {
+	export const { type, is, flawed } = isly
+		.object<DemoType>({
 			// number
-			anyNumber: isly("number"),
-			numberOf: isly("number"), // "positive"
-			temperature: isly("number"), // (value => value > -273.15),
+			anyNumber: isly.number(),
+			numberOf: isly.number("positive"),
+			temperature: isly.number("greater", -273.15),
 			// string
-			message: isly("string"),
-			email: isly("string", /\S+@\S+\.\S+/),
-			currency: isly("string", ["SEK", "EUR"]),
+			message: isly.string(),
+			email: isly.string("value", /\S+@\S+\.\S+/),
+			currency: isly.string("value", "SEK", "EUR"),
 			// boolean
-			new: isly("boolean"),
-			fromServer: isly("boolean", true),
+			new: isly.boolean(),
+			fromServer: isly.boolean(true),
 
-			myTuple: isly("tuple", isly("string"), isly("number")),
-			myUnion: isly("union", isly("string"), isly("number")),
-			myArray: isly("array", isly("string")), // { criteria: "minLength", value: 1 }),
-			myIntersection: isly(
-				"intersection",
-				isly<{ a: string }>("object", { a: isly("string") }),
-				isly<{ b: string }>("object", { b: isly("string") })
+			myTuple: isly.tuple(isly.string(), isly.number()),
+			myUnion: isly.union(isly.string(), isly.number()),
+			myArray: isly.array(isly.string(), "length", "minimum", 1),
+			myIntersection: isly.intersection(
+				isly.object<{ a: string }>({ a: isly.string() }),
+				isly.object<{ b: string }>({ b: isly.string() })
 			),
 
 			// Recursive
-			children: isly(
-				"array",
-				isly(() => type, "DemoType")
-			).optional(),
-			regExp: isly<RegExp>("from", value => value instanceof RegExp, "RegExp"),
+			// children: isly(() => type)
+			// 	.array()
+			// 	.optional(),
+			regExp: isly.from<RegExp>("RegExp", value => value instanceof RegExp),
 			// function
-			testMethod: isly<DemoType["testMethod"]>("function"),
+			testMethod: isly.function<DemoType["testMethod"]>(),
 		})
-
-		const value: DemoType = {
-			anyNumber: -12,
-			numberOf: 10,
-			temperature: 25,
-
-			message: "d",
-			email: "info@example.com",
-			currency: "SEK",
-
-			new: false,
-			fromServer: true,
-
-			myTuple: ["a", 1],
-			myUnion: "a",
-			myArray: ["a"],
-			myIntersection: { a: "A", b: "B" },
-			//children?: DemoType[]
-			regExp: /abc/,
-			testMethod: () => true,
-		}
-		expect(type.flaw(value)).toEqual({
-			isFlaw: false,
-			message: "This type is correct.",
-			type: "{anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: string, new: boolean, fromServer: true, myTuple: [string, number], myUnion: string | number, myArray: string[], myIntersection: {a: string} & {b: string}, children: DemoType[] | undefined, regExp: RegExp, testMethod: function}",
-		})
-		expect(type.is(value)).toEqual(true)
-
-		expect(type.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false)
-
-		expect(type.flaw({ currency: "SEK" })).toEqual({
+		.bind()
+}
+describe("isly", () => {
+	const value: DemoType = {
+		anyNumber: -12,
+		numberOf: 10,
+		temperature: 25,
+		message: "d",
+		email: "info@example.com",
+		currency: "SEK",
+		new: false,
+		fromServer: true,
+		myTuple: ["a", 1],
+		myUnion: "a",
+		myArray: ["a"],
+		myIntersection: { a: "A", b: "B" },
+		// children?: DemoType[],
+		regExp: /abc/,
+		testMethod: () => true,
+	}
+	it("flawed(value) == false", () => expect(DemoType.flawed(value)).toEqual(false))
+	it("is(value) == true", () => expect(DemoType.is(value)).toEqual(true))
+	it("is() == false", () => expect(DemoType.is({ amount: 13.37, numberOf: 1, temperature: -400 })).toEqual(false))
+	it("flawed({ currency: SEK })", () =>
+		expect(DemoType.flawed({ currency: "SEK" })).toEqual({
+			name: "{ anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }",
+			description:
+				"Object of type { anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }.",
 			flaws: [
-				{ property: "anyNumber", type: "number" },
-				{ property: "numberOf", type: "number", condition: "> 0" },
-				{ property: "temperature", type: "number", condition: "custom" },
-				{ property: "message", type: "string" },
-				{ property: "email", type: "string", condition: "/\\S+@\\S+\\.\\S+/" },
-				{ property: "new", type: "boolean" },
-				{ property: "fromServer", type: "true" },
+				{ property: "anyNumber", name: "number", description: "Any finite numeric value." },
+				{ property: "numberOf", name: "number", condition: ["positive"], description: "Any finite numeric value." },
+				{
+					property: "temperature",
+					name: "number",
+					condition: ["greater: -273.15"],
+					description: "Any finite numeric value.",
+				},
+				{ property: "message", name: "string", description: "A string value." },
+				{ property: "email", name: "string", condition: ["value: /\\S+@\\S+\\.\\S+/"], description: "A string value." },
+				{ property: "new", name: "boolean", description: "Value has to be true or false." },
+				{ property: "fromServer", name: "true", condition: ["value: true"], description: "Value has to be true." },
 				{
 					property: "myTuple",
-					type: "[string, number]",
+					name: "[string, number]",
+					description: "Tuple of [string, number].",
 					flaws: [
-						{ property: 0, type: "string" },
-						{ property: 1, type: "number" },
+						{ index: 0, name: "string", description: "A string value." },
+						{ index: 1, name: "number", description: "Any finite numeric value." },
 					],
 				},
-				{ property: "myUnion", type: "string | number", flaws: [{ type: "string" }, { type: "number" }] },
+				{
+					property: "myUnion",
+					name: "(string | number)",
+					description: "Union of base types.",
+					flaws: [
+						{ name: "string", description: "A string value." },
+						{ name: "number", description: "Any finite numeric value." },
+					],
+				},
 				{
 					property: "myArray",
-					condition: "minLength == 1",
-					type: "string[]",
+					name: "string[]",
+					condition: ["length.minimum: 1"],
+					description: "Array of string[].",
+					flaws: [
+						{
+							name: "string",
+							description: "A string value.",
+						},
+					],
 				},
 				{
 					property: "myIntersection",
+					name: "{ a: string } & { b: string }",
+					description: "Intersection of base types.",
 					flaws: [
 						{
+							name: "{ a: string }",
+							description: "Object of type { a: string }.",
 							flaws: [
 								{
 									property: "a",
-									type: "string",
+									name: "string",
+									description: "A string value.",
 								},
 							],
-							type: "{a: string}",
 						},
 						{
+							name: "{ b: string }",
+							description: "Object of type { b: string }.",
 							flaws: [
 								{
 									property: "b",
-									type: "string",
+									name: "string",
+									description: "A string value.",
 								},
 							],
-							type: "{b: string}",
 						},
 					],
-					type: "{a: string} & {b: string}",
 				},
-				{ property: "regExp", type: "RegExp" },
-				{ property: "testMethod", type: "function" },
+				{ property: "regExp", name: "RegExp", description: "Value has to fulfill custom predicate." },
+				{ property: "testMethod", name: "function", description: "Value has to be a function." },
 			],
-			type: "{anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: string, new: boolean, fromServer: true, myTuple: [string, number], myUnion: string | number, myArray: string[], myIntersection: {a: string} & {b: string}, children: DemoType[] | undefined, regExp: RegExp, testMethod: function}",
-		})
-	})
+		}))
 })

@@ -1,7 +1,8 @@
-import { Type } from "../Type"
+import { Class } from "./Class"
+import { Definition as BaseDefinition } from "./Definition"
+
+export type Instance<V extends object = object> = Omit<Class<V>, "constructor">
 
 export namespace Instance {
-	export function create<T = undefined>(constructor: new () => T, name: string): Type<T> {
-		return Type.create<T>({ class: "instance", name, is: (value: T | any): value is T => value instanceof constructor })
-	}
+	export import Definition = BaseDefinition
 }
