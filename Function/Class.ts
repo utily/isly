@@ -5,7 +5,7 @@ import type { isly } from "../index"
 export class Class<V extends Function = Function> extends Base<V> {
 	readonly class = "function"
 	private constructor(readonly name: string = "function") {
-		super("Value has to be a function.")
+		super()
 	}
 	override is(value: V | any): value is V {
 		return typeof value == "function"

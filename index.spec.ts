@@ -78,82 +78,72 @@ describe("isly", () => {
 	it("flawed({ currency: SEK })", () =>
 		expect(DemoType.flawed({ currency: "SEK" })).toEqual({
 			name: "{ anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }",
-			description:
-				"Object of type { anyNumber: number, numberOf: number, temperature: number, message: string, email: string, currency: ('SEK' | 'EUR'), new: boolean, fromServer: true, myTuple: [string, number], myUnion: (string | number), myArray: string[], myIntersection: { a: string } & { b: string }, regExp: RegExp, testMethod: function }.",
 			flaws: [
-				{ property: "anyNumber", name: "number", description: "Any finite numeric value." },
-				{ property: "numberOf", name: "number", condition: ["positive"], description: "Any finite numeric value." },
+				{ property: "anyNumber", name: "number" },
+				{ property: "numberOf", name: "number", condition: ["positive"] },
 				{
 					property: "temperature",
 					name: "number",
 					condition: ["greater: -273.15"],
-					description: "Any finite numeric value.",
 				},
-				{ property: "message", name: "string", description: "A string value." },
-				{ property: "email", name: "string", condition: ["value: /\\S+@\\S+\\.\\S+/"], description: "A string value." },
-				{ property: "new", name: "boolean", description: "Value has to be true or false." },
-				{ property: "fromServer", name: "true", condition: ["value: true"], description: "Value has to be true." },
+				{ property: "message", name: "string" },
+				{ property: "email", name: "string", condition: ["value: /\\S+@\\S+\\.\\S+/"] },
+				{ property: "new", name: "boolean" },
+				{ property: "fromServer", name: "true", condition: ["value: true"] },
 				{
 					property: "myTuple",
 					name: "[string, number]",
-					description: "Tuple of [string, number].",
+
 					flaws: [
-						{ index: 0, name: "string", description: "A string value." },
-						{ index: 1, name: "number", description: "Any finite numeric value." },
+						{ index: 0, name: "string" },
+						{ index: 1, name: "number" },
 					],
 				},
 				{
 					property: "myUnion",
 					name: "(string | number)",
-					description: "Union of base types.",
-					flaws: [
-						{ name: "string", description: "A string value." },
-						{ name: "number", description: "Any finite numeric value." },
-					],
+
+					flaws: [{ name: "string" }, { name: "number" }],
 				},
 				{
 					property: "myArray",
 					name: "string[]",
 					condition: ["length.minimum: 1"],
-					description: "Array of string[].",
+
 					flaws: [
 						{
 							name: "string",
-							description: "A string value.",
 						},
 					],
 				},
 				{
 					property: "myIntersection",
 					name: "{ a: string } & { b: string }",
-					description: "Intersection of base types.",
 					flaws: [
 						{
 							name: "{ a: string }",
-							description: "Object of type { a: string }.",
+
 							flaws: [
 								{
 									property: "a",
 									name: "string",
-									description: "A string value.",
 								},
 							],
 						},
 						{
 							name: "{ b: string }",
-							description: "Object of type { b: string }.",
+
 							flaws: [
 								{
 									property: "b",
 									name: "string",
-									description: "A string value.",
 								},
 							],
 						},
 					],
 				},
-				{ property: "regExp", name: "RegExp", description: "Value has to fulfill custom predicate." },
-				{ property: "testMethod", name: "function", description: "Value has to be a function." },
+				{ property: "regExp", name: "RegExp" },
+				{ property: "testMethod", name: "function" },
 			],
 		}))
 })

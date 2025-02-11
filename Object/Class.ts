@@ -13,7 +13,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		})
 	}
 	private constructor(readonly properties: Properties<V>, readonly name: string = Properties.getName(properties)) {
-		super(`Object of type ${name}.`, [])
+		super()
 	}
 	override is(value: V | any): value is V {
 		return (

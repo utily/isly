@@ -16,7 +16,7 @@ export class Class<
 		readonly value: VType,
 		readonly name: string = `Record<${key.name}, ${value.name}>`
 	) {
-		super(`Record of type ${value.name} indexed by ${key.name}.`)
+		super()
 	}
 	override is(value: V | any): value is V {
 		return !!(

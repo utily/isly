@@ -20,7 +20,7 @@ describe("isly.unknown()", () => {
 		expect(unknown.is("42")).toEqual(true)
 		expect(unknown.is(null)).toEqual(false)
 		expect(unknown.is(undefined)).toEqual(false)
-		expect(unknown.flawed(undefined)).toEqual({ name: "unknown", description: "Value can be anything not undefined." })
+		expect(unknown.flawed(undefined)).toEqual({ name: "unknown" })
 	})
 	it("get", () => {
 		const unknown = isly.unknown()

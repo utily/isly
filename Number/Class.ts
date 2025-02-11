@@ -9,7 +9,7 @@ export class Class<V extends number> extends Base<V> {
 		return Object.assign(super.definition, this.allowed === undefined ? {} : { allowed: this.allowed })
 	}
 	private constructor(readonly allowed?: readonly number[]) {
-		super("Any finite numeric value.")
+		super()
 	}
 	is(value: V | any): value is V {
 		return typeof value == "number" && globalThis.Number.isFinite(value)

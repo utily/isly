@@ -23,9 +23,7 @@ export namespace Restriction {
 		| "value"
 	export function convert<V extends number = number>(restriction: Restriction<V>): Base.Restriction<V> {
 		const { verify, condition, allowed } = getVerifier<V>(...restriction)
-		return allowed
-			? [verify, condition, Name.fromNumber(allowed), `One of: ${allowed.join(", ")}.`]
-			: [verify, condition]
+		return allowed ? [verify, condition, Name.fromNumber(allowed)] : [verify, condition]
 	}
 	export function getVerifier<T extends number = number>(...[category, ...restriction]: Restriction<T>): Verifier<T> {
 		const verifiers: Record<Restriction.Category, (value: T) => boolean> = {

@@ -20,10 +20,8 @@ describe("isly.tuple", () => {
 		expect(type.is(["foo", "bar"])).toBe(true)
 		expect(type.flawed([5, "bar"])).toEqual({
 			name: "[string, string]",
-			description: "Tuple of [string, string].",
 			flaws: [
 				{
-					description: "A string value.",
 					index: 0,
 					name: "string",
 				},

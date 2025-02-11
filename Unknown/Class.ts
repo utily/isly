@@ -4,7 +4,7 @@ import type { isly } from "../index"
 export class Class<V = unknown> extends Base<V> {
 	readonly class = "unknown"
 	private constructor(readonly name: string = "unknown") {
-		super("Value can be anything not undefined.")
+		super()
 	}
 	override is(value: V | any): value is V {
 		return value != undefined

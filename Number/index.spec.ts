@@ -14,11 +14,11 @@ describe("isly.number", () => {
 		// This was needed before functions where implemented with closures.
 		const type = isly.number()
 		expect(type.is(13.37)).toBe(true)
-		expect(type.flawed({})).toEqual({ name: "number", description: "Any finite numeric value." })
+		expect(type.flawed({})).toEqual({ name: "number" })
 		const is = type.is.bind(type)
 		expect(is(13.37)).toBe(true)
 		const flawed = type.flawed.bind(type)
-		expect(flawed({})).toEqual({ name: "number", description: "Any finite numeric value." })
+		expect(flawed({})).toEqual({ name: "number" })
 	})
 	it.each([
 		[13.37, true],
@@ -43,7 +43,7 @@ describe("isly.number", () => {
 
 	it("isly.number().name", () => expect(isly.number().name).toEqual("number"))
 	it("isly.number().flaw({})", () =>
-		expect(isly.number().flawed({})).toEqual({ name: "number", description: "Any finite numeric value." }))
+		expect(isly.number().flawed({})).toEqual({ name: "number" }))
 	it('isly.number("positive")', () => {
 		const type = isly.number("positive")
 		expect(type.is(13.37)).toEqual(true)
@@ -51,7 +51,7 @@ describe("isly.number", () => {
 		expect(type.flawed({})).toEqual({
 			name: "number",
 			condition: ["positive"],
-			description: "Any finite numeric value.",
+
 		})
 	})
 	it('isly.number().restrict("positive()', () => {
@@ -61,7 +61,7 @@ describe("isly.number", () => {
 		expect(type.flawed({})).toEqual({
 			name: "number",
 			condition: ["positive"],
-			description: "Any finite numeric value.",
+
 		})
 	})
 	it('isly.number", "positive().restrict("integer"])', () => {
@@ -73,7 +73,7 @@ describe("isly.number", () => {
 		expect(numberType.flawed({})).toEqual({
 			name: "number",
 			condition: ["positive", "integer"],
-			description: "Any finite numeric value.",
+
 		})
 	})
 	it('isly.number("value", [1, 2, 3]).is(2) == true', () => expect(isly.number("value", [1, 2, 3]).is(2)).toEqual(true))

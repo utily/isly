@@ -7,15 +7,13 @@ describe("isly.Standard", () => {
 		expect(type.flawed(new constructor())).toEqual(false)
 		expect(type.definition).toEqual({
 			name: "ArrayBufferLike",
-			description: "Union of base types.",
+
 			base: [
 				{
 					name: "ArrayBuffer",
-					description: "Has to be instance of ArrayBuffer. ",
 				},
 				{
 					name: "SharedArrayBuffer",
-					description: "Has to be instance of SharedArrayBuffer. ",
 				},
 			],
 		})
@@ -33,30 +31,26 @@ describe("isly.Standard", () => {
 		expect(type.flawed(new constructor())).toEqual(false)
 		expect(type.definition).toEqual({
 			name: "ArrayBufferView",
-			description: "Object of type ArrayBufferView.",
-			condition: [],
 			properties: {
 				buffer: {
 					name: "ArrayBufferLike",
-					description: "Union of base types.",
+
 					base: [
 						{
-							description: "Has to be instance of ArrayBuffer. ",
 							name: "ArrayBuffer",
 						},
 						{
-							description: "Has to be instance of SharedArrayBuffer. ",
 							name: "SharedArrayBuffer",
 						},
 					],
 				},
 				byteOffset: {
 					name: "number",
-					description: "Any finite numeric value.",
+
 				},
 				byteLength: {
 					name: "number",
-					description: "Any finite numeric value.",
+
 				},
 			},
 		})

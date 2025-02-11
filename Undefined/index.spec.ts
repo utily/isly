@@ -26,6 +26,5 @@ describe("isly.undefined()", () => {
 	it("definition", () =>
 		expect(isly.undefined().definition).toEqual({
 			name: "undefined",
-			description: "Value has to be undefined.",
 		}))
 })

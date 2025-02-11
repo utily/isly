@@ -9,7 +9,7 @@ export class Class<V extends boolean> extends Base<V> {
 		return Object.assign(super.definition, this.allowed === undefined ? {} : { allowed: this.allowed })
 	}
 	private constructor(readonly allowed?: V) {
-		super("Value has to be true or false.")
+		super()
 	}
 	override is(value: V | any): value is V {
 		return typeof value == "boolean"

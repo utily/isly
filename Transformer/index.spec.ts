@@ -13,7 +13,6 @@ describe("Transformer", () => {
 			approved: isly.boolean().optional(),
 		})
 		expect(transformer.transform(testObjectType)).toEqual({
-			condition: [],
 			name: "object node",
 			nested: {
 				amount: { condition: undefined, name: "number node" },
@@ -37,7 +36,6 @@ describe("Transformer", () => {
 			.optional()
 			.readonly()
 		expect(transformer.transform(testObjectType)).toEqual({
-			condition: [],
 			name: "object node",
 			nested: {
 				amount: { condition: undefined, name: "number node" },

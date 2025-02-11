@@ -15,14 +15,12 @@ describe("isly.union()", () => {
 		expect(type.is(13.37)).toEqual(true)
 		expect(type.flawed({})).toEqual({
 			name: "(number | string)",
-			description: "Union of base types.",
+
 			flaws: [
 				{
-					description: "Any finite numeric value.",
 					name: "number",
 				},
 				{
-					description: "A string value.",
 					name: "string",
 				},
 			],
@@ -33,18 +31,15 @@ describe("isly.union()", () => {
 		expect(unionType.is(13.37)).toEqual(true)
 		expect(unionType.flawed({})).toEqual({
 			name: "(boolean | number | string)",
-			description: "Union of base types.",
+
 			flaws: [
 				{
-					description: "Value has to be true or false.",
 					name: "boolean",
 				},
 				{
-					description: "Any finite numeric value.",
 					name: "number",
 				},
 				{
-					description: "A string value.",
 					name: "string",
 				},
 			],
@@ -65,37 +60,31 @@ describe("isly.union()", () => {
 
 		expect(unionType.flawed({})).toEqual({
 			name: "('a' | 'b' | 'c' | 'd' | 'e' | 'f')",
-			description: "Union of base types.",
+
 			flaws: [
 				{
 					name: "'a'",
 					condition: ["value: 'a'"],
-					description: "One of: a.",
 				},
 				{
 					name: "'b'",
 					condition: ["value: 'b'"],
-					description: "One of: b.",
 				},
 				{
 					name: "'c'",
 					condition: ["value: 'c'"],
-					description: "One of: c.",
 				},
 				{
 					name: "'d'",
 					condition: ["value: 'd'"],
-					description: "One of: d.",
 				},
 				{
 					name: "'e'",
 					condition: ["value: 'e'"],
-					description: "One of: e.",
 				},
 				{
 					name: "'f'",
 					condition: ["value: 'f'"],
-					description: "One of: f.",
 				},
 			],
 		})
@@ -124,42 +113,35 @@ describe("isly.union()", () => {
 
 		expect(letters.flawed({})).toEqual({
 			name: "('A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G')",
-			description: "Union of base types.",
+
 			flaws: [
 				{
 					name: "'A'",
 					condition: ["value: 'A'"],
-					description: "One of: A.",
 				},
 				{
 					name: "'B'",
 					condition: ["value: 'B'"],
-					description: "One of: B.",
 				},
 				{
 					name: "'C'",
 					condition: ["value: 'C'"],
-					description: "One of: C.",
 				},
 				{
 					name: "'D'",
 					condition: ["value: 'D'"],
-					description: "One of: D.",
 				},
 				{
 					name: "'E'",
 					condition: ["value: 'E'"],
-					description: "One of: E.",
 				},
 				{
 					name: "'F'",
 					condition: ["value: 'F'"],
-					description: "One of: F.",
 				},
 				{
 					name: "'G'",
 					condition: ["value: 'G'"],
-					description: "One of: G.",
 				},
 			],
 		})

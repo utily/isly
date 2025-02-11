@@ -35,12 +35,10 @@ describe("isly.Array", () => {
 			isly.number().array(),
 			{
 				name: "number[]",
-				description: "Array of number[].",
 				flaws: [
 					{
 						index: 5,
 						name: "number",
-						description: "Any finite numeric value.",
 					},
 				],
 			},
@@ -49,37 +47,31 @@ describe("isly.Array", () => {
 			isly.number("value", 42, 1337).array(),
 			{
 				name: "(42 | 1337)[]",
-				description: "Array of (42 | 1337)[].",
 				flaws: [
 					{
 						index: 0,
 						name: "(42 | 1337)",
 						condition: ["value: [42, 1337]"],
-						description: "One of: 42, 1337.",
 					},
 					{
 						index: 2,
 						name: "(42 | 1337)",
 						condition: ["value: [42, 1337]"],
-						description: "One of: 42, 1337.",
 					},
 					{
 						index: 3,
 						name: "(42 | 1337)",
 						condition: ["value: [42, 1337]"],
-						description: "One of: 42, 1337.",
 					},
 					{
 						index: 4,
 						name: "(42 | 1337)",
 						condition: ["value: [42, 1337]"],
-						description: "One of: 42, 1337.",
 					},
 					{
 						index: 5,
 						name: "(42 | 1337)",
 						condition: ["value: [42, 1337]"],
-						description: "One of: 42, 1337.",
 					},
 				],
 			},
@@ -95,38 +87,31 @@ describe("isly.Array", () => {
 		expect(type.is(0)).toBe(false)
 		expect(type.flawed(42)).toEqual({
 			name: "number[]",
-			description: "Array of number[].",
 			flaws: [
 				{
 					name: "number",
-					description: "Any finite numeric value.",
 				},
 			],
 		})
 		expect(type.flawed(["test", true])).toEqual({
 			name: "number[]",
-			description: "Array of number[].",
 			flaws: [
 				{
 					index: 0,
 					name: "number",
-					description: "Any finite numeric value.",
 				},
 				{
 					index: 1,
 					name: "number",
-					description: "Any finite numeric value.",
 				},
 			],
 		})
 		expect(type.flawed([1, 2, undefined])).toEqual({
 			name: "number[]",
-			description: "Array of number[].",
 			flaws: [
 				{
 					index: 2,
 					name: "number",
-					description: "Any finite numeric value.",
 				},
 			],
 		})
@@ -134,20 +119,17 @@ describe("isly.Array", () => {
 	it("(number | string)[]", () => {
 		const arrayType = isly.union(isly.string(), isly.number()).array()
 		expect(arrayType.flawed(undefined)).toEqual({
-			description: "Array of (string | number)[].",
 			name: "(string | number)[]",
 			flaws: [
 				{
 					name: "(string | number)",
-					description: "Union of base types.",
+
 					flaws: [
 						{
 							name: "string",
-							description: "A string value.",
 						},
 						{
 							name: "number",
-							description: "Any finite numeric value.",
 						},
 					],
 				},
@@ -164,10 +146,8 @@ describe("isly.Array", () => {
 		expect(type.flawed(42)).toEqual({
 			name: "number[]",
 			condition: ["length.value: 3"],
-			description: "Array of number[].",
 			flaws: [
 				{
-					description: "Any finite numeric value.",
 					name: "number",
 				},
 			],
@@ -175,19 +155,16 @@ describe("isly.Array", () => {
 		expect(type.flawed([1, 2, undefined])).toEqual({
 			name: "number[]",
 			condition: ["length.value: 3"],
-			description: "Array of number[].",
 			flaws: [
 				{
 					index: 2,
 					name: "number",
-					description: "Any finite numeric value.",
 				},
 			],
 		})
 		expect(type.flawed([1, 2, 3, 4])).toEqual({
 			name: "number[]",
 			condition: ["length.value: 3"],
-			description: "Array of number[].",
 			flaws: [],
 		})
 	})
@@ -201,11 +178,9 @@ describe("isly.Array", () => {
 		expect(type.flawed(42)).toEqual({
 			name: "number[]",
 			condition: ["length.range: [1, 3]"],
-			description: "Array of number[].",
 			flaws: [
 				{
 					name: "number",
-					description: "Any finite numeric value.",
 				},
 			],
 		})

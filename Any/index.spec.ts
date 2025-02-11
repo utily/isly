@@ -15,6 +15,6 @@ describe("isly.any", () => {
 		expect(type.is("42")).toBe(true)
 		expect(type.is(null)).toBe(false)
 		expect(type.is(undefined)).toBe(false)
-		expect(type.flawed(undefined)).toEqual({ name: "any", description: "Anything except undefined." })
+		expect(type.flawed(undefined)).toEqual({ name: "any" })
 	})
 })

@@ -8,7 +8,7 @@ export class Class<V = unknown> extends Base<V> {
 		override readonly is: (value: V | any) => value is V,
 		override readonly prune: (value: V | any) => V | undefined = (value: V | any): V | undefined => super.prune(value)
 	) {
-		super("Value has to fulfill custom predicate.")
+		super()
 	}
 	static create<V = unknown>(
 		name: string,

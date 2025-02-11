@@ -9,7 +9,7 @@ export class Class<V extends string> extends Base<V> {
 		return Object.assign(super.definition, this.allowed === undefined ? {} : { allowed: this.allowed })
 	}
 	private constructor(readonly allowed?: readonly string[]) {
-		super("A string value.")
+		super()
 	}
 	is(value: V | any): value is V {
 		return typeof value == "string"

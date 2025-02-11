@@ -12,9 +12,7 @@ export namespace Restriction {
 	export type Property = "length" | "value"
 	export function convert<V extends string = string>(restriction: Restriction<V>): Base.Restriction<V> {
 		const { verify, condition, allowed } = getVerifier<V>(...restriction)
-		return allowed
-			? [verify, condition, Name.fromString(allowed), `One of: ${allowed.join(", ")}.`]
-			: [verify, condition]
+		return allowed ? [verify, condition, Name.fromString(allowed)] : [verify, condition]
 	}
 	export function getVerifier<V extends string = string>(...[property, ...argument]: Restriction): Verifier<V> {
 		const argument0 = argument[0]

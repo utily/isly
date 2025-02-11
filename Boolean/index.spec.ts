@@ -12,7 +12,7 @@ describe("isly.boolean", () => {
 	it("restrict & describe", () => {
 		const t1 = isly.boolean()
 		expect(t1.is(false)).toBe(true)
-		expect(t1.description).toBe("Value has to be true or false.")
+		expect(t1.description).toBe(undefined)
 		const t2 = t1.describe("Any boolean value.")
 		expect(t2.description).toBe("Any boolean value.")
 		expect(t2.is(false)).toBe(true)
@@ -34,7 +34,7 @@ describe("isly.boolean", () => {
 	it("modify", () => {
 		const t1 = isly.boolean()
 		expect(t1.is(false)).toBe(true)
-		expect(t1.description).toBe("Value has to be true or false.")
+		expect(t1.description).toBe(undefined)
 		const t2 = t1.modify({ description: "Any boolean value." })
 		expect(t2.description).toBe("Any boolean value.")
 		expect(t2.is(false)).toBe(true)
@@ -79,15 +79,9 @@ describe("isly.boolean", () => {
 		).toBe(expected)
 	)
 	it.each([
-		[isly.boolean(), { name: "boolean", description: "Value has to be true or false." }],
-		[
-			isly.boolean(true),
-			{ name: "true", description: "Value has to be true.", condition: ["value: true"], allowed: true },
-		],
-		[
-			isly.boolean(false),
-			{ name: "false", description: "Value has to be false.", condition: ["value: false"], allowed: false },
-		],
+		[isly.boolean(), { name: "boolean" }],
+		[isly.boolean(true), { name: "true", condition: ["value: true"], allowed: true }],
+		[isly.boolean(false), { name: "false", condition: ["value: false"], allowed: false }],
 	] as const)("definition == %s", (type, expected) => expect(type.definition).toEqual(expected))
 	it.each([
 		[true, true],

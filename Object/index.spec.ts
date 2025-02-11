@@ -26,8 +26,7 @@ describe("isly.object()", () => {
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed({ currency: "SEK" })).toEqual({
 			name: "{ amount: number, currency: ('SEK' | 'EUR') }",
-			description: "Object of type { amount: number, currency: ('SEK' | 'EUR') }.",
-			flaws: [{ property: "amount", name: "number", description: "Any finite numeric value." }],
+			flaws: [{ property: "amount", name: "number" }],
 		})
 	})
 	it("{}", () => {
@@ -37,7 +36,6 @@ describe("isly.object()", () => {
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed(1)).toEqual({
 			name: "{  }",
-			description: "Object of type {  }.",
 			flaws: [],
 		})
 	})
@@ -53,16 +51,15 @@ describe("isly.object()", () => {
 		expect(type.is({})).toBe(false)
 		expect(type.flawed({})).toEqual({
 			name: "Item",
-			description: "Object of type Item.",
 			flaws: [
 				{
 					property: "id",
-					description: "A string value.",
+
 					name: "string",
 				},
 				{
 					property: "number",
-					description: "Any finite numeric value.",
+
 					name: "number",
 				},
 			],
@@ -98,18 +95,15 @@ describe("isly.object()", () => {
 		expect(type3.is({ i1: 200, i2: 2, i3: 42, str: "a" })).toBe(false)
 		expect(type2.flawed({ str: "a" })).toEqual({
 			name: "Item2",
-			description: "Object of type Item1.",
 			flaws: [
 				{
 					property: "i1",
 					name: "number",
 					condition: ["minimum: 400"],
-					description: "Any finite numeric value.",
 				},
 				{
 					property: "i2",
 					name: "number",
-					description: "Any finite numeric value.",
 				},
 			],
 		})

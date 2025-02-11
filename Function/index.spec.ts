@@ -12,6 +12,6 @@ describe("isly.function()", () => {
 		expect(functionType.is(() => 0)).toBe(true)
 		expect(functionType.is(null)).toBe(false)
 		expect(functionType.is(undefined)).toBe(false)
-		expect(functionType.flawed(undefined)).toEqual({ name: "function", description: "Value has to be a function." })
+		expect(functionType.flawed(undefined)).toEqual({ name: "function" })
 	})
 })

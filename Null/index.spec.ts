@@ -12,7 +12,7 @@ describe("isly.null()", () => {
 		const type = isly.null()
 		expect(type.is(null)).toEqual(true)
 		expect(type.is(42)).toEqual(false)
-		expect(type.flawed(42)).toEqual({ name: "null", description: "Value has to be null." })
+		expect(type.flawed(42)).toEqual({ name: "null" })
 		expect(type.is(undefined)).toEqual(false)
 	})
 	it("prune", () => {

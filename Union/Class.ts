@@ -9,7 +9,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
 	private constructor(readonly base: B[], readonly name: string = Name.fromUnion(base)) {
-		super("Union of base types.")
+		super()
 	}
 	override is(value: V | any): value is V {
 		return this.base.some(b => b.is(value))

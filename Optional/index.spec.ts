@@ -2,8 +2,8 @@ import { isly } from "../index"
 
 describe("isly.Optional", () => {
 	const types = [
-		isly.boolean().optional(),
-		isly.boolean(true).optional(),
+		isly.boolean().optional().describe("Either true, false or undefined."),
+		isly.boolean(true).optional().describe("Either true or undefined."),
 		isly.boolean(false).optional("false?").describe("false or undefined"),
 	] as const
 	it("", () => {
@@ -21,8 +21,8 @@ describe("isly.Optional", () => {
 		["false?", types[2]],
 	] as const)("name == %s", (expected, type) => expect(type.name).toBe(expected))
 	it.each([
-		["Value is optional i.e. undefined or base type.", types[0]],
-		["Value is optional i.e. undefined or base type.", types[1]],
+		["Either true, false or undefined.", types[0]],
+		["Either true or undefined.", types[1]],
 		["false or undefined", types[2]],
 	] as const)("description == %s", (expected, type) => expect(type.description).toBe(expected))
 	it.each([

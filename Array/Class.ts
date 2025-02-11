@@ -12,7 +12,7 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	}
 	private constructor(readonly base: B, name?: string) {
 		name = name ?? Name.fromArray(base)
-		super(`Array of ${name}.`)
+		super()
 		this.name = name
 	}
 	override is(value: V[] | any): value is V[] {

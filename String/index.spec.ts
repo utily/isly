@@ -28,7 +28,7 @@ describe("isly.string", () => {
 	})
 	it("generic", () => {
 		expect(isly.string().is("42")).toBe(true)
-		expect(isly.string().flawed(42)).toEqual({ name: "string", description: "A string value." })
+		expect(isly.string().flawed(42)).toEqual({ name: "string" })
 	})
 	it("literal", () => {
 		expect(isly.string("value", ["42", "43"]).is("43")).toBe(true)
@@ -36,18 +36,17 @@ describe("isly.string", () => {
 		expect(type.is("42")).toBe(true)
 		expect(type.is("43")).toBe(false)
 		expect(type.is("")).toBe(false)
-		expect(type.flawed(42)).toEqual({ name: "'42'", condition: ["value: '42'"], description: "One of: 42." })
+		expect(type.flawed(42)).toEqual({ name: "'42'", condition: ["value: '42'"] })
 		expect(isly.string("value", ["42", "43"]).flawed("44")).toEqual({
 			name: "('42' | '43')",
 			condition: ["value: ['42', '43']"],
-			description: "One of: 42, 43.",
 		})
 	})
 	it("regexp-simple", () => {
 		const type = isly.string("value", /^'.*'$/)
 		expect(type.is("'42'")).toBe(true)
 		expect(type.is("42")).toBe(false)
-		expect(type.flawed(42)).toEqual({ name: "string", condition: ["value: /^'.*'$/"], description: "A string value." })
+		expect(type.flawed(42)).toEqual({ name: "string", condition: ["value: /^'.*'$/"] })
 	})
 	it("regexp-selector", () => {
 		const type = isly.string("value", /^((^|(?<!^)\.)[a-zA-Z]\w*|(\[\d+\]))*$/)
@@ -63,11 +62,10 @@ describe("isly.string", () => {
 		const type = isly.string().restrict(v => v.length == 5, "length: 5")
 		expect(type.is("13.37")).toBe(true)
 		expect(type.is("42")).toBe(false)
-		expect(type.flawed("42")).toEqual({ name: "string", condition: ["length: 5"], description: "A string value." })
+		expect(type.flawed("42")).toEqual({ name: "string", condition: ["length: 5"] })
 		expect(isly.string("length", "value", 5).flawed("42")).toEqual({
 			name: "string",
 			condition: ["length.value: 5"],
-			description: "A string value.",
 		})
 	})
 	it.each([

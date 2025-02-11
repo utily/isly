@@ -9,7 +9,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
 	private constructor(readonly base: B[], readonly name: string = Name.fromIntersection(base)) {
-		super("Intersection of base types.")
+		super()
 	}
 	override is(value: V | any): value is V {
 		return this.base.every(b => b.is(value))

@@ -7,7 +7,7 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
 	private constructor(readonly base: B, readonly name: string = `Readonly<${base.name}>`) {
-		super("Readonly version of base type.")
+		super()
 	}
 	override is(value: V | any): value is V {
 		return value === undefined || this.base.is(value)

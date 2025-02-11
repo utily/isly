@@ -11,7 +11,7 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 	}
 	private constructor(readonly base: { [I in keyof V]: Base<V[I]> }, name?: string) {
 		name = name ?? Name.fromTuple(base)
-		super(`Tuple of ${name}.`)
+		super()
 		this.name = name
 	}
 	override is(value: V | any): value is V {
