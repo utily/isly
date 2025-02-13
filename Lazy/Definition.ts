@@ -1,7 +1,5 @@
 import { Base } from "../Base"
-import type { Definition as islyDefinition } from "../Definition"
 
-export interface Definition extends Base.Definition {
-	readonly base: islyDefinition
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface Definition extends Base.Definition {}
 export namespace Definition {}

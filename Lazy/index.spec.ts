@@ -39,16 +39,18 @@ describe("isly lazy", () => {
 		})
 	})
 })
-const typeData = isly.lazy(() => isly.union<Data>(typeArray, isly.string()).rename("Test.Data"))
-const typeArray = isly.array<Data>(typeData).rename("Test.Array")
 
 export namespace Test {
 	export type Data = Array | string
 	export namespace Data {
-		export const { type, is, flawed } = typeData.bind()
+		export const type: isly.Lazy<Data> = isly.lazy(() =>
+			isly.union<Data>(Array.type, isly.string()).rename("Test.Data")
+		)
+		export const { is, flawed } = type.bind()
 	}
 	export type Array = Data[]
 	export namespace Array {
-		export const { type, is, flawed } = typeArray.bind()
+		export const type = isly.array<Data>(Data.type).rename("Test.Array")
+		export const { is, flawed } = type.bind()
 	}
 }

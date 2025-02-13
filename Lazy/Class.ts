@@ -7,14 +7,6 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	get name(): string {
 		return (this.#name ??= this.base.name)
 	}
-	override get definition(): isly.Definition {
-		// const type = this
-		return Object.assign(super.definition, {
-			// get base(): isly.Definition {
-			// 	return type.base.definition
-			// },
-		})
-	}
 	#load: () => B
 	#base: B | undefined
 	get base(): B {
