@@ -26,15 +26,12 @@ describe("isly lazy", () => {
 export namespace Test {
 	export type Data = Array | string
 	export namespace Data {
-		export const type = isly.from("Test.Data", (value: Data | any): value is Data =>
-			isly.union<Data>(Array.type, isly.string()).rename("Test.Data").is(value)
+		export const type: isly.Type<Data> = isly.lazy(() =>
+			isly.union<Data>(Array.type, isly.string()).rename("Test.Data")
 		)
 	}
 	export type Array = Data[]
 	export namespace Array {
-		export const type = isly
-			.lazy(() => Data.type)
-			.array()
-			.rename("Test.Array")
+		export const type = isly.array<Data>(Data.type).rename("Test.Array")
 	}
 }
