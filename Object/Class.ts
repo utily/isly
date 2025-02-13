@@ -7,13 +7,18 @@ import { Properties } from "./Properties"
 
 export class Class<V extends object = Record<string, any>> extends Base<V> {
 	override readonly class = "object"
+	#name: string | undefined
+	override get name(): string {
+		return (this.#name ??= Properties.getName(this.properties))
+	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, {
 			properties: globalThis.Object.fromEntries(Properties.entries(this.properties).map(([p, t]) => [p, t.definition])),
 		})
 	}
-	private constructor(readonly properties: Properties<V>, readonly name: string = Properties.getName(properties)) {
+	private constructor(readonly properties: Properties<V>, name?: string) {
 		super()
+		this.#name = name
 	}
 	override is(value: V | any): value is V {
 		return (
