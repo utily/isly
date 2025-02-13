@@ -46,11 +46,9 @@ describe("isly.Standard", () => {
 				},
 				byteOffset: {
 					name: "number",
-
 				},
 				byteLength: {
 					name: "number",
-
 				},
 			},
 		})

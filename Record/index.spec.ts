@@ -59,7 +59,6 @@ describe("isly.record()", () => {
 				{
 					property: "c",
 					name: "number",
-
 				},
 			],
 		})

@@ -42,8 +42,7 @@ describe("isly.number", () => {
 	])("isly.number().get(%p)", (input, expected) => expect(isly.number().get(input)).toEqual(expected))
 
 	it("isly.number().name", () => expect(isly.number().name).toEqual("number"))
-	it("isly.number().flaw({})", () =>
-		expect(isly.number().flawed({})).toEqual({ name: "number" }))
+	it("isly.number().flaw({})", () => expect(isly.number().flawed({})).toEqual({ name: "number" }))
 	it('isly.number("positive")', () => {
 		const type = isly.number("positive")
 		expect(type.is(13.37)).toEqual(true)
@@ -51,7 +50,6 @@ describe("isly.number", () => {
 		expect(type.flawed({})).toEqual({
 			name: "number",
 			condition: ["positive"],
-
 		})
 	})
 	it('isly.number().restrict("positive()', () => {
@@ -61,7 +59,6 @@ describe("isly.number", () => {
 		expect(type.flawed({})).toEqual({
 			name: "number",
 			condition: ["positive"],
-
 		})
 	})
 	it('isly.number", "positive().restrict("integer"])', () => {
@@ -73,7 +70,6 @@ describe("isly.number", () => {
 		expect(numberType.flawed({})).toEqual({
 			name: "number",
 			condition: ["positive", "integer"],
-
 		})
 	})
 	it('isly.number("value", [1, 2, 3]).is(2) == true', () => expect(isly.number("value", [1, 2, 3]).is(2)).toEqual(true))

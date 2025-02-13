@@ -6,7 +6,8 @@ import { Class as FromClass } from "./From/Class"
 import { Class as FunctionClass } from "./Function/Class"
 import { Class as InstanceClass } from "./Instance/Class"
 import { Class as IntersectionClass } from "./Intersection/Class"
-import { lazy } from "./lazy"
+import { Class as LazyClass } from "./Lazy/Class"
+// import { lazy } from "./lazy"
 import { Class as NullClass } from "./Null/Class"
 import { Class as NumberClass } from "./Number/Class"
 import { Class as ObjectClass } from "./Object/Class"
@@ -28,6 +29,7 @@ export const creator = {
 	function: FunctionClass.create,
 	null: NullClass.create,
 	number: NumberClass.create,
+	lazy: LazyClass.create,
 	instance: InstanceClass.create,
 	intersection: IntersectionClass.create,
 	object: ObjectClass.create,
@@ -39,7 +41,6 @@ export const creator = {
 	undefined: UndefinedClass.create,
 	union: UnionClass.create,
 	unknown: UnknownClass.create,
-	lazy,
 	standard: Standard.create,
 }
 Base.isly = creator

@@ -20,18 +20,35 @@ describe("isly lazy", () => {
 		expect(type.name).toBe("Test.Data[]")
 		expect(type.is(values)).toBe(true)
 		expect(type.flawed(values)).toBe(false)
+		expect(type.definition).toMatchInlineSnapshot(`
+			{
+			  "base": {
+			    "name": "Test.Data",
+			  },
+			  "name": "Test.Data[]",
+			}
+		`)
+		expect(type.flawed(["test", ["a", "b", "c", [2, ["e"]]]])).toEqual({
+			flaws: [
+				{
+					index: 1,
+					name: "Test.Data",
+				},
+			],
+			name: "Test.Data[]",
+		})
 	})
 })
+const typeData = isly.lazy(() => isly.union<Data>(typeArray, isly.string()).rename("Test.Data"))
+const typeArray = isly.array<Data>(typeData).rename("Test.Array")
 
 export namespace Test {
 	export type Data = Array | string
 	export namespace Data {
-		export const type: isly.Type<Data> = isly.lazy(() =>
-			isly.union<Data>(Array.type, isly.string()).rename("Test.Data")
-		)
+		export const { type, is, flawed } = typeData.bind()
 	}
 	export type Array = Data[]
 	export namespace Array {
-		export const type = isly.array<Data>(Data.type).rename("Test.Array")
+		export const { type, is, flawed } = typeArray.bind()
 	}
 }
