@@ -26,6 +26,7 @@ export { Transformer } from "./Transformer"
 export { Undefined } from "./Undefined"
 export { Union } from "./Union"
 export { Unknown } from "./Unknown"
+export { Json } from "./Json"
 
 import { creator } from "./creator"
 
