@@ -77,7 +77,7 @@ export abstract class Base<V = unknown> {
 		return { class: this.class, ...this.definition }
 	}
 	modify(changes?: Partial<this>): this {
-		const result = { ...this }
+		const result = { ...this, name: changes?.name ?? this.name }
 		Object.defineProperty(result, "definition", {
 			get:
 				getPropertyDescriptor(changes, "definition")?.get ??

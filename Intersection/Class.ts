@@ -5,11 +5,16 @@ import { Name } from "../Name"
 
 export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "intersection"
+	#name: string | undefined
+	get name(): string {
+		return (this.#name ??= Name.fromIntersection(this.base))
+	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(readonly base: B[], readonly name: string = Name.fromIntersection(base)) {
+	private constructor(readonly base: B[], name?: string) {
 		super()
+		this.#name = name
 	}
 	override is(value: V | any): value is V {
 		return this.base.every(b => b.is(value))

@@ -8,14 +8,14 @@ export class Class<
 	VType extends Base<V[keyof V]>
 > extends Base<V> {
 	readonly class = "record"
+	#name: string | undefined
+	override get name(): string {
+		return (this.#name ??= `Record<${this.key.name}, ${this.value.name}>`)
+	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { key: this.key.definition, value: this.value.definition })
 	}
-	private constructor(
-		readonly key: KType,
-		readonly value: VType,
-		readonly name: string = `Record<${key.name}, ${value.name}>`
-	) {
+	private constructor(readonly key: KType, readonly value: VType, name?: string) {
 		super()
 	}
 	override is(value: V | any): value is V {

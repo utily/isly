@@ -5,11 +5,16 @@ import { Name } from "../Name"
 
 export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "union"
+	#name: string | undefined
+	get name(): string {
+		return (this.#name ??= Name.fromUnion(this.base))
+	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(readonly base: B[], readonly name: string = Name.fromUnion(base)) {
+	private constructor(readonly base: B[], name?: string) {
 		super()
+		this.#name = name
 	}
 	override is(value: V | any): value is V {
 		return this.base.some(b => b.is(value))

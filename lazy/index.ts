@@ -1,4 +1,4 @@
-import type { Type } from "./Type"
+import type { Type } from "../Type"
 
 export function lazy<V = any, B extends Type<V> = Type<V>>(creator: () => B): B {
 	let target: B | undefined
