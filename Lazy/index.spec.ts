@@ -4,7 +4,7 @@ describe("isly lazy", () => {
 	// compile error if not working
 	it("type narrowing", () => {
 		const value: boolean | string | any = true as any
-		if (isly.lazy(() => isly.string()).is(value)) {
+		if (isly.lazy<string>(() => isly.string()).is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const data: string = value
 		}
