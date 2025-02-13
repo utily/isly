@@ -18,7 +18,7 @@ export class Class<V extends boolean> extends Base<V> {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
 	static create<V extends boolean = boolean>(allowed?: V): isly.Boolean<V> {
-		const result = new Class<V>(allowed).modify()
+		const result = new Class<V>(allowed)
 		return allowed == undefined ? result : result.restrict(allowed)
 	}
 }

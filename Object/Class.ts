@@ -80,7 +80,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		properties: isly.Object.Properties<V>,
 		name?: string
 	): isly.Object<V> {
-		return new Class<V>(properties, name).modify()
+		return new Class<V>(properties, name)
 	}
 }
 export namespace Class {

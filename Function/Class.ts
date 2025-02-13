@@ -12,6 +12,6 @@ export class Class<V extends Function = Function> extends Base<V> {
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	static create<V extends Function = Function>(name?: string): isly.Function<V> {
-		return new Class<V>(name).modify()
+		return new Class<V>(name)
 	}
 }

@@ -20,7 +20,7 @@ export class Class<V extends string> extends Base<V> {
 	static create<V extends string = string>(
 		...restriction: [] | isly.String.Restriction<V> | Base.Restriction
 	): isly.String<V> {
-		const result = new Class<V>().modify()
+		const result = new Class<V>()
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)

@@ -45,6 +45,6 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	): isly.Union<T>
 	static create<V>(...types: Base<V>[]): isly.Union<V>
 	static create<V, B extends Base<V>>(...base: B[]): Class<V, B> {
-		return new Class<V, B>(base).modify()
+		return new Class<V, B>(base)
 	}
 }

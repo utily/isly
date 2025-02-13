@@ -60,7 +60,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		typeF: Base<F>
 	): isly.Intersection<T>
 	static create<V, B extends Base<V>>(...base: B[]): Class<V, B> {
-		return new Class<V, B>(base).modify()
+		return new Class<V, B>(base)
 	}
 }
 function merge<T, S>(target: T, source: S): T & S {

@@ -24,6 +24,6 @@ export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 		base: B,
 		name?: string
 	): isly.Optional<V, B> {
-		return new Class<V, B>(base, name).modify()
+		return new Class<V, B>(base, name)
 	}
 }

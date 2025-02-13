@@ -53,6 +53,6 @@ export class Class<
 		KType extends Base<keyof V> = Base<keyof V>,
 		VType extends Base<V[keyof V]> = Base<V[keyof V]>
 	>(key: KType, value: VType, name?: string): isly.Record<V, KType, VType> {
-		return new Class<V, KType, VType>(key, value, name).modify()
+		return new Class<V, KType, VType>(key, value, name)
 	}
 }

@@ -10,6 +10,6 @@ export class Class<V extends object = object> extends Base<V> {
 		return value instanceof this.type
 	}
 	static create<V extends object = object>(constructor: new (...properties: any[]) => V, name: string): Instance<V> {
-		return new Class<V>(constructor, name).modify()
+		return new Class<V>(constructor, name)
 	}
 }

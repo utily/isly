@@ -10,6 +10,6 @@ export class Class<V = unknown> extends Base<V> {
 		return value != undefined
 	}
 	static create<V extends undefined = undefined>(name?: string): isly.Unknown<V> {
-		return new Class<V>(name).modify()
+		return new Class<V>(name)
 	}
 }

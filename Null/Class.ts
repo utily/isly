@@ -10,6 +10,6 @@ export class Class<V extends null = null> extends Base<null> {
 		return value === null
 	}
 	static create<V extends null = null>(): isly.Null<V> {
-		return new Class<V>().modify()
+		return new Class<V>()
 	}
 }

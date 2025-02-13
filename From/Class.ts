@@ -15,6 +15,6 @@ export class Class<V = unknown> extends Base<V> {
 		is: (value: V | any) => value is V,
 		prune?: (value: V | any) => V | undefined
 	): isly.From<V> {
-		return new Class<V>(name, is, prune).modify()
+		return new Class<V>(name, is, prune)
 	}
 }

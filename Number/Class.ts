@@ -22,7 +22,7 @@ export class Class<V extends number> extends Base<V> {
 		...restriction: [] | isly.Number.Restriction<V> | Base.Restriction
 	): isly.Number<V>
 	static create<V extends number = number>(...restriction: [] | Restriction<V> | Base.Restriction): Class<V> {
-		const result: Class<V> = new Class<V>().modify()
+		const result: Class<V> = new Class<V>()
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)
