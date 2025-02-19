@@ -14,7 +14,7 @@ export namespace Flaw {
 			condition: Base.isly.string().array().optional(),
 			flaws: Base.isly
 				.intersection(
-					Base.isly.lazy<Flaw>(() => type),
+					Base.isly.lazy<Flaw>(() => type, "isly.Flaw"),
 					Base.isly.union(
 						Base.isly.object({ index: Base.isly.number().optional() }),
 						Base.isly.object({ property: Base.isly.string() })

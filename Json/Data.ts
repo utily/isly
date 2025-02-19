@@ -2,21 +2,23 @@ import { creator } from "../creator"
 import type { isly } from "../index"
 
 export type Data<T = Record<string, never>> = boolean | string | number | null | undefined | Data.Object<T> | Data.Array
-const typeData: isly.Lazy<Data> = creator.lazy(() =>
-	creator
-		.union<Data>(
-			creator.boolean(),
-			creator.string(),
-			creator.number(),
-			creator.null(),
-			creator.undefined(),
-			typeDataObject,
-			typeDataArray
-		)
-		.rename("typedly.Json.Data")
+const typeData: isly.Lazy<Data> = creator.lazy(
+	() =>
+		creator
+			.union<Data>(
+				creator.boolean(),
+				creator.string(),
+				creator.number(),
+				creator.null(),
+				creator.undefined(),
+				typeDataObject,
+				typeDataArray
+			)
+			.rename("isly.Json.Data"),
+	"isly.Json.Data"
 )
-const typeDataObject = creator.record<Data.Object>(creator.string(), typeData).rename("typedly.Json.Data.Object")
-const typeDataArray = creator.array<Data>(typeData).rename("typedly.Json.Data.Array")
+const typeDataObject = creator.record<Data.Object>(creator.string(), typeData).rename("isly.Json.Data.Object")
+const typeDataArray = creator.array<Data>(typeData).rename("isly.Json.Data.Array")
 
 export namespace Data {
 	export const { type, is, flawed } = typeData.bind()
