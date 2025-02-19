@@ -15,7 +15,6 @@ describe("isly.union()", () => {
 		expect(type.is(13.37)).toEqual(true)
 		expect(type.flawed({})).toEqual({
 			name: "(number | string)",
-
 			flaws: [
 				{
 					name: "number",
@@ -25,6 +24,21 @@ describe("isly.union()", () => {
 				},
 			],
 		})
+		expect(type.definition).toMatchInlineSnapshot(`
+			{
+			  "base": [
+			    {
+			      "name": "number",
+			    },
+			    {
+			      "name": "string",
+			    },
+			  ],
+			  "name": "(number | string)",
+			}
+		`)
+		expect(type.base[0]?.name).toBe("number")
+		expect(type.base[1]?.definition).toEqual({ name: "string" })
 	})
 	it("isly.boolean(), isly.number(), isly.string()", () => {
 		const unionType = isly.union(isly.boolean(), isly.number(), isly.string())

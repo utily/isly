@@ -19,8 +19,7 @@ const typeDataObject = creator.record<Data.Object>(creator.string(), typeData).r
 const typeDataArray = creator.array<Data>(typeData).rename("typedly.Json.Data.Array")
 
 export namespace Data {
-	export const type: isly.Lazy<Data> = typeData
-	export const { is, flawed } = type.bind()
+	export const { type, is, flawed } = typeData.bind()
 
 	export type Object<T = Record<string, never>> = {
 		[property in keyof T]: Data
