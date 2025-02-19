@@ -25,9 +25,7 @@ export class Class<
 			typeof value == "object" &&
 			!Array.isArray(value) &&
 			Object.entries(value).every(
-				this.key.class == "number"
-					? ([k, v]) => this.key.is(`${+k}` == k ? +k : k) && this.value.is(v)
-					: ([k, v]) => this.key.is(k) && this.value.is(v)
+				([k, v]) => (this.key.is(k) || this.key.is(`${+k}` == k ? +k : k)) && this.value.is(v)
 			)
 		)
 	}

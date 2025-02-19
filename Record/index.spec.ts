@@ -11,7 +11,55 @@ describe("isly.record()", () => {
 			const data: Type = value
 		}
 	})
-
+	it.each([
+		[{}, true, isly.record(isly.string(), isly.number())],
+		[{ key1: 123, key2: 456 }, true, isly.record(isly.string(), isly.number())],
+		[{ key1: 123, key2: "not a number" }, false, isly.record(isly.string(), isly.number())],
+		[{ 1: "one", 2: "two" }, true, isly.record(isly.number(), isly.string())],
+		[{ 1: "one", 2: 2 }, false, isly.record(isly.number(), isly.string())],
+		[{ a: "value", b: "value" }, true, isly.record(isly.string("value", "a", "b"), isly.string())],
+		[{ a: "value", c: "value" }, false, isly.record(isly.string("value", "a", "b"), isly.string())],
+		[{ 1: "one", "-1": "minus one" }, true, isly.record(isly.number(), isly.string())],
+		[{ 1: "one", "-1": 1 }, false, isly.record(isly.number(), isly.string())],
+		[{ 1: "one", 2: "two", a: "three" }, false, isly.record(isly.number(), isly.string())],
+		[{ 1: "one", 2: "two", 3: "three" }, true, isly.record(isly.number("positive").restrict("integer"), isly.string())],
+		[
+			{ 1: "one", 2: "two", "-1": "minus one" },
+			false,
+			isly.record(isly.number("positive").restrict("integer"), isly.string()),
+		],
+		[{ user: { email: "test@example.com" } }, true, isly.record(isly.string(), isly.object({ email: isly.string() }))],
+		[
+			{ user: { email: "test@example.com", password: "secret" } },
+			true,
+			isly.record(isly.string(), isly.object({ email: isly.string(), password: isly.string() })),
+		],
+		[
+			{ email: "test@example.com", password: 123 },
+			false,
+			isly.record(isly.string(), isly.object({ email: isly.string(), password: isly.string() })),
+		],
+		[
+			{ 1930: { opening: 0, period: 0, closing: 0 }, 1931: { opening: 0, period: 0, closing: 0 } },
+			true,
+			isly.record(
+				isly.number("positive").restrict("integer"),
+				isly.object({ opening: isly.number(), period: isly.number(), closing: isly.number() })
+			),
+		],
+		[
+			{
+				1930: { opening: 100, period: 50, closing: 150 },
+				1931: { opening: 30, period: -10, closing: 20 },
+				totals: { opening: 130, period: 40, closing: 170 },
+			},
+			true,
+			isly.record(
+				isly.union(isly.number("positive").restrict("integer"), isly.string("value", "totals")),
+				isly.object({ opening: isly.number(), period: isly.number(), closing: isly.number() })
+			),
+		],
+	] as const)("is(%s) == %s", (value, expected, type) => expect(type.is(value)).toBe(expected))
 	it("record", () => {
 		const type = isly.record(isly.string(), isly.string())
 		expect(type.name).toBe("Record<string, string>")
