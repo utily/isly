@@ -17,6 +17,7 @@ export class Class<
 	}
 	private constructor(readonly key: KType, readonly value: VType, name?: string) {
 		super()
+		this.#name = name
 	}
 	override is(value: V | any): value is V {
 		return !!(

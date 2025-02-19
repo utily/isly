@@ -4,13 +4,13 @@ describe("isly lazy", () => {
 	// compile error if not working
 	it("type narrowing", () => {
 		const value: boolean | string | any = true as any
-		if (isly.lazy<string>(() => isly.string()).is(value)) {
+		if (isly.lazy<string>(() => isly.string(), "string").is(value)) {
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const data: string = value
 		}
 	})
 	it("generic", () => {
-		const type = isly.lazy(() => isly.string())
+		const type = isly.lazy(() => isly.string(), "string")
 		expect(type.is("42")).toBe(true)
 		expect(type.flawed(42)).toEqual({ name: "string" })
 	})
@@ -43,8 +43,9 @@ describe("isly lazy", () => {
 export namespace Test {
 	export type Data = Array | string
 	export namespace Data {
-		export const type: isly.Lazy<Data> = isly.lazy(() =>
-			isly.union<Data>(Array.type, isly.string()).rename("Test.Data")
+		export const type: isly.Lazy<Data> = isly.lazy(
+			() => isly.union<Data>(Array.type, isly.string()).rename("Test.Data"),
+			"Test.Data"
 		)
 		export const { is, flawed } = type.bind()
 	}
