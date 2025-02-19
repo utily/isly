@@ -23,8 +23,10 @@ describe("isly lazy", () => {
 		expect(type.definition).toMatchInlineSnapshot(`
 			{
 			  "base": {
+			    "class": "lazy",
 			    "name": "Test.Data",
 			  },
+			  "class": "array",
 			  "name": "Test.Data[]",
 			}
 		`)

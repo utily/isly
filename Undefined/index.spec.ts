@@ -25,6 +25,7 @@ describe("isly.undefined()", () => {
 	])("extract %s", (input, expected) => expect(isly.undefined().prune(input)).toEqual(expected))
 	it("definition", () =>
 		expect(isly.undefined().definition).toEqual({
+			class: "undefined",
 			name: "undefined",
 		}))
 })

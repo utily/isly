@@ -13,6 +13,7 @@ export abstract class Base<V = unknown> {
 	get definition(): isly.Definition {
 		return {
 			name: this.name,
+			class: this.class,
 			...(this.description ? { description: this.description } : {}),
 			...(this.condition ? { condition: this.condition } : {}),
 		}
@@ -74,7 +75,7 @@ export abstract class Base<V = unknown> {
 		return JSON.stringify(this.definition)
 	}
 	toJSON() {
-		return { class: this.class, ...this.definition }
+		return this.definition
 	}
 	modify(changes?: Partial<this>): this {
 		const result = { ...this, name: changes?.name ?? this.name }

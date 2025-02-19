@@ -6,13 +6,16 @@ describe("isly.Standard", () => {
 		const type = isly.standard("ArrayBufferLike")
 		expect(type.flawed(new constructor())).toEqual(false)
 		expect(type.definition).toEqual({
+			class: "union",
 			name: "ArrayBufferLike",
 
 			base: [
 				{
+					class: "instance",
 					name: "ArrayBuffer",
 				},
 				{
+					class: "instance",
 					name: "SharedArrayBuffer",
 				},
 			],
@@ -30,24 +33,30 @@ describe("isly.Standard", () => {
 		const type = isly.standard("ArrayBufferView")
 		expect(type.flawed(new constructor())).toEqual(false)
 		expect(type.definition).toEqual({
+			class: "object",
 			name: "ArrayBufferView",
 			properties: {
 				buffer: {
+					class: "union",
 					name: "ArrayBufferLike",
 
 					base: [
 						{
+							class: "instance",
 							name: "ArrayBuffer",
 						},
 						{
+							class: "instance",
 							name: "SharedArrayBuffer",
 						},
 					],
 				},
 				byteOffset: {
+					class: "number",
 					name: "number",
 				},
 				byteLength: {
+					class: "number",
 					name: "number",
 				},
 			},

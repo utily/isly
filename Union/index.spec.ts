@@ -28,17 +28,20 @@ describe("isly.union()", () => {
 			{
 			  "base": [
 			    {
+			      "class": "number",
 			      "name": "number",
 			    },
 			    {
+			      "class": "string",
 			      "name": "string",
 			    },
 			  ],
+			  "class": "union",
 			  "name": "(number | string)",
 			}
 		`)
 		expect(type.base[0]?.name).toBe("number")
-		expect(type.base[1]?.definition).toEqual({ name: "string" })
+		expect(type.base[1]?.definition).toEqual({ class: "string", name: "string" })
 	})
 	it("isly.boolean(), isly.number(), isly.string()", () => {
 		const unionType = isly.union(isly.boolean(), isly.number(), isly.string())

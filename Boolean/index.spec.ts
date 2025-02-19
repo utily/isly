@@ -79,9 +79,9 @@ describe("isly.boolean", () => {
 		).toBe(expected)
 	)
 	it.each([
-		[isly.boolean(), { name: "boolean" }],
-		[isly.boolean(true), { name: "true", condition: ["value: true"], allowed: true }],
-		[isly.boolean(false), { name: "false", condition: ["value: false"], allowed: false }],
+		[isly.boolean(), { class: "boolean", name: "boolean" }],
+		[isly.boolean(true), { class: "boolean", name: "true", condition: ["value: true"], allowed: true }],
+		[isly.boolean(false), { class: "boolean", name: "false", condition: ["value: false"], allowed: false }],
 	] as const)("definition == %s", (type, expected) => expect(type.definition).toEqual(expected))
 	it.each([
 		[true, true],
