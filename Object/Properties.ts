@@ -20,4 +20,9 @@ export namespace Properties {
 				.filter(([p, v]) => v !== undefined)
 		) as T
 	}
+	export function optional<T extends object>(properties: Properties<T>): Properties<Partial<T>> {
+		return globalThis.Object.fromEntries(
+			Properties.entries(properties).map(([p, t]) => [p, t.optional()])
+		) as unknown as Properties<Partial<T>>
+	}
 }
