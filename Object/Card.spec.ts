@@ -86,6 +86,20 @@ describe("isly.Object.Card", () => {
 				name: "Card",
 			},
 		],
+		[
+			{ pan: "1234", expires: [2012, 12], csc: "987" },
+			{
+				name: "Card",
+				description: "A card with a PAN, expiry date, CSC and optional holder name.",
+				flaws: [
+					{
+						property: "pan",
+						name: "string",
+						condition: ["value: /^[d]{16,19}$/"],
+					},
+				],
+			},
+		],
 	] as const)("flawed(%j) == %j", (value, expected) => {
 		expect(Card.flawed(value)).toEqual(expected)
 	})
