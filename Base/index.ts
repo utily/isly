@@ -7,9 +7,9 @@ import { Name } from "../Name"
 import { Definition as BaseDefinition } from "./Definition"
 import { Restriction as BaseRestriction } from "./Restriction"
 
-export abstract class Base<V = unknown> {
+export abstract class Base<V = unknown, C extends Base.Configuration<V> = Base.Configuration<V>> {
 	abstract readonly class: Class
-	abstract readonly name: Name
+	abstract get name(): Name
 	get definition(): isly.Definition {
 		return {
 			name: this.name,
@@ -18,10 +18,16 @@ export abstract class Base<V = unknown> {
 			...(this.condition ? { condition: this.condition } : {}),
 		}
 	}
-	get codec(): Codec {
-		return Codec.create(this.class)
+	get description(): string | undefined {
+		return this.configuration.description
 	}
-	constructor(readonly description?: string, readonly condition?: string[]) {}
+	get condition(): string[] | undefined {
+		return this.configuration.condition
+	}
+	get codec(): Codec {
+		return this.configuration.codec ?? Codec.create(this.class)
+	}
+	constructor(protected readonly configuration: C) {}
 	abstract is(value: V | any): value is V
 	get(value: V | any): V | undefined
 	get(value: V | any, fallback: V): V
@@ -57,10 +63,10 @@ export abstract class Base<V = unknown> {
 		} as Partial<this>)
 	}
 	rename(name: string): this {
-		return this.modify({ name } as Partial<this>)
+		return this.copy({ name: () => name })
 	}
 	describe(description: string): this {
-		return this.modify({ description } as Partial<this>)
+		return this.copy({ description })
 	}
 	optional(name?: string): isly.Optional<V | undefined, this> {
 		return Base.isly.optional(this, name)
@@ -77,6 +83,7 @@ export abstract class Base<V = unknown> {
 	toJSON() {
 		return this.definition
 	}
+	abstract copy<W extends V, D extends Base.Configuration<W>>(changes?: D | undefined): this
 	modify(changes?: Partial<this>): this {
 		const result = { ...this, name: changes?.name ?? this.name }
 		Object.defineProperty(result, "definition", {
@@ -146,6 +153,13 @@ export abstract class Base<V = unknown> {
 export namespace Base {
 	export import Definition = BaseDefinition
 	export import Restriction = BaseRestriction
+	export interface Configuration<V = unknown> {
+		name?: () => string
+		description?: string
+		condition?: string[]
+		codec?: Codec
+		is?(value: V | any): value is V
+	}
 }
 
 function getPropertyDescriptor(object: any, property: string): PropertyDescriptor | undefined {
