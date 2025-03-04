@@ -1,5 +1,6 @@
 import { isly } from "../index"
 
+
 describe("isly.object()", () => {
 	// compile error if not working
 	it("type narrowing", () => {
@@ -14,7 +15,7 @@ describe("isly.object()", () => {
 			const data: Test = value
 		}
 	})
-
+	it("flawed", () => {
 	it("object", () => {
 		interface Test {
 			amount: number
