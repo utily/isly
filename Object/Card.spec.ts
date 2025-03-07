@@ -95,7 +95,7 @@ describe("isly.Object.Card", () => {
 					{
 						property: "pan",
 						name: "string",
-						condition: ["value: /^[d]{16,19}$/"],
+						condition: ["value: /^[\\d]{16,19}$/"],
 					},
 				],
 			},
