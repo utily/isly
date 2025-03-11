@@ -74,6 +74,12 @@ export abstract class Base<V = unknown> {
 	inverse(name?: string): isly.Inverse<V, this> {
 		return Base.isly.inverse(this, name)
 	}
+	or<T extends V | W, W>(type: isly.Type<W>): isly.Union<T> {
+		return Base.isly.union(this, type)
+	}
+	and<T extends V & W, W>(type: isly.Type<W>): isly.Intersection<T> {
+		return Base.isly.intersection(this, type)
+	}
 	toString(): string {
 		return JSON.stringify(this.definition)
 	}
@@ -117,6 +123,8 @@ export abstract class Base<V = unknown> {
 			readonly: changes?.readonly ?? this.readonly,
 			array: changes?.array ?? this.array,
 			inverse: changes?.inverse ?? this.inverse,
+			and: changes?.and ?? this.and,
+			or: changes?.or ?? this.or,
 			toString: changes?.toString ?? this.toString,
 			toJSON: changes?.toJSON ?? this.toJSON,
 			modify: changes?.modify ?? this.modify,
@@ -140,6 +148,8 @@ export abstract class Base<V = unknown> {
 			readonly: this.readonly.bind(this),
 			array: this.array.bind(this),
 			inverse: this.inverse.bind(this),
+			and: this.and.bind(this),
+			or: this.or.bind(this),
 			toString: this.toString.bind(this),
 			toJSON: this.toJSON.bind(this),
 			modify: this.modify.bind(this),

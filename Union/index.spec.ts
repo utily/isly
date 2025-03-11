@@ -10,8 +10,19 @@ describe("isly.union()", () => {
 			const union: string | number = value
 		}
 	})
-	it("union (2)", () => {
-		const type = isly.union(isly.number(), isly.string())
+	// TypeScript compile error if not working
+	it("type narrowing using and", () => {
+		const type = isly.string().and(isly.number())
+		const value: boolean | string | any = "garbage" as any
+		if (type.is(value)) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const union: string | number = value
+		}
+	})
+	it.each([
+		["union (2)", isly.union(isly.number(), isly.string())],
+		["or (2)", isly.number().or(isly.string())],
+	] as const)("%s", (_, type) => {
 		expect(type.is(13.37)).toEqual(true)
 		expect(type.flawed({})).toEqual({
 			name: "(number | string)",
@@ -24,22 +35,20 @@ describe("isly.union()", () => {
 				},
 			],
 		})
-		expect(type.definition).toMatchInlineSnapshot(`
-			{
-			  "base": [
-			    {
-			      "class": "number",
-			      "name": "number",
-			    },
-			    {
-			      "class": "string",
-			      "name": "string",
-			    },
-			  ],
-			  "class": "union",
-			  "name": "(number | string)",
-			}
-		`)
+		expect(type.definition).toMatchObject({
+			base: [
+				{
+					class: "number",
+					name: "number",
+				},
+				{
+					class: "string",
+					name: "string",
+				},
+			],
+			class: "union",
+			name: "(number | string)",
+		})
 		expect(type.base[0]?.name).toBe("number")
 		expect(type.base[1]?.definition).toEqual({ class: "string", name: "string" })
 	})

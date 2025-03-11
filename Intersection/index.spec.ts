@@ -25,7 +25,25 @@ describe("isly.intersection", () => {
 				const data: AB = value
 			}
 		}
-		// without generic provided
+		// Using and
+		{
+			const type = isly
+				.object<A>({
+					a: isly.number().optional(),
+					shared: isly.string(),
+				})
+				.and(
+					isly.object<B>({
+						b: isly.number().optional(),
+						shared: isly.string(),
+					})
+				)
+			const value: boolean | string | any = "garbage" as any
+			if (type.is(value)) {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				const data: AB = value
+			}
+		} // without generic provided
 		{
 			const type = isly.intersection(
 				isly.object<A>({
@@ -81,6 +99,28 @@ describe("isly.intersection", () => {
 				shared: isly.string(),
 			})
 		)
+		expect(intersection.is({ shared: "shared string" })).toBe(true)
+		expect(intersection.is({ shared: "shared string", a: 12 })).toBe(true)
+		expect(intersection.name).toEqual(
+			"{ a: number | undefined, shared: string } & { b: number | undefined, shared: string }"
+		)
+		expect(intersection.is({ a: 42 })).toBe(false)
+		expect(intersection.flawed({ a: 42, b: 43 })).toBeTruthy()
+	})
+	it("A & B using and", () => {
+		type A = { a?: number; shared: string }
+		type B = { b?: number; shared: string }
+		const intersection = isly
+			.object<A>({
+				a: isly.number().optional(),
+				shared: isly.string(),
+			})
+			.and(
+				isly.object<B>({
+					b: isly.number().optional(),
+					shared: isly.string(),
+				})
+			)
 		expect(intersection.is({ shared: "shared string" })).toBe(true)
 		expect(intersection.is({ shared: "shared string", a: 12 })).toBe(true)
 		expect(intersection.name).toEqual(
