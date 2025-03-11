@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`isly.Inverse > definition 1`] = `[Function]`;
+
+exports[`isly.Inverse > definition 2`] = `[Function]`;
+
+exports[`isly.Inverse > definition 3`] = `[Function]`;

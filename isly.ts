@@ -10,6 +10,7 @@ export { From } from "./From"
 export { Function } from "./Function"
 export { Instance } from "./Instance"
 export { Intersection } from "./Intersection"
+export { Inverse } from "./Inverse"
 export { Lazy } from "./Lazy"
 export { Name } from "./Name"
 export { Null } from "./Null"
@@ -43,6 +44,7 @@ export { _null as null }
 export const number = creator.number
 export const instance = creator.instance
 export const intersection = creator.intersection
+export const inverse = creator.inverse
 export const object = creator.object
 export const optional = creator.optional
 export const readonly = creator.readonly

@@ -6,6 +6,7 @@ import { Class as FromClass } from "./From/Class"
 import { Class as FunctionClass } from "./Function/Class"
 import { Class as InstanceClass } from "./Instance/Class"
 import { Class as IntersectionClass } from "./Intersection/Class"
+import { Class as InverseClass } from "./Inverse/Class"
 import { Class as LazyClass } from "./Lazy/Class"
 import { Class as NullClass } from "./Null/Class"
 import { Class as NumberClass } from "./Number/Class"
@@ -31,6 +32,7 @@ export const creator = {
 	lazy: LazyClass.create,
 	instance: InstanceClass.create,
 	intersection: IntersectionClass.create,
+	inverse: InverseClass.create,
 	object: ObjectClass.create,
 	optional: OptionalClass.create,
 	readonly: ReadonlyClass.create,

@@ -6,6 +6,7 @@ import type { From } from "./From"
 import type { Function } from "./Function"
 import type { Instance } from "./Instance"
 import type { Intersection } from "./Intersection"
+import type { Inverse } from "./Inverse"
 import type { Lazy } from "./Lazy"
 import type { Null } from "./Null"
 import type { Number } from "./Number"
@@ -29,6 +30,7 @@ export namespace Type {
 		function: Function
 		instance: Instance
 		intersection: Intersection
+		inverse: Inverse
 		lazy: Lazy
 		null: Null
 		number: Number

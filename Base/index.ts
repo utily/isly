@@ -71,6 +71,9 @@ export abstract class Base<V = unknown> {
 	array(...restriction: isly.Array.Restriction | []): isly.Array<V, this> {
 		return Base.isly.array(this, ...restriction)
 	}
+	inverse(name?: string): isly.Inverse<V, this> {
+		return Base.isly.inverse(this, name)
+	}
 	toString(): string {
 		return JSON.stringify(this.definition)
 	}
@@ -113,6 +116,7 @@ export abstract class Base<V = unknown> {
 			optional: changes?.optional ?? this.optional,
 			readonly: changes?.readonly ?? this.readonly,
 			array: changes?.array ?? this.array,
+			inverse: changes?.inverse ?? this.inverse,
 			toString: changes?.toString ?? this.toString,
 			toJSON: changes?.toJSON ?? this.toJSON,
 			modify: changes?.modify ?? this.modify,
@@ -135,6 +139,7 @@ export abstract class Base<V = unknown> {
 			optional: this.optional.bind(this),
 			readonly: this.readonly.bind(this),
 			array: this.array.bind(this),
+			inverse: this.inverse.bind(this),
 			toString: this.toString.bind(this),
 			toJSON: this.toJSON.bind(this),
 			modify: this.modify.bind(this),

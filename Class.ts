@@ -8,6 +8,7 @@ export namespace Class {
 		"function",
 		"instance",
 		"intersection",
+		"inverse",
 		"lazy",
 		"null",
 		"number",
@@ -30,6 +31,7 @@ export namespace Class {
 		function: Function
 		instance: object
 		intersection: unknown
+		inverse: any
 		lazy: unknown
 		null: null
 		number: number
