@@ -68,6 +68,8 @@ describe("isly.string", () => {
 			condition: ["length.value: 5"],
 		})
 	})
+	it('isly.string("value", "SE", "FI", "DE").prune("SE") == "SE"', () =>
+		expect(isly.string("value", "SE", "FI", "DE").prune("SE")).toEqual("SE"))
 	it.each([
 		["hello", "hello"],
 		["world", "world"],

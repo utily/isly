@@ -303,4 +303,11 @@ describe("isly.object()", () => {
 		expect(errorResponseWithoutBodyType.prune({ status: 500, body: "payload" })).toEqual({ status: 500 })
 		expect(errorResponseWithoutBodyType.prune({ status: 1000, body: "payload" })).toBeUndefined()
 	})
+	it("prune", () => {
+		expect(isly.object({}).prune({})).toEqual({})
+		expect(isly.object({}).prune({ a: 1 })).toEqual({})
+		expect(isly.object({ a: isly.number() }).prune({ a: 1, b: 2 })).toEqual({ a: 1 })
+		expect(isly.object({ a: isly.string() }).prune({ a: "1", b: 2, c: 3 })).toEqual({ a: "1" })
+		expect(isly.object({ a: isly.string("value", "1") }).prune({ a: "1", b: 2, c: 3 })).toEqual({ a: "1" })
+	})
 })

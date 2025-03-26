@@ -156,4 +156,10 @@ describe("isly.record()", () => {
 			expect(pureUserRecord["2"]).not.toHaveProperty("password")
 		}
 	})
+	it("is(undefined) == false", () => expect(isly.record(isly.string(), isly.string()).is(undefined)).toBe(false))
+	it("is({ test: undefined }) == false", () =>
+		expect(isly.record(isly.string(), isly.object({})).is({ test: undefined })).toBe(false))
+	it("flawed(undefined)", () => expect(isly.record(isly.string(), isly.string()).is(undefined)).toBe(false))
+	it("flawed({ test: undefined })", () =>
+		expect(isly.record(isly.string(), isly.object({})).is({ test: undefined })).toBe(false))
 })
