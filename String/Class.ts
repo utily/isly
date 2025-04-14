@@ -8,7 +8,7 @@ export class Class<V extends string> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, this.allowed === undefined ? {} : { allowed: this.allowed })
 	}
-	private constructor(readonly allowed?: readonly string[]) {
+	private constructor(readonly allowed: readonly V[] | undefined) {
 		super()
 	}
 	is(value: V | any): value is V {
@@ -20,7 +20,7 @@ export class Class<V extends string> extends Base<V> {
 	static create<V extends string = string>(
 		...restriction: [] | isly.String.Restriction<V> | Base.Restriction
 	): isly.String<V> {
-		const result = new Class<V>()
+		const result = new Class<V>(restriction[0] == "value" ? (restriction.slice(1) as V[]) : undefined)
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)
