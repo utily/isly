@@ -1,6 +1,5 @@
 import { BindResult } from "../BindResult"
 import { Class } from "../Class"
-import { Codec } from "../Codec"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
@@ -17,9 +16,6 @@ export abstract class Base<V = unknown> {
 			...(this.description ? { description: this.description } : {}),
 			...(this.condition ? { condition: this.condition } : {}),
 		}
-	}
-	get codec(): Codec {
-		return Codec.create(this.class)
 	}
 	constructor(readonly description?: string, readonly condition?: string[]) {}
 	abstract is(value: V | any): value is V
@@ -39,13 +35,6 @@ export abstract class Base<V = unknown> {
 				...(this.condition && this.condition.length > 0 ? { condition: this.condition } : {}),
 			}
 		)
-	}
-	serialize(value: V): string | undefined {
-		const result = this.get(value)
-		return result != undefined ? this.codec.encode(result) : undefined
-	}
-	parse(data: string): V | undefined {
-		return this.get(this.codec.decode(data))
 	}
 	restrict(...restriction: Base.Restriction): this {
 		const previous = this.is.bind(this)
@@ -98,24 +87,22 @@ export abstract class Base<V = unknown> {
 			enumerable: true,
 			configurable: false,
 		})
-		Object.defineProperty(result, "codec", {
-			get:
-				getPropertyDescriptor(changes, "codec")?.get ??
-				getPropertyDescriptor(this, "codec")?.get ??
-				((): any => {
-					throw Error("Not Implemented")
-				}),
-			enumerable: true,
-			configurable: false,
-		})
+		// Object.defineProperty(result, "codec", {
+		// 	get:
+		// 		getPropertyDescriptor(changes, "codec")?.get ??
+		// 		getPropertyDescriptor(this, "codec")?.get ??
+		// 		((): any => {
+		// 			throw Error("Not Implemented")
+		// 		}),
+		// 	enumerable: true,
+		// 	configurable: false,
+		// })
 		return Object.assign(result, {
 			...changes,
 			is: changes?.is ?? this.is,
 			get: changes?.get ?? this.get,
 			prune: changes?.prune ?? this.prune,
 			flawed: changes?.flawed ?? this.flawed,
-			serialize: changes?.serialize ?? this.serialize,
-			parse: changes?.parse ?? this.parse,
 			restrict: changes?.restrict ?? this.restrict,
 			rename: changes?.rename ?? this.rename,
 			describe: changes?.describe ?? this.describe,
@@ -139,8 +126,6 @@ export abstract class Base<V = unknown> {
 			get: this.get.bind(this),
 			prune: this.prune.bind(this),
 			flawed: this.flawed.bind(this),
-			serialize: this.serialize.bind(this),
-			parse: this.parse.bind(this),
 			restrict: this.restrict.bind(this),
 			rename: this.rename.bind(this),
 			describe: this.describe.bind(this),
