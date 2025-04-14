@@ -87,16 +87,6 @@ export abstract class Base<V = unknown> {
 			enumerable: true,
 			configurable: false,
 		})
-		// Object.defineProperty(result, "codec", {
-		// 	get:
-		// 		getPropertyDescriptor(changes, "codec")?.get ??
-		// 		getPropertyDescriptor(this, "codec")?.get ??
-		// 		((): any => {
-		// 			throw Error("Not Implemented")
-		// 		}),
-		// 	enumerable: true,
-		// 	configurable: false,
-		// })
 		return Object.assign(result, {
 			...changes,
 			is: changes?.is ?? this.is,
