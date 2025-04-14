@@ -63,13 +63,10 @@ describe("isly.record()", () => {
 	it("record", () => {
 		const type = isly.record(isly.string(), isly.string())
 		expect(type.name).toBe("Record<string, string>")
-
 		expect(type.is({ amount: "13.37", currency: "SEK" })).toBe(true)
 		expect(type.is({})).toBe(true)
-
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toBe(false)
 		expect(type.is(undefined)).toBe(false)
-
 		expect(type.flawed({ currency: "SEK", a: 1 })).toEqual({
 			name: "Record<string, string>",
 			flaws: [{ property: "a", name: "string" }],
@@ -77,77 +74,44 @@ describe("isly.record()", () => {
 	})
 	it("record, union as key", () => {
 		const type = isly.record(isly.string("value", "a", "b"), isly.string())
-
 		expect(type.is({ a: "abc001", b: "1337" })).toBe(true)
 		expect(type.is({ a: "abc001", b: "1337", c: 42 })).toBe(false)
 		expect(type.is({ id: "abc001", number: "1337" })).toBe(false)
-
 		expect(type.flawed({ c: "hej" })).toEqual({
 			name: "Record<('a' | 'b'), string>",
-			flaws: [
-				{
-					property: "c",
-					name: "('a' | 'b')",
-					condition: ["value: ['a', 'b']"],
-				},
-			],
+			flaws: [{ property: "c", name: "('a' | 'b')", condition: ["value: ['a', 'b']"] }],
 		})
 	})
 	it("record, number as key", () => {
 		const type = isly.record(isly.number(), isly.string())
-
 		expect(type.is({ 1: "abc001", 2: "1337" })).toBe(true)
 		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBe(true)
 		expect(type.is({ 0.1: "abc001", "-12.2": "1337", "-100": "abc" })).toBe(true)
 		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBe(false)
-
 		expect(type.flawed({ c: "hej" })).toEqual({
 			name: "Record<number, string>",
-			flaws: [
-				{
-					property: "c",
-					name: "number",
-				},
-			],
+			flaws: [{ property: "c", name: "number" }],
 		})
 	})
 	it("record, positive integer as key", () => {
 		const type = isly.record(isly.number("positive").restrict("integer"), isly.string())
-
 		expect(type.is({ 1: "abc001", 2: "1337" })).toBe(true)
 		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBe(false)
 		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBe(false)
-
 		expect(type.flawed({ c: "hej" })).toEqual({
 			name: "Record<number, string>",
-			flaws: [
-				{
-					property: "c",
-					name: "number",
-
-					condition: ["positive", "integer"],
-				},
-			],
+			flaws: [{ property: "c", name: "number", condition: ["positive", "integer"] }],
 		})
 	})
 	it("record.prune", () => {
-		type User = {
-			email: string
-		}
+		type User = { email: string }
 		const userRecordType = isly.record(isly.string(), isly.object<User>({ email: isly.string() }))
 		const usersRecords: Record<string, User> = globalThis.Object.fromEntries(
-			[...Array(5).keys()].map(id => [
-				`${id}`,
-				{
-					email: `${id}@example.com`,
-					password: "shouldBeSecret",
-				},
-			])
+			[...Array(5).keys()].map(id => [`${id}`, { email: `${id}@example.com`, password: "shouldBeSecret" }])
 		)
 		expect(userRecordType.is(usersRecords)).toBe(true)
 		expect(usersRecords["2"]).toHaveProperty("email")
 		expect(usersRecords["2"]).toHaveProperty("password")
-
 		const pureUserRecord = userRecordType.prune(usersRecords)
 		expect(pureUserRecord).toBeTruthy()
 		if (pureUserRecord) {
@@ -162,4 +126,15 @@ describe("isly.record()", () => {
 	it("flawed(undefined)", () => expect(isly.record(isly.string(), isly.string()).is(undefined)).toBe(false))
 	it("flawed({ test: undefined })", () =>
 		expect(isly.record(isly.string(), isly.object({})).is({ test: undefined })).toBe(false))
+	it("enumerable", () => {
+		const keys = ["key1", "key2", "key3"] as const
+		type Key = typeof keys[number]
+		const Key = isly.string("value", ...keys)
+		type EnumerableRecord = Record<Key, string>
+		const EnumerableRecord = isly.record(Key, isly.string())
+		const enumerableRecord: EnumerableRecord = { key1: "value1", key2: "value2", key3: "value3" }
+		const notEnumerableRecord: Partial<EnumerableRecord> = { key1: "value1" }
+		expect(EnumerableRecord.is(enumerableRecord)).toBe(true)
+		expect(EnumerableRecord.is(notEnumerableRecord)).toBe(false)
+	})
 })
