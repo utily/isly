@@ -20,14 +20,22 @@ export class Class<
 		this.#name = name
 	}
 	override is(value: V | any): value is V {
-		return !!(
-			value &&
-			typeof value == "object" &&
-			!Array.isArray(value) &&
-			Object.entries(value).every(
+		let result: boolean
+		if (!value || typeof value != "object" || Array.isArray(value))
+			result = false
+		else if (
+			this.key.class == "string" &&
+			"allowed" in this.key &&
+			Array.isArray(this.key.allowed) &&
+			this.key.allowed.every(v => typeof v == "string")
+		)
+			result =
+				Object.keys(value).length == this.key.allowed.length && this.key.allowed.every(key => this.value.is(value[key]))
+		else
+			result = Object.entries(value).every(
 				([k, v]) => (this.key.is(k) || this.key.is(`${+k}` == k ? +k : k)) && this.value.is(v)
 			)
-		)
+		return result
 	}
 	override prune(value: V | any): V | undefined {
 		return (
