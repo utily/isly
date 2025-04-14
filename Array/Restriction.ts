@@ -12,10 +12,7 @@ export namespace Restriction {
 		const { verify, condition } = getVerifier(...restriction)
 		return [verify, condition]
 	}
-	export function restrict<V = unknown, B extends Base<V> = Base<V>>(
-		type: Array<V, B>,
-		...restriction: Restriction
-	): Array<V, B> {
+	export function restrict<V>(type: Array<V>, ...restriction: Restriction): Array<V> {
 		const { verify, condition } = getVerifier<V>(...restriction)
 		return type.restrict(verify, condition)
 	}
