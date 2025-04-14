@@ -20,10 +20,11 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		return this.base.some(b => b.is(value))
 	}
 	override prune(value: V | any): V | undefined {
-		return this.base
-			.map(b => b.prune(value))
-			.filter((v: V | any): v is V => v !== undefined)
-			.reduce((r, v) => globalThis.Object.assign(r, v), {}) as V
+		for (const base of this.base) {
+			const pruned = base.prune(value)
+			if (pruned)
+				return pruned
+		}
 	}
 	override flawed(value: V | any): Flaw | false {
 		const result: Flaw | false = super.flawed(value)
