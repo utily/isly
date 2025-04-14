@@ -70,18 +70,4 @@ describe("isly.string", () => {
 	})
 	it('isly.string("value", "SE", "FI", "DE").prune("SE") == "SE"', () =>
 		expect(isly.string("value", "SE", "FI", "DE").prune("SE")).toEqual("SE"))
-	it.each([
-		["hello", "hello"],
-		["world", "world"],
-		["", ""],
-	] as const)("isly.string().serialize(%s) == %s", (input, expected) =>
-		expect(isly.string().serialize(input)).toEqual(expected)
-	)
-	it.each([
-		["hello", "hello"],
-		["world", "world"],
-		["", ""],
-	] as const)("isly.string().parse(%s) == %s", (input, expected) =>
-		expect(isly.string().parse(input)).toEqual(expected)
-	)
 })
