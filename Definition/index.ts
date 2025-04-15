@@ -45,7 +45,7 @@ export namespace Definition {
 	export import Transformer = _Transformer
 	export interface FromClass {
 		any: Any
-		array: Array
+		array: Array<any>
 		boolean: Boolean
 		from: From
 		function: Function

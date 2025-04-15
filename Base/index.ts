@@ -57,7 +57,7 @@ export abstract class Base<V = unknown> {
 	readonly(name?: string): isly.Readonly<V, this> {
 		return Base.isly.readonly(this, name)
 	}
-	array(...restriction: isly.Array.Restriction | []): isly.Array<V, this> {
+	array(...restriction: isly.Array.Restriction | []): isly.Array<V> {
 		return Base.isly.array(this, ...restriction)
 	}
 	inverse(name?: string): isly.Inverse<V, this> {

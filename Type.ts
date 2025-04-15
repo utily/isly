@@ -24,7 +24,7 @@ export type Type<V = unknown> = Omit<Base<V>, "constructor">
 export namespace Type {
 	export interface FromClass {
 		any: Any
-		array: Array
+		array: Array<any>
 		boolean: Boolean
 		from: From
 		function: Function

@@ -4,7 +4,7 @@ import type { isly } from "../index"
 import { Name } from "../Name"
 import { Restriction } from "./Restriction"
 
-export class Class<V, B extends Base<V>> extends Base<V[]> {
+export class Class<V> extends Base<V[]> {
 	readonly class = "array"
 	#name: string | undefined
 	get name(): string {
@@ -13,7 +13,7 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
-	private constructor(readonly base: B, name?: string) {
+	private constructor(readonly base: Base<V>, name?: string) {
 		super()
 		this.#name = name
 	}
@@ -38,11 +38,8 @@ export class Class<V, B extends Base<V>> extends Base<V[]> {
 	override restrict(...restriction: Restriction | Base.Restriction) {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))
 	}
-	static create<V = unknown, B extends Base<V> = Base<V>>(
-		base: B,
-		...restriction: isly.Array.Restriction | []
-	): isly.Array<V, B> {
-		const result: Class<V, B> = new Class<V, B>(base)
+	static create<V>(base: Base<V>, ...restriction: isly.Array.Restriction | []): isly.Array<V> {
+		const result = new Class(base)
 		return ((value: any): value is [] => Array.isArray(value) && value.length == 0)(restriction)
 			? result
 			: result.restrict(...restriction)
