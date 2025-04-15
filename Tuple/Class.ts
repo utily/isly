@@ -5,16 +5,16 @@ import { Name } from "../Name"
 
 export class Class<V extends any[] = unknown[]> extends Base<V> {
 	readonly class = "tuple"
-	#name: string | undefined
+	private _name: string | undefined
 	override get name(): string {
-		return (this.#name ??= Name.fromTuple(this.base))
+		return (this._name ??= Name.fromTuple(this.base))
 	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
 	private constructor(readonly base: { [I in keyof V]: Base<V[I]> }, name?: string) {
 		super()
-		this.#name = name
+		this._name = name
 	}
 	override is(value: V | any): value is V {
 		return (

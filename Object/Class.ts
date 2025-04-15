@@ -7,9 +7,9 @@ import { Properties } from "./Properties"
 
 export class Class<V extends object = Record<string, any>> extends Base<V> {
 	override readonly class = "object"
-	#name: string | undefined
+	private _name: string | undefined
 	override get name(): string {
-		return (this.#name ??= Properties.getName(this.properties))
+		return (this._name ??= Properties.getName(this.properties))
 	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, {
@@ -18,7 +18,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 	}
 	private constructor(readonly properties: Properties<V>, name?: string) {
 		super()
-		this.#name = name
+		this._name = name
 	}
 	override is(value: V | any): value is V {
 		return (
