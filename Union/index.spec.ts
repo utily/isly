@@ -197,4 +197,13 @@ describe("isly.union()", () => {
 			}
 		})
 	})
+	it("should prune union of string", () => {
+		type Country = "SE" | "FI" | "DE"
+		const Country = isly.union<Country>(
+			isly.string("value", "SE"),
+			isly.string("value", "FI"),
+			isly.string("value", "DE")
+		)
+		expect(Country.prune("SE")).toEqual("SE")
+	})
 })
