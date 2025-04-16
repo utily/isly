@@ -5,16 +5,16 @@ import { Name } from "../Name"
 
 export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "intersection"
-	#name: string | undefined
+	private _name: string | undefined
 	get name(): string {
-		return (this.#name ??= Name.fromIntersection(this.base))
+		return (this._name ??= Name.fromIntersection(this.base))
 	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
 	private constructor(readonly base: B[], name?: string) {
 		super()
-		this.#name = name
+		this._name = name
 	}
 	override is(value: V | any): value is V {
 		return this.base.every(b => b.is(value))
@@ -69,7 +69,6 @@ function merge<T, S>(target: T, source: S): T & S {
 		: target && typeof target == "object" && source && typeof source == "object"
 		? globalThis.Object.fromEntries([
 				...globalThis.Object.entries(target),
-
 				...globalThis.Object.entries(source).map(([key, value]) => [
 					key,
 					globalThis.Object.getOwnPropertyDescriptor(target, key) &&

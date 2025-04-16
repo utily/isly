@@ -3,14 +3,14 @@ import type { isly } from "../index"
 
 export class Class<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "lazy"
-	#load: () => B
-	#base: B | undefined
+	private _load: () => B
+	private _base: B | undefined
 	get base(): B {
-		return (this.#base ??= this.#load())
+		return (this._base ??= this._load())
 	}
 	private constructor(load: () => B, readonly name: string) {
 		super()
-		this.#load = load
+		this._load = load
 	}
 	override is(value: V | any): value is V {
 		return value === undefined || this.base.is(value)

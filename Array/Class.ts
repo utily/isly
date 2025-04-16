@@ -6,16 +6,16 @@ import { Restriction } from "./Restriction"
 
 export class Class<V> extends Base<V[]> {
 	readonly class = "array"
-	#name: string | undefined
+	private _name: string | undefined
 	get name(): string {
-		return (this.#name ??= Name.fromArray(this.base))
+		return (this._name ??= Name.fromArray(this.base))
 	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
 	private constructor(readonly base: Base<V>, name?: string) {
 		super()
-		this.#name = name
+		this._name = name
 	}
 	override is(value: V[] | any): value is V[] {
 		return globalThis.Array.isArray(value) && value.every(this.base.is.bind(this.base))

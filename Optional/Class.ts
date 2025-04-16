@@ -3,16 +3,16 @@ import type { isly } from "../index"
 
 export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 	readonly class = "optional"
-	#name: string | undefined
+	private _name: string | undefined
 	get name(): string {
-		return (this.#name ??= `${this.base.name} | undefined`)
+		return (this._name ??= `${this.base.name} | undefined`)
 	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
 	private constructor(readonly base: B, name?: string) {
 		super()
-		this.#name = name
+		this._name = name
 	}
 	override is(value: V | undefined | any): value is V | undefined {
 		return value === undefined || this.base.is(value)
