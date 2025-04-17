@@ -8,7 +8,10 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	get base(): B {
 		return (this._base ??= this._load())
 	}
-	private constructor(load: () => B, readonly name: string) {
+	override get definition(): isly.Definition {
+		return this.manualDefinition ?? super.definition
+	}
+	private constructor(load: () => B, readonly name: string, private readonly manualDefinition?: isly.Definition) {
 		super()
 		this._load = load
 	}
@@ -20,8 +23,9 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	}
 	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 		load: () => B,
-		name: string
+		name: string,
+		definition?: isly.Definition
 	): isly.Lazy<V, B> {
-		return new Class<V, B>(load, name)
+		return new Class<V, B>(load, name, definition)
 	}
 }
