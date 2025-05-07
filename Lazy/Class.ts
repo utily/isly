@@ -18,6 +18,12 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	override prune(value: V | any): V | undefined {
 		return this.base.prune(value)
 	}
+	override modify(type?: Partial<this>): this {
+		const result = super.modify(type)
+		return Object.assign(result, {
+			base: type?.base ?? this.base,
+		})
+	}
 	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 		load: () => B,
 		name: string
