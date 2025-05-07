@@ -14,6 +14,11 @@ describe("isly lazy", () => {
 		expect(type.is("42")).toBe(true)
 		expect(type.flawed(42)).toEqual({ name: "string" })
 	})
+	it("rename", () => {
+		const type = isly.lazy(() => isly.string(), "string").rename("renamed")
+		expect(type.is("42")).toBe(true)
+		expect(type.flawed(42)).toEqual({ name: "renamed" })
+	})
 	it("recursive", () => {
 		const values: Test.Data[] = ["test", ["a", "b", "c", ["d", ["e"]]]]
 		const type = Test.Data.type.array()
