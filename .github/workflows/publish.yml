@@ -27,8 +27,13 @@ jobs:
         run: npm run build
       - name: Publish
         run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc  
-          npm publish --access public
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == *-* ]]; then
+            npm publish --access public --tag prerelease
+          else
+            npm publish --access public
+          fi
         shell: bash
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
