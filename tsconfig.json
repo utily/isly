@@ -4,6 +4,7 @@
 		/* transpiling */
 		"lib": [
 			"ES2023",
+			"WebWorker",
 		],
 		"moduleResolution": "node10",
 		"module": "ESNext",
