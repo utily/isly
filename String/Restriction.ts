@@ -6,6 +6,7 @@ import { Verifier } from "../Verifier"
 export type Restriction<V extends string = string> =
 	| [property: "length", ...Number.Restriction]
 	| [property: "value", ...V[]]
+	| [property: "value", Readonly<V[]>]
 	| [property: "value", V[] | RegExp]
 
 export namespace Restriction {

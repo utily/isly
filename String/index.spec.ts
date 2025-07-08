@@ -26,6 +26,12 @@ describe("isly.string", () => {
 			const data: "A" | "B" = value
 		}
 	})
+	it("should work with array without unpacking", () => {
+		const values = ["A", "B", "C"] as const
+		type Value = typeof values[number]
+		const type = isly.string<Value>("value", values)
+		expect(values.reduce((result, v) => result && type.is(v), true)).toBe(true)
+	})
 	it("generic", () => {
 		expect(isly.string().is("42")).toBe(true)
 		expect(isly.string().flawed(42)).toEqual({ name: "string" })
