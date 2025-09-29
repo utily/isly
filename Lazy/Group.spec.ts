@@ -37,7 +37,7 @@ export namespace Group {
 		isly.record<Node>(
 			isly.string(),
 			isly.union(
-				isly.lazy<Group>(() => type),
+				isly.lazy<Group>(() => type, "Group"),
 				Entry.type.array()
 			)
 		),
