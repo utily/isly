@@ -45,19 +45,19 @@
 		"coverage": "vitest --coverage",
 		"prepare": "npm run build",
 		"clean": "rimraf dist node_modules coverage",
-		"verify": "npm run build && npm run test && npm run lint && npm audit"
+		"verify": "npm run build && npm run test && npm run lint && npm audit --omit dev"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "8.26.1",
-		"@typescript-eslint/parser": "8.26.1",
-		"@vitest/coverage-istanbul": "^3.0.8",
-		"@vitest/coverage-v8": "^3.0.8",
+		"@typescript-eslint/eslint-plugin": "8.56.1",
+		"@typescript-eslint/parser": "8.56.1",
+		"@vitest/coverage-istanbul": "^4.0.18",
+		"@vitest/coverage-v8": "^4.0.18",
 		"eslint": "^8.57.0",
 		"eslint-plugin-prettierx": "github:utily/eslint-plugin-prettierx#utily-20231004",
 		"eslint-plugin-simple-import-sort": "^12.1.1",
 		"prettierx": "github:utily/prettierx#utily-20231004",
-		"rimraf": "^6.0.1",
-		"typescript": "^5.8.2",
-		"vitest": "^3.0.8"
+		"rimraf": "^6.1.3",
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.18"
 	}
 }
