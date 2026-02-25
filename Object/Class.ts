@@ -2,6 +2,7 @@ import { Base } from "../Base"
 import { BindResult } from "../BindResult"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
+import { system } from "../system"
 import type { Type } from "../Type"
 import { Properties } from "./Properties"
 
@@ -13,7 +14,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, {
-			properties: globalThis.Object.fromEntries(Properties.entries(this.properties).map(([p, t]) => [p, t.definition])),
+			properties: system.Object.fromEntries(Properties.entries(this.properties).map(([p, t]) => [p, t.definition])),
 		})
 	}
 	private constructor(readonly properties: Properties<V>, name?: string) {
@@ -25,7 +26,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 			!!value &&
 			typeof value == "object" &&
 			!Array.isArray(value) &&
-			globalThis.Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
+			system.Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
 		)
 	}
 	override prune(value: V | any): V | undefined {
@@ -95,10 +96,10 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 }
 export namespace Class {
 	export function omit<T extends globalThis.Object, K extends keyof T>(object: T, omits: readonly K[]): Omit<T, K> {
-		const keys = globalThis.Object.keys(object).filter(k => omits.every(omit => omit != k)) as Exclude<keyof T, K>[]
+		const keys = system.Object.keys(object).filter(k => omits.every(omit => omit != k)) as Exclude<keyof T, K>[]
 		return pick(object, keys)
 	}
 	export function pick<T extends globalThis.Object, K extends keyof T>(object: T, picks: readonly K[]): Pick<T, K> {
-		return globalThis.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
+		return system.Object.fromEntries(picks.map(key => [key, object[key]])) as Pick<T, K>
 	}
 }

@@ -1,4 +1,5 @@
 import { isly } from "../index"
+import { system } from "../system"
 
 describe("isly.record()", () => {
 	// compile error if not working
@@ -106,7 +107,7 @@ describe("isly.record()", () => {
 	it("record.prune", () => {
 		type User = { email: string }
 		const userRecordType = isly.record(isly.string(), isly.object<User>({ email: isly.string() }))
-		const usersRecords: Record<string, User> = globalThis.Object.fromEntries(
+		const usersRecords: Record<string, User> = system.Object.fromEntries(
 			[...Array(5).keys()].map(id => [`${id}`, { email: `${id}@example.com`, password: "shouldBeSecret" }])
 		)
 		expect(userRecordType.is(usersRecords)).toBe(true)
