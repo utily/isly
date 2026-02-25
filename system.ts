@@ -1,49 +1,47 @@
-export const system = globalThis
-for (const name of [
-	"Atomics",
-	"AggregateError",
-	"Array",
-	"ArrayBuffer",
-	"BigInt",
-	"BigInt64Array",
-	"BigUint64Array",
-	"Boolean",
-	"Date",
-	"DataView",
-	"Error",
-	"EvalError",
-	"FinalizationRegistry",
-	"Float32Array",
-	"Float64Array",
-	"Function",
-	"Int8Array",
-	"Int16Array",
-	"Int32Array",
-	"Intl",
-	"JSON",
-	"Map",
-	"Math",
-	"Number",
-	"Object",
-	"Promise",
-	"Proxy",
-	"RangeError",
-	"Reflect",
-	"RegExp",
-	"ReferenceError",
-	"Set",
-	"SharedArrayBuffer",
-	"String",
-	"Symbol",
-	"SyntaxError",
-	"TypeError",
-	"Uint8Array",
-	"Uint8ClampedArray",
-	"Uint16Array",
-	"Uint32Array",
-	"URIError",
-	"WeakMap",
-	"WeakRef",
-	"WeakSet",
-] as const)
-	(system as any)[name] ??= globalThis[name]
+export const system = globalThis || ({} as typeof globalThis)
+system.Atomics ??= Atomics
+system.AggregateError ??= AggregateError
+system.Array ??= Array
+system.ArrayBuffer ??= ArrayBuffer
+system.BigInt ??= BigInt
+system.BigInt64Array ??= BigInt64Array
+system.BigUint64Array ??= BigUint64Array
+system.Boolean ??= Boolean
+system.Date ??= Date
+system.DataView ??= DataView
+system.Error ??= Error
+system.EvalError ??= EvalError
+system.FinalizationRegistry ??= FinalizationRegistry
+system.Float32Array ??= Float32Array
+system.Float64Array ??= Float64Array
+system.Function ??= Function
+system.Int8Array ??= Int8Array
+system.Int16Array ??= Int16Array
+system.Int32Array ??= Int32Array
+system.Intl ??= Intl
+system.JSON.parse ??= JSON.parse
+system.JSON.stringify ??= JSON.stringify
+system.Map ??= Map
+system.Math ??= Math
+system.Number ??= Number
+system.Object ??= Object
+system.Promise ??= Promise
+system.Proxy ??= Proxy
+system.RangeError ??= RangeError
+system.Reflect ??= Reflect
+system.RegExp ??= RegExp
+system.ReferenceError ??= ReferenceError
+system.Set ??= Set
+system.SharedArrayBuffer ??= SharedArrayBuffer
+system.String ??= String
+system.Symbol ??= Symbol
+system.SyntaxError ??= SyntaxError
+system.TypeError ??= TypeError
+system.Uint8Array ??= Uint8Array
+system.Uint8ClampedArray ??= Uint8ClampedArray
+system.Uint16Array ??= Uint16Array
+system.Uint32Array ??= Uint32Array
+system.URIError ??= URIError
+system.WeakMap ??= WeakMap
+system.WeakRef ??= WeakRef
+system.WeakSet ??= WeakSet
