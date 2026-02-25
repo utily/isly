@@ -1,53 +1,53 @@
 import { isly } from "../index"
 
-export type NotSON = string | { [key: string]: NotSON }
+export type NotSon = string | { [key: string]: NotSon }
 
-export namespace NotSON {
-	export const type: isly.Union<NotSON> = isly.union<NotSON>(
+export namespace NotSon {
+	export const type: isly.Union<NotSon> = isly.union<NotSon>(
 		isly.string(),
-		isly.record<Exclude<NotSON, string>>(
+		isly.record<Exclude<NotSon, string>>(
 			isly.string(),
-			isly.lazy(() => type, "NotSON")
+			isly.lazy(() => type, "NotSon")
 		)
 	)
 	export const is = type.is
 	export const flawed = type.flawed
 	export namespace alternateTypeDeclaration1 {
 		export const { type, is, flawed } = isly
-			.union<NotSON>(
+			.union<NotSon>(
 				isly.string(),
-				isly.record<Exclude<NotSON, string>>(
+				isly.record<Exclude<NotSon, string>>(
 					isly.string(),
-					isly.lazy((): isly.Union<NotSON> => type, "NotSON")
+					isly.lazy((): isly.Union<NotSon> => type, "NotSon")
 				)
 			)
 			.bind()
 	}
 	export namespace alternateTypeDeclaration2 {
 		export const type = isly.string().or(
-			isly.record<Exclude<NotSON, string>>(
+			isly.record<Exclude<NotSon, string>>(
 				isly.string(),
-				isly.lazy((): isly.Union<NotSON> => type, "NotSON")
+				isly.lazy((): isly.Union<NotSon> => type, "NotSon")
 			)
 		)
 		export const restrictedType = type
-			.rename("Petsson")
+			.rename("Pearson")
 			.restrict(value => typeof value !== "string" || /^\w{8}$/.test(value), "^\\w{8}$")
 	}
-	export const aNotSON: NotSON = {
+	export const aNotSon: NotSon = {
 		foo: "bar",
 		baz: {
-			hej: "svejs",
-			grej: {
-				sak: "ting",
+			hello: "hi",
+			thing: {
+				thing: "thing",
 			},
 		},
 	}
-	export const notANotSON = {
+	export const notANotSon = {
 		foo: "bar",
 		baz: {
-			hej: "svejs",
-			nej: { fel: 95 },
+			hello: "hi",
+			no: { error: 95 },
 		},
 	}
 }
@@ -55,24 +55,24 @@ describe("isly.lazy", () => {
 	it.each<[any, boolean]>([
 		["foo", true],
 		[42, false],
-		[NotSON.aNotSON, true],
-		[NotSON.notANotSON, false],
+		[NotSon.aNotSon, true],
+		[NotSon.notANotSon, false],
 	])("should type check", (value, result) => {
-		expect(NotSON.type.is(value)).toBe(result)
-		expect(NotSON.alternateTypeDeclaration1.is(value)).toBe(result)
-		expect(NotSON.alternateTypeDeclaration2.type.is(value)).toBe(result)
+		expect(NotSon.type.is(value)).toBe(result)
+		expect(NotSon.alternateTypeDeclaration1.is(value)).toBe(result)
+		expect(NotSon.alternateTypeDeclaration2.type.is(value)).toBe(result)
 	})
 	it("renames and restricts", () => {
-		expect(NotSON.alternateTypeDeclaration2.restrictedType.name).toEqual("Petsson")
-		expect(NotSON.alternateTypeDeclaration2.restrictedType.condition).toEqual(["^\\w{8}$"])
-		expect(NotSON.alternateTypeDeclaration2.restrictedType.is("abcdefgh")).toBe(true)
-		expect(NotSON.alternateTypeDeclaration2.restrictedType.is("abcdefg")).toBe(false)
+		expect(NotSon.alternateTypeDeclaration2.restrictedType.name).toEqual("Pearson")
+		expect(NotSon.alternateTypeDeclaration2.restrictedType.condition).toEqual(["^\\w{8}$"])
+		expect(NotSon.alternateTypeDeclaration2.restrictedType.is("abcdefgh")).toBe(true)
+		expect(NotSon.alternateTypeDeclaration2.restrictedType.is("abcdefg")).toBe(false)
 		// a restriction is not recursive unless you define a recursive verify function
-		expect(NotSON.alternateTypeDeclaration2.restrictedType.is(NotSON.aNotSON)).toBe(true)
+		expect(NotSon.alternateTypeDeclaration2.restrictedType.is(NotSon.aNotSon)).toBe(true)
 	})
 	it("shows flaws", () => {
-		expect(NotSON.type.flawed(NotSON.aNotSON)).toBe(false)
-		expect(NotSON.type.flawed(NotSON.notANotSON)).toEqual({
+		expect(NotSon.type.flawed(NotSon.aNotSon)).toBe(false)
+		expect(NotSon.type.flawed(NotSon.notANotSon)).toEqual({
 			flaws: [
 				{
 					name: "string",
@@ -80,24 +80,24 @@ describe("isly.lazy", () => {
 				{
 					flaws: [
 						{
-							name: "NotSON",
+							name: "NotSon",
 							property: "baz",
 						},
 					],
-					name: "Record<string, NotSON>",
+					name: "Record<string, NotSon>",
 				},
 			],
-			name: "(string | Record<string, NotSON>)",
+			name: "(string | Record<string, NotSon>)",
 		})
-		expect(NotSON.alternateTypeDeclaration2.restrictedType.flawed("abc")).toEqual({
+		expect(NotSon.alternateTypeDeclaration2.restrictedType.flawed("abc")).toEqual({
 			condition: ["^\\w{8}$"],
 			flaws: [
 				{
 					flaws: [],
-					name: "Record<string, NotSON>",
+					name: "Record<string, NotSon>",
 				},
 			],
-			name: "Petsson",
+			name: "Pearson",
 		})
 	})
 })
