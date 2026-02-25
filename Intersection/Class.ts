@@ -2,6 +2,7 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
+import { system } from "../system"
 
 export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	readonly class = "intersection"
@@ -67,11 +68,11 @@ function merge<T, S>(target: T, source: S): T & S {
 	return Array.isArray(target) && Array.isArray(source)
 		? (target.map((item, index) => merge(item, source[index])) as S & T)
 		: target && typeof target == "object" && source && typeof source == "object"
-		? globalThis.Object.fromEntries([
-				...globalThis.Object.entries(target),
-				...globalThis.Object.entries(source).map(([key, value]) => [
+		? system.Object.fromEntries([
+				...system.Object.entries(target),
+				...system.Object.entries(source).map(([key, value]) => [
 					key,
-					globalThis.Object.getOwnPropertyDescriptor(target, key) &&
+					system.Object.getOwnPropertyDescriptor(target, key) &&
 					typeof target[key as keyof typeof target] == "object" &&
 					typeof value == "object"
 						? merge(target[key as keyof typeof target], value)
