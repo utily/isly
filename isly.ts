@@ -27,6 +27,7 @@ export { Undefined } from "./Undefined"
 export { Union } from "./Union"
 export { Unknown } from "./Unknown"
 export { Json } from "./Json"
+export { BindResult } from "./BindResult"
 
 import { creator } from "./creator"
 
