@@ -2,7 +2,6 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
-import { system } from "../system"
 
 export class Class<V extends any[] = unknown[]> extends Base<V> {
 	readonly class = "tuple"
@@ -19,7 +18,7 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 	}
 	override is(value: V | any): value is V {
 		return (
-			system.Array.isArray(value) &&
+			Array.isArray(value) &&
 			value.length == this.base.length &&
 			this.base.every((type, index) => type.is(value[index]))
 		)

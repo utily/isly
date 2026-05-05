@@ -2,7 +2,6 @@ import { Base } from "../Base"
 import { Flaw } from "../Flaw"
 import type { isly } from "../index"
 import { Name } from "../Name"
-import { system } from "../system"
 import { Restriction } from "./Restriction"
 
 export class Class<V> extends Base<V[]> {
@@ -19,7 +18,7 @@ export class Class<V> extends Base<V[]> {
 		this._name = name
 	}
 	override is(value: V[] | any): value is V[] {
-		return system.Array.isArray(value) && value.every(this.base.is.bind(this.base))
+		return Array.isArray(value) && value.every(this.base.is.bind(this.base))
 	}
 	override flawed(value: V[] | any): Flaw | false {
 		const result: Flaw | false = super.flawed(value)

@@ -1,6 +1,5 @@
 import { Base } from "../Base"
 import type { isly } from "../index"
-import { system } from "../system"
 import { Restriction } from "./Restriction"
 
 export class Class<V extends number> extends Base<V> {
@@ -13,7 +12,7 @@ export class Class<V extends number> extends Base<V> {
 		super()
 	}
 	is(value: V | any): value is V {
-		return typeof value == "number" && system.Number.isFinite(value)
+		return typeof value == "number" && Number.isFinite(value)
 	}
 	override restrict(...restriction: Restriction | Base.Restriction) {
 		return super.restrict(...(Base.Restriction.is(restriction) ? restriction : Restriction.convert(restriction)))

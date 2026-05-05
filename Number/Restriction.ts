@@ -1,6 +1,5 @@
 import { Base } from "../Base"
 import { Name } from "../Name"
-import { system } from "../system"
 import { Verifier } from "../Verifier"
 
 export type Restriction<V extends number = number> =
@@ -28,7 +27,7 @@ export namespace Restriction {
 	}
 	export function getVerifier<T extends number = number>(...[category, ...restriction]: Restriction<T>): Verifier<T> {
 		const verifiers: Record<Restriction.Category, (value: T) => boolean> = {
-			integer: system.Number.isInteger,
+			integer: Number.isInteger,
 			positive: value => value > 0,
 			negative: value => value < 0,
 			minimum: value => value >= (restriction[0] as number),
