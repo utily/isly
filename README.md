@@ -67,7 +67,7 @@ const type: isly.Type<DemoType> = isly.object({
 const data: DemoType | any = api.getMyExternalData()
 
 if (!type.is(data)) {
-	const error = type.flaw(data)
+	const error = type.flawed(data)
 } else {
 	// `data` is for sure DemoType, use it!
 }
@@ -196,16 +196,15 @@ export interface Event {
 	description?: string
 }
 export namespace Event {
-	export const type = isly.object<Event>(
-		{
-			name: isly.string(),
-			description: isly.string().optional(),
-		},
-		"Event"
-	)
-
-	export const is = type.is
-	export const flaw = type.flaw
+	export const { is, flawed, type } = isly
+		.object<Event>(
+			{
+				name: isly.string(),
+				description: isly.string().optional(),
+			},
+			"Event"
+		)
+		.bind()
 	// You can put more stuff here:
 	...
 }
@@ -218,7 +217,7 @@ import { Event } from "model/Event"
 
 ...
 if (!Event.is(myValue)) {
-	return Event.flaw(myValue)
+	return Event.flawed(myValue)
 } else {
 	// use myValue here!
 	...
@@ -226,3 +225,5 @@ if (!Event.is(myValue)) {
 ...
 
 ```
+
+For generated model boilerplate, see the skill at [.github/skills/isly-generate-type/SKILL.md](./.github/skills/isly-generate-type/SKILL.md).
