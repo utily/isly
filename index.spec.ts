@@ -50,7 +50,7 @@ export namespace DemoType {
 			// 	.optional(),
 			regExp: isly.from<RegExp>("RegExp", value => value instanceof RegExp),
 			// function
-			testMethod: isly.function<DemoType["testMethod"]>(),
+			testMethod: isly.function<DemoType["testMethod"]>()
 		})
 		.bind()
 }
@@ -70,7 +70,7 @@ describe("isly", () => {
 		myIntersection: { a: "A", b: "B" },
 		// children?: DemoType[],
 		regExp: /abc/,
-		testMethod: () => true,
+		testMethod: () => true
 	}
 	it("flawed(value) == false", () => expect(DemoType.flawed(value)).toEqual(false))
 	it("is(value) == true", () => expect(DemoType.is(value)).toEqual(true))
@@ -81,11 +81,7 @@ describe("isly", () => {
 			flaws: [
 				{ property: "anyNumber", name: "number" },
 				{ property: "numberOf", name: "number", condition: ["positive"] },
-				{
-					property: "temperature",
-					name: "number",
-					condition: ["greater: -273.15"],
-				},
+				{ property: "temperature", name: "number", condition: ["greater: -273.15"] },
 				{ property: "message", name: "string" },
 				{ property: "email", name: "string", condition: ["value: /\\S+@\\S+\\.\\S+/"] },
 				{ property: "new", name: "boolean" },
@@ -96,25 +92,21 @@ describe("isly", () => {
 
 					flaws: [
 						{ index: 0, name: "string" },
-						{ index: 1, name: "number" },
-					],
+						{ index: 1, name: "number" }
+					]
 				},
 				{
 					property: "myUnion",
 					name: "(string | number)",
 
-					flaws: [{ name: "string" }, { name: "number" }],
+					flaws: [{ name: "string" }, { name: "number" }]
 				},
 				{
 					property: "myArray",
 					name: "string[]",
 					condition: ["length.minimum: 1"],
 
-					flaws: [
-						{
-							name: "string",
-						},
-					],
+					flaws: [{ name: "string" }]
 				},
 				{
 					property: "myIntersection",
@@ -123,27 +115,17 @@ describe("isly", () => {
 						{
 							name: "{ a: string }",
 
-							flaws: [
-								{
-									property: "a",
-									name: "string",
-								},
-							],
+							flaws: [{ property: "a", name: "string" }]
 						},
 						{
 							name: "{ b: string }",
 
-							flaws: [
-								{
-									property: "b",
-									name: "string",
-								},
-							],
-						},
-					],
+							flaws: [{ property: "b", name: "string" }]
+						}
+					]
 				},
 				{ property: "regExp", name: "RegExp" },
-				{ property: "testMethod", name: "function" },
-			],
+				{ property: "testMethod", name: "function" }
+			]
 		}))
 })

@@ -26,7 +26,7 @@ describe("isly.object()", () => {
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed({ currency: "SEK" })).toEqual({
 			name: "{ amount: number, currency: ('SEK' | 'EUR') }",
-			flaws: [{ property: "amount", name: "number" }],
+			flaws: [{ property: "amount", name: "number" }]
 		})
 	})
 	it("{}", () => {
@@ -34,10 +34,7 @@ describe("isly.object()", () => {
 		expect(type.name).toBe("{  }")
 		expect(type.is({ amount: 13.37, currency: "SEK" })).toEqual(true)
 		expect(type.is(undefined)).toBe(false)
-		expect(type.flawed(1)).toEqual({
-			name: "{  }",
-			flaws: [],
-		})
+		expect(type.flawed(1)).toEqual({ name: "{  }", flaws: [] })
 	})
 
 	it("Item", () => {
@@ -55,14 +52,14 @@ describe("isly.object()", () => {
 				{
 					property: "id",
 
-					name: "string",
+					name: "string"
 				},
 				{
 					property: "number",
 
-					name: "number",
-				},
-			],
+					name: "number"
+				}
+			]
 		})
 	})
 	it("extend", () => {
@@ -96,16 +93,9 @@ describe("isly.object()", () => {
 		expect(type2.flawed({ str: "a" })).toEqual({
 			name: "Item2",
 			flaws: [
-				{
-					property: "i1",
-					name: "number",
-					condition: ["minimum: 400"],
-				},
-				{
-					property: "i2",
-					name: "number",
-				},
-			],
+				{ property: "i1", name: "number", condition: ["minimum: 400"] },
+				{ property: "i2", name: "number" }
+			]
 		})
 	})
 	it("get", () => {
@@ -156,13 +146,8 @@ describe("isly.object()", () => {
 		const type = isly.object<User>({ name: isly.string() })
 		const userWithCredentialsType = type.extend<UserWithCredentials>({ password: isly.string() })
 
-		const myUser: UserWithCredentials = {
-			name: "Joe",
-			password: "12345678",
-		}
-		expect(type.prune(myUser)).toEqual({
-			name: "Joe",
-		})
+		const myUser: UserWithCredentials = { name: "Joe", password: "12345678" }
+		expect(type.prune(myUser)).toEqual({ name: "Joe" })
 	})
 	it("object", () => {
 		interface Test {
@@ -177,11 +162,7 @@ describe("isly.object()", () => {
 			b: number
 			c: string
 		}
-		const type = isly.object<Test>({
-			a: isly.object({ b: isly.string() }),
-			b: isly.number(),
-			c: isly.string(),
-		})
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
 		type OmittedTest = Omit<Test, "a">
 		const omittedType = type.omit(["a"])
 
@@ -197,11 +178,7 @@ describe("isly.object()", () => {
 			b: number
 			c: string
 		}
-		const type = isly.object<Test>({
-			a: isly.object({ b: isly.string() }),
-			b: isly.number(),
-			c: isly.string(),
-		})
+		const type = isly.object<Test>({ a: isly.object({ b: isly.string() }), b: isly.number(), c: isly.string() })
 		interface OmittedTest extends Omit<Test, "a"> {
 			a: boolean[]
 		}
@@ -222,13 +199,8 @@ describe("isly.object()", () => {
 
 		const userWithoutCredentialsType = userWithCredentialsType.omit(["password"])
 
-		const myUser: UserWithCredentials = {
-			name: "Joe",
-			password: "12345678",
-		}
-		expect(userWithoutCredentialsType.prune(myUser)).toEqual({
-			name: "Joe",
-		})
+		const myUser: UserWithCredentials = { name: "Joe", password: "12345678" }
+		expect(userWithoutCredentialsType.prune(myUser)).toEqual({ name: "Joe" })
 	})
 	it("Advanced extend & omit", () => {
 		interface Response {

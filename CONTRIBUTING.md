@@ -66,14 +66,12 @@ export namespace MyType {
 ### File Length Recommendations
 
 1. Implementation files:
-
    - Aim to keep files under 200 lines of code
    - Files containing primarily data structures (e.g., country codes, encodings) may be longer
    - Split large files into focused modules when they exceed 300 lines
    - Each file should have a single core responsibility
 
 2. Test files:
-
    - Keep individual test cases focused and concise
    - Use `it.each` to reduce code duplication
    - Test files may be longer than implementation files due to comprehensive test cases
@@ -87,14 +85,12 @@ export namespace MyType {
 ### Naming Conventions
 
 1. No abbreviations except:
-
    - "UI" (uppercase because it's a two-letter multi-word abbreviation)
    - "Id" (regular casing)
    - "max"
    - "min"
 
 2. When using abbreviations:
-
    - Multi-word abbreviations of 1-2 letters stay uppercase (e.g., "UI")
    - All other abbreviations follow normal casing rules regardless of word count:
      - In PascalCase: "Id", "Utf", "Iso", etc.
@@ -172,13 +168,13 @@ The project uses ESLint and Prettier with the following configuration:
    ```
 
    Coverage thresholds are set to 70% for:
-
    - Statements
    - Branches
    - Functions
    - Lines
 
 3. Fix linting issues:
+
    ```bash
    npm run fix
    ```

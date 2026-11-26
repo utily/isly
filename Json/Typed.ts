@@ -11,7 +11,10 @@ export class Typed<T extends Data<T>> {
 	set options(value: Options) {
 		this.backend.options = value
 	}
-	constructor(public type: isly.Type<T>, options: Options = {}) {
+	constructor(
+		public type: isly.Type<T>,
+		options: Options = {}
+	) {
 		this.backend = new Untyped(options)
 	}
 	parse(data: string): T | undefined {

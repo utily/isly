@@ -20,21 +20,18 @@ export namespace Restriction {
 		const conditions: Record<Property, Verifier<V>> = {
 			value:
 				argument0 instanceof RegExp
-					? {
-							condition: `value: ${argument0.toString()}`,
-							verify: (value: V): boolean => argument0.test(value),
-					  }
+					? { condition: `value: ${argument0.toString()}`, verify: (value: V): boolean => argument0.test(value) }
 					: ((allowed: V[]): Verifier<V> => ({
 							allowed,
 							condition: `value: ${
 								allowed.length == 1 ? `'${allowed[0]}'` : `[${allowed.map(a => `'${a}'`).join(", ")}]`
 							}`,
-							verify: (value: V): boolean => allowed.some(a => a == value),
-					  }))((Array.isArray(argument0) ? argument0 : argument) as V[]),
+							verify: (value: V): boolean => allowed.some(a => a == value)
+						}))((Array.isArray(argument0) ? argument0 : argument) as V[]),
 			length: ((verifier: Verifier<number>): Verifier<V> => ({
 				verify: (value: V): boolean => verifier.verify(value.length),
-				condition: "length." + verifier.condition,
-			}))(Number.Restriction.getVerifier(...(argument as Number.Restriction))),
+				condition: "length." + verifier.condition
+			}))(Number.Restriction.getVerifier(...(argument as Number.Restriction)))
 		}
 		return conditions[property]
 	}

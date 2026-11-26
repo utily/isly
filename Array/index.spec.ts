@@ -28,55 +28,24 @@ describe("isly.Array", () => {
 	})
 	it.each([
 		[isly.number().array(), [42, 13.37], true],
-		[isly.number().array(), [42, "test"], false],
+		[isly.number().array(), [42, "test"], false]
 	] as const)("is($2) == $3", (type, value, expected) => expect(type.is(value)).toBe(expected))
 	it.each([
-		[
-			isly.number().array(),
-			{
-				name: "number[]",
-				flaws: [
-					{
-						index: 5,
-						name: "number",
-					},
-				],
-			},
-		],
+		[isly.number().array(), { name: "number[]", flaws: [{ index: 5, name: "number" }] }],
 		[
 			isly.number("value", 42, 1337).array(),
 			{
 				name: "(42 | 1337)[]",
 				flaws: [
-					{
-						index: 0,
-						name: "(42 | 1337)",
-						condition: ["value: [42, 1337]"],
-					},
-					{
-						index: 2,
-						name: "(42 | 1337)",
-						condition: ["value: [42, 1337]"],
-					},
-					{
-						index: 3,
-						name: "(42 | 1337)",
-						condition: ["value: [42, 1337]"],
-					},
-					{
-						index: 4,
-						name: "(42 | 1337)",
-						condition: ["value: [42, 1337]"],
-					},
-					{
-						index: 5,
-						name: "(42 | 1337)",
-						condition: ["value: [42, 1337]"],
-					},
-				],
-			},
+					{ index: 0, name: "(42 | 1337)", condition: ["value: [42, 1337]"] },
+					{ index: 2, name: "(42 | 1337)", condition: ["value: [42, 1337]"] },
+					{ index: 3, name: "(42 | 1337)", condition: ["value: [42, 1337]"] },
+					{ index: 4, name: "(42 | 1337)", condition: ["value: [42, 1337]"] },
+					{ index: 5, name: "(42 | 1337)", condition: ["value: [42, 1337]"] }
+				]
+			}
 		],
-		[isly.union(isly.number(), isly.string()).array(), false],
+		[isly.union(isly.number(), isly.string()).array(), false]
 	] as const)("flawed(%s) == %s", (type, expected) =>
 		expect(type.flawed([13.37, 42, 0, 1, 3.1415, "attraction"])).toEqual(expected)
 	)
@@ -85,36 +54,15 @@ describe("isly.Array", () => {
 		expect(type.is([])).toBe(true)
 		expect(type.is([1, 2, 3])).toBe(true)
 		expect(type.is(0)).toBe(false)
-		expect(type.flawed(42)).toEqual({
-			name: "number[]",
-			flaws: [
-				{
-					name: "number",
-				},
-			],
-		})
+		expect(type.flawed(42)).toEqual({ name: "number[]", flaws: [{ name: "number" }] })
 		expect(type.flawed(["test", true])).toEqual({
 			name: "number[]",
 			flaws: [
-				{
-					index: 0,
-					name: "number",
-				},
-				{
-					index: 1,
-					name: "number",
-				},
-			],
+				{ index: 0, name: "number" },
+				{ index: 1, name: "number" }
+			]
 		})
-		expect(type.flawed([1, 2, undefined])).toEqual({
-			name: "number[]",
-			flaws: [
-				{
-					index: 2,
-					name: "number",
-				},
-			],
-		})
+		expect(type.flawed([1, 2, undefined])).toEqual({ name: "number[]", flaws: [{ index: 2, name: "number" }] })
 	})
 	it("(number | string)[]", () => {
 		const arrayType = isly.union(isly.string(), isly.number()).array()
@@ -124,16 +72,9 @@ describe("isly.Array", () => {
 				{
 					name: "(string | number)",
 
-					flaws: [
-						{
-							name: "string",
-						},
-						{
-							name: "number",
-						},
-					],
-				},
-			],
+					flaws: [{ name: "string" }, { name: "number" }]
+				}
+			]
 		})
 	})
 
@@ -143,30 +84,13 @@ describe("isly.Array", () => {
 
 		expect(type.is([])).toBe(false)
 
-		expect(type.flawed(42)).toEqual({
-			name: "number[]",
-			condition: ["length.value: 3"],
-			flaws: [
-				{
-					name: "number",
-				},
-			],
-		})
+		expect(type.flawed(42)).toEqual({ name: "number[]", condition: ["length.value: 3"], flaws: [{ name: "number" }] })
 		expect(type.flawed([1, 2, undefined])).toEqual({
 			name: "number[]",
 			condition: ["length.value: 3"],
-			flaws: [
-				{
-					index: 2,
-					name: "number",
-				},
-			],
+			flaws: [{ index: 2, name: "number" }]
 		})
-		expect(type.flawed([1, 2, 3, 4])).toEqual({
-			name: "number[]",
-			condition: ["length.value: 3"],
-			flaws: [],
-		})
+		expect(type.flawed([1, 2, 3, 4])).toEqual({ name: "number[]", condition: ["length.value: 3"], flaws: [] })
 	})
 	it("number[] with minLength & maxLength criteria", () => {
 		const type = isly.number().array().restrict("length", "range", 1, 3)
@@ -178,21 +102,15 @@ describe("isly.Array", () => {
 		expect(type.flawed(42)).toEqual({
 			name: "number[]",
 			condition: ["length.range: [1, 3]"],
-			flaws: [
-				{
-					name: "number",
-				},
-			],
+			flaws: [{ name: "number" }]
 		})
 	})
 	it("object[] prune", () => {
-		type User = {
-			email: string
-		}
+		type User = { email: string }
 		const userArrayType = isly.object<User>({ email: isly.string() }).array()
 		const usersWithPassword: (User & { password: string })[] = [...Array(5).keys()].map(id => ({
 			email: `${id}@example.com`,
-			password: "shouldBeSecret",
+			password: "shouldBeSecret"
 		}))
 
 		const users: User[] | undefined = userArrayType.prune(usersWithPassword)

@@ -21,11 +21,7 @@ export interface Entry extends Values {
 	account: number
 }
 export namespace Entry {
-	export const { type, is, flawed } = Values.type
-		.extend<Entry>({
-			account: isly.number(),
-		})
-		.bind()
+	export const { type, is, flawed } = Values.type.extend<Entry>({ account: isly.number() }).bind()
 }
 
 export type Group = Partial<Node> & { readonly totals: Values }
@@ -46,18 +42,8 @@ export namespace Group {
 }
 describe("isly.Lazy.Group", () => {
 	it.each([
-		{
-			account: 1080,
-			opening: 0,
-			period: 0,
-			closing: 0,
-		},
-		{
-			account: 1088,
-			opening: 0,
-			period: 0,
-			closing: 0,
-		},
+		{ account: 1080, opening: 0, period: 0, closing: 0 },
+		{ account: 1088, opening: 0, period: 0, closing: 0 }
 	] as const)("is(%s)", value => {
 		expect(Entry.is(value)).toBe(true)
 	})

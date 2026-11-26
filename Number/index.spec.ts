@@ -24,7 +24,7 @@ describe("isly.number", () => {
 		[13.37, true],
 		[NaN, false],
 		[Infinity, false],
-		[-Infinity, false],
+		[-Infinity, false]
 	])("isly.number().is(%d) == %s", (input, expected) => expect(isly.number().is(input)).toEqual(expected))
 
 	it.each([
@@ -38,7 +38,7 @@ describe("isly.number", () => {
 		[undefined, undefined],
 		[false, undefined],
 		[Infinity, undefined],
-		[-Infinity, undefined],
+		[-Infinity, undefined]
 	])("isly.number().get(%p)", (input, expected) => expect(isly.number().get(input)).toEqual(expected))
 
 	it("isly.number().name", () => expect(isly.number().name).toEqual("number"))
@@ -47,19 +47,13 @@ describe("isly.number", () => {
 		const type = isly.number("positive")
 		expect(type.is(13.37)).toEqual(true)
 		expect(type.is(-13.37)).toEqual(false)
-		expect(type.flawed({})).toEqual({
-			name: "number",
-			condition: ["positive"],
-		})
+		expect(type.flawed({})).toEqual({ name: "number", condition: ["positive"] })
 	})
 	it('isly.number().restrict("positive()', () => {
 		const type = isly.number("positive")
 		expect(type.is(13.37)).toEqual(true)
 		expect(type.is(-13.37)).toEqual(false)
-		expect(type.flawed({})).toEqual({
-			name: "number",
-			condition: ["positive"],
-		})
+		expect(type.flawed({})).toEqual({ name: "number", condition: ["positive"] })
 	})
 	it('isly.number", "positive().restrict("integer"])', () => {
 		const numberType = isly.number("positive").restrict("integer")
@@ -67,10 +61,7 @@ describe("isly.number", () => {
 		expect(numberType.is(-13)).toEqual(false)
 		expect(numberType.is(13.37)).toEqual(false)
 		expect(numberType.is(-13.37)).toEqual(false)
-		expect(numberType.flawed({})).toEqual({
-			name: "number",
-			condition: ["positive", "integer"],
-		})
+		expect(numberType.flawed({})).toEqual({ name: "number", condition: ["positive", "integer"] })
 	})
 	it('isly.number("value", [1, 2, 3]).is(2) == true', () => expect(isly.number("value", [1, 2, 3]).is(2)).toEqual(true))
 	it('isly.number("value", [1, 2, 3]).is(0) == false', () =>

@@ -13,7 +13,10 @@ export class Class<V> extends Base<V[]> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
-	private constructor(readonly base: Base<V>, name?: string) {
+	private constructor(
+		readonly base: Base<V>,
+		name?: string
+	) {
 		super()
 		this._name = name
 	}
@@ -28,7 +31,7 @@ export class Class<V> extends Base<V[]> {
 				flaws: (Array.isArray(value)
 					? value.map(this.base.flawed.bind(this.base)).map((flaw, index) => flaw && { ...flaw, index })
 					: [this.base.flawed(undefined)]
-				).filter((f: Flaw | false): f is Flaw => !!f),
+				).filter((f: Flaw | false): f is Flaw => !!f)
 			}
 		)
 	}

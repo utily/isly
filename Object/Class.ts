@@ -13,19 +13,22 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 	}
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, {
-			properties: Object.fromEntries(Properties.entries(this.properties).map(([p, t]) => [p, t.definition])),
+			properties: Object.fromEntries(Properties.entries(this.properties).map(([p, t]) => [p, t.definition]))
 		})
 	}
-	private constructor(readonly properties: Properties<V>, name?: string) {
+	private constructor(
+		readonly properties: Properties<V>,
+		name?: string
+	) {
 		super()
 		this._name = name
 	}
 	override is(value: V | any): value is V {
 		return (
-			!!value &&
-			typeof value == "object" &&
-			!Array.isArray(value) &&
-			Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
+			!!value
+			&& typeof value == "object"
+			&& !Array.isArray(value)
+			&& Object.entries<Base>(this.properties).every(([property, type]) => type.is(value[property]))
 		)
 	}
 	override prune(value: V | any): V | undefined {
@@ -39,7 +42,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 				flaws: Object.entries<Type>(this.properties)
 					.map(([property, type]) => [property, type.flawed(value?.[property])] as const)
 					.map(([property, flaw]) => flaw && ({ ...flaw, property } as Flaw))
-					.filter((f: Flaw | false): f is Flaw => !!f),
+					.filter((f: Flaw | false): f is Flaw => !!f)
 			}
 		)
 	}
@@ -49,25 +52,25 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 	): Class<R> {
 		return (this as unknown as Class<R>).modify({
 			properties: { ...this.properties, ...properties } as unknown as Properties<R>,
-			name: name ?? `${this.name} & ${Properties.getName(properties)}`,
+			name: name ?? `${this.name} & ${Properties.getName(properties)}`
 		})
 	}
 	omit<K extends keyof V>(omits: readonly K[], name?: string): Class<Omit<V, K>> {
 		return (this as unknown as Class<Omit<V, K>>).modify({
 			properties: Class.omit<Properties<V>, K>(this.properties, omits) as Properties<Omit<V, K>>,
-			name: name ?? `Omit<${this.name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`,
+			name: name ?? `Omit<${this.name}, ${omits.map(key => `"${key.toString()}"`).join(" | ")}>`
 		})
 	}
 	pick<K extends keyof V>(picks: readonly K[], name?: string): Class<Pick<V, K>> {
 		return (this as unknown as Class<Pick<V, K>>).modify({
 			properties: Class.pick<Properties<V>, K>(this.properties, picks) as Properties<Pick<V, K>>,
-			name: name ?? `Pick<${this.name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`,
+			name: name ?? `Pick<${this.name}, ${picks.map(key => `"${key.toString()}"`).join(" | ")}>`
 		})
 	}
 	partial(name?: string): Class<Partial<V>> {
 		return (this as unknown as Class<Partial<V>>).modify({
 			properties: Properties.optional(this.properties),
-			name: name ?? `Partial<${this.name}>`,
+			name: name ?? `Partial<${this.name}>`
 		})
 	}
 	override modify(type?: Partial<this>): this {
@@ -75,7 +78,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		return Object.assign(result, {
 			extend: type?.extend ?? this.extend,
 			omit: type?.omit ?? this.omit,
-			pick: type?.pick ?? this.pick,
+			pick: type?.pick ?? this.pick
 		})
 	}
 	override bind(): BindResult<V, this> {
@@ -83,7 +86,7 @@ export class Class<V extends object = Record<string, any>> extends Base<V> {
 		return Object.assign(result, {
 			extend: this.extend.bind(this),
 			omit: this.omit.bind(this),
-			pick: this.pick.bind(this),
+			pick: this.pick.bind(this)
 		})
 	}
 	static create<V extends object = Record<string, any>>(

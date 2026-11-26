@@ -20,8 +20,8 @@ export namespace Restriction {
 		const conditions: Record<Property, Verifier<V[]>> = {
 			length: ((verifier: Verifier<number>): Verifier<V[]> => ({
 				verify: (value: V[]): boolean => verifier.verify(value.length),
-				condition: "length." + verifier.condition,
-			}))(Number.Restriction.getVerifier(...(condition.slice(1) as Number.Restriction))),
+				condition: "length." + verifier.condition
+			}))(Number.Restriction.getVerifier(...(condition.slice(1) as Number.Restriction)))
 		}
 		return conditions[condition[0]]
 	}

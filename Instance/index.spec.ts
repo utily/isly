@@ -9,7 +9,7 @@ describe("isly.instanceOf", () => {
 		["Int16Array", Int16Array],
 		["Int32Array", Int32Array],
 		["ArrayBuffer", ArrayBuffer],
-		["SharedArrayBuffer", SharedArrayBuffer],
+		["SharedArrayBuffer", SharedArrayBuffer]
 	] as const)("is instanceOf %s", (name, constructor) => {
 		const type = isly.instance(constructor, name)
 		expect(type.is(new constructor())).toBe(true)

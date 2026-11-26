@@ -1,4 +1,4 @@
-export type Class = typeof Class.values[number]
+export type Class = (typeof Class.values)[number]
 export namespace Class {
 	export const values = [
 		"any",
@@ -20,7 +20,7 @@ export namespace Class {
 		"tuple",
 		"undefined",
 		"union",
-		"unknown",
+		"unknown"
 	] as const
 	export interface Value {
 		any: any

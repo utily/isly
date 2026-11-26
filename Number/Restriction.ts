@@ -38,18 +38,18 @@ export namespace Restriction {
 			within: value => value > (restriction[0] as number) && value < (restriction[1] as number),
 			value: Array.isArray(restriction[0])
 				? value => (restriction[0] as number[]).some(v => v == value)
-				: value => restriction.some(v => v == value),
+				: value => restriction.some(v => v == value)
 		}
 		return {
 			verify: verifiers[category],
 			condition:
-				category +
-				(restriction.length > 1
+				category
+				+ (restriction.length > 1
 					? `: [${restriction.join(", ")}]`
 					: restriction.length == 1
-					? `: ${restriction[0]}`
-					: ""),
-			allowed: category == "value" ? (restriction as T[]) : undefined,
+						? `: ${restriction[0]}`
+						: ""),
+			allowed: category == "value" ? (restriction as T[]) : undefined
 		}
 	}
 }

@@ -61,7 +61,7 @@ const type: isly.Type<DemoType> = isly.object({
 	// not the signature of it.
 	// JSON do not support this type but exists for
 	// completeness.
-	testMethod: isly.function<DemoType["testMethod"]>().optional(),
+	testMethod: isly.function<DemoType["testMethod"]>().optional()
 })
 
 const data: DemoType | any = api.getMyExternalData()
@@ -96,10 +96,7 @@ interface UserWithCredentials extends User {
 const userType = isly.object<User>({ name: isly.string() })
 const userWithCredentialsType = userType.extend<UserWithCredentials>({ password: isly.string() })
 
-const myUser: UserWithCredentials = {
-	name: "Joe",
-	password: "12345678",
-}
+const myUser: UserWithCredentials = { name: "Joe", password: "12345678" }
 console.log(userType.get(myUser)) // Prints myUser without password.
 ```
 

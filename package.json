@@ -14,50 +14,46 @@
 	},
 	"homepage": "https://github.com/utily",
 	"type": "module",
-	"module": "./dist/mjs/index.js",
 	"types": "./dist/types/index.d.ts",
 	"exports": {
 		".": {
-			"import": {
-				"types": "./dist/types/index.d.ts",
-				"default": "./dist/mjs/index.js"
-			},
-			"require": {
-				"types": "./dist/types/index.d.ts",
-				"default": "./dist/cjs/index.js"
-			}
+			"types": "./dist/types/index.d.ts",
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
 		}
 	},
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	],
 	"git": {
-		"tagName": "v${version}"
+		"tagName": "release-${version}"
 	},
 	"github": {
 		"release": true
 	},
 	"scripts": {
-		"lint": "eslint --max-warnings=0 '**/*.{ts,tsx}'",
-		"fix": "eslint '**/*.{ts,tsx}' --fix",
-		"prebuild": "rimraf dist/*",
-		"build:mjs": "tsc -p tsconfig.mjs.json",
-		"build:cjs": "tsc -p tsconfig.cjs.json",
-		"build": "npm run build:mjs",
+		"build": "tsc -p tsconfig.build.json",
+		"lint": "biome format .",
+		"format": "biome format --write .",
 		"test": "vitest --run",
 		"coverage": "vitest --coverage",
-		"prepare": "npm run build",
 		"clean": "rimraf dist node_modules coverage",
-		"verify": "npm run build && npm run test && npm run lint && npm audit --omit dev"
+		"verify": "npm run build && npm run test && npm run lint && npm audit --omit=dev"
 	},
 	"devDependencies": {
-		"@typescript-eslint/eslint-plugin": "8.56.1",
-		"@typescript-eslint/parser": "8.56.1",
-		"@vitest/coverage-istanbul": "^4.0.18",
-		"@vitest/coverage-v8": "^4.0.18",
-		"eslint": "^8.57.0",
-		"eslint-plugin-prettierx": "github:utily/eslint-plugin-prettierx#utily-20231004",
-		"eslint-plugin-simple-import-sort": "^12.1.1",
-		"prettierx": "github:utily/prettierx#utily-20231004",
-		"rimraf": "^6.1.3",
-		"typescript": "^5.9.3",
-		"vitest": "^4.0.18"
+		"@biomejs/biome": "^2.6.9",
+		"@semantic-release/commit-analyzer": "^13.0.1",
+		"@semantic-release/github": "^12.0.6",
+		"@semantic-release/npm": "^13.1.4",
+		"@semantic-release/release-notes-generator": "^14.1.0",
+		"@vitest/coverage-v8": "^5.1.2",
+		"conventional-changelog-conventionalcommits": "^9.3.0",
+		"rimraf": "^6.1.4",
+		"semantic-release": "^26.0.1",
+		"typescript": "^7.0.2",
+		"vite": "^8.4.0",
+		"vitest": "^5.1.2"
 	}
 }

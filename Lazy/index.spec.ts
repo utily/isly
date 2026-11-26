@@ -36,13 +36,8 @@ describe("isly lazy", () => {
 			}
 		`)
 		expect(type.flawed(["test", ["a", "b", "c", [2, ["e"]]]])).toEqual({
-			flaws: [
-				{
-					index: 1,
-					name: "Test.Data",
-				},
-			],
-			name: "Test.Data[]",
+			flaws: [{ index: 1, name: "Test.Data" }],
+			name: "Test.Data[]"
 		})
 	})
 })

@@ -14,10 +14,13 @@ export abstract class Base<V = unknown> {
 			name: this.name,
 			class: this.class,
 			...(this.description ? { description: this.description } : {}),
-			...(this.condition ? { condition: this.condition } : {}),
+			...(this.condition ? { condition: this.condition } : {})
 		}
 	}
-	constructor(readonly description?: string, readonly condition?: string[]) {}
+	constructor(
+		readonly description?: string,
+		readonly condition?: string[]
+	) {}
 	abstract is(value: V | any): value is V
 	get(value: V | any): V | undefined
 	get(value: V | any, fallback: V): V
@@ -32,7 +35,7 @@ export abstract class Base<V = unknown> {
 			!this.is(value) && {
 				name: this.name,
 				...(this.description ? { description: this.description } : {}),
-				...(this.condition && this.condition.length > 0 ? { condition: this.condition } : {}),
+				...(this.condition && this.condition.length > 0 ? { condition: this.condition } : {})
 			}
 		)
 	}
@@ -42,7 +45,7 @@ export abstract class Base<V = unknown> {
 			is: (value: V | any): value is V => previous(value) && restriction[0](value),
 			condition: [...(this.condition ?? []), restriction[1]],
 			name: restriction[2] ?? this.name,
-			...(restriction[3] ? { description: restriction[3] } : {}),
+			...(restriction[3] ? { description: restriction[3] } : {})
 		} as Partial<this>)
 	}
 	rename(name: string): this {
@@ -79,13 +82,13 @@ export abstract class Base<V = unknown> {
 		const result = { ...this, name: changes?.name ?? this.name }
 		Object.defineProperty(result, "definition", {
 			get:
-				getPropertyDescriptor(changes, "definition")?.get ??
-				getPropertyDescriptor(this, "definition")?.get ??
-				((): any => {
+				getPropertyDescriptor(changes, "definition")?.get
+				?? getPropertyDescriptor(this, "definition")?.get
+				?? ((): any => {
 					throw Error("Not Implemented")
 				}),
 			enumerable: true,
-			configurable: false,
+			configurable: false
 		})
 		return Object.assign(result, {
 			...changes,
@@ -105,7 +108,7 @@ export abstract class Base<V = unknown> {
 			toString: changes?.toString ?? this.toString,
 			toJSON: changes?.toJSON ?? this.toJSON,
 			modify: changes?.modify ?? this.modify,
-			bind: changes?.bind ?? this.bind,
+			bind: changes?.bind ?? this.bind
 		})
 	}
 	bind(): BindResult<V, this> {
@@ -127,7 +130,7 @@ export abstract class Base<V = unknown> {
 			or: this.or.bind(this),
 			toString: this.toString.bind(this),
 			toJSON: this.toJSON.bind(this),
-			modify: this.modify.bind(this),
+			modify: this.modify.bind(this)
 			// bind not included as you can't bind twice
 		}
 	}
@@ -140,7 +143,6 @@ export namespace Base {
 
 function getPropertyDescriptor(object: any, property: string): PropertyDescriptor | undefined {
 	let result = object
-	while (result && !Object.prototype.hasOwnProperty.call(result, property))
-		result = Object.getPrototypeOf(result)
+	while (result && !Object.prototype.hasOwnProperty.call(result, property)) result = Object.getPrototypeOf(result)
 	return result ? Object.getOwnPropertyDescriptor(result, property) : undefined
 }

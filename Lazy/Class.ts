@@ -8,7 +8,10 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	get base(): B {
 		return (this._base ??= this._load())
 	}
-	private constructor(load: () => B, readonly name: string) {
+	private constructor(
+		load: () => B,
+		readonly name: string
+	) {
 		super()
 		this._load = load
 	}
@@ -20,9 +23,7 @@ export class Class<V extends any | undefined = unknown | undefined, B extends Ba
 	}
 	override modify(type?: Partial<this>): this {
 		const result = super.modify(type)
-		return Object.assign(result, {
-			base: type?.base ?? this.base,
-		})
+		return Object.assign(result, { base: type?.base ?? this.base })
 	}
 	static create<V extends any | undefined = unknown | undefined, B extends Base<V> = Base<V>>(
 		load: () => B,

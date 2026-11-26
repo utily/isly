@@ -10,14 +10,8 @@ describe("isly.intersection", () => {
 		// With generic provided
 		{
 			const type = isly.intersection<AB, A, B>(
-				isly.object<A>({
-					a: isly.number().optional(),
-					shared: isly.string(),
-				}),
-				isly.object<B>({
-					b: isly.number().optional(),
-					shared: isly.string(),
-				})
+				isly.object<A>({ a: isly.number().optional(), shared: isly.string() }),
+				isly.object<B>({ b: isly.number().optional(), shared: isly.string() })
 			)
 			const value: boolean | string | any = "garbage" as any
 			if (type.is(value)) {
@@ -28,16 +22,8 @@ describe("isly.intersection", () => {
 		// Using and
 		{
 			const type = isly
-				.object<A>({
-					a: isly.number().optional(),
-					shared: isly.string(),
-				})
-				.and(
-					isly.object<B>({
-						b: isly.number().optional(),
-						shared: isly.string(),
-					})
-				)
+				.object<A>({ a: isly.number().optional(), shared: isly.string() })
+				.and(isly.object<B>({ b: isly.number().optional(), shared: isly.string() }))
 			const value: boolean | string | any = "garbage" as any
 			if (type.is(value)) {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -46,14 +32,8 @@ describe("isly.intersection", () => {
 		} // without generic provided
 		{
 			const type = isly.intersection(
-				isly.object<A>({
-					a: isly.number().optional(),
-					shared: isly.string(),
-				}),
-				isly.object<B>({
-					b: isly.number().optional(),
-					shared: isly.string(),
-				})
+				isly.object<A>({ a: isly.number().optional(), shared: isly.string() }),
+				isly.object<B>({ b: isly.number().optional(), shared: isly.string() })
 			)
 			const value: boolean | string | any = "garbage" as any
 			if (type.is(value)) {
@@ -66,18 +46,9 @@ describe("isly.intersection", () => {
 		// With triple generic provided
 		{
 			const type = isly.intersection<Abc, A, B, C>(
-				isly.object<A>({
-					a: isly.number().optional(),
-					shared: isly.string(),
-				}),
-				isly.object<B>({
-					b: isly.number().optional(),
-					shared: isly.string(),
-				}),
-				isly.object<C>({
-					c: isly.number().optional(),
-					shared: isly.string(),
-				})
+				isly.object<A>({ a: isly.number().optional(), shared: isly.string() }),
+				isly.object<B>({ b: isly.number().optional(), shared: isly.string() }),
+				isly.object<C>({ c: isly.number().optional(), shared: isly.string() })
 			)
 			const value: boolean | string | any = "garbage" as any
 			if (type.is(value)) {
@@ -90,14 +61,8 @@ describe("isly.intersection", () => {
 		type A = { a?: number; shared: string }
 		type B = { b?: number; shared: string }
 		const intersection = isly.intersection(
-			isly.object<A>({
-				a: isly.number().optional(),
-				shared: isly.string(),
-			}),
-			isly.object<B>({
-				b: isly.number().optional(),
-				shared: isly.string(),
-			})
+			isly.object<A>({ a: isly.number().optional(), shared: isly.string() }),
+			isly.object<B>({ b: isly.number().optional(), shared: isly.string() })
 		)
 		expect(intersection.is({ shared: "shared string" })).toBe(true)
 		expect(intersection.is({ shared: "shared string", a: 12 })).toBe(true)
@@ -111,16 +76,8 @@ describe("isly.intersection", () => {
 		type A = { a?: number; shared: string }
 		type B = { b?: number; shared: string }
 		const intersection = isly
-			.object<A>({
-				a: isly.number().optional(),
-				shared: isly.string(),
-			})
-			.and(
-				isly.object<B>({
-					b: isly.number().optional(),
-					shared: isly.string(),
-				})
-			)
+			.object<A>({ a: isly.number().optional(), shared: isly.string() })
+			.and(isly.object<B>({ b: isly.number().optional(), shared: isly.string() }))
 		expect(intersection.is({ shared: "shared string" })).toBe(true)
 		expect(intersection.is({ shared: "shared string", a: 12 })).toBe(true)
 		expect(intersection.name).toEqual(
@@ -130,14 +87,9 @@ describe("isly.intersection", () => {
 		expect(intersection.flawed({ a: 42, b: 43 })).toBeTruthy()
 	})
 	it("prune Alpha & Beta", () => {
-		type Alpha = {
-			a: number
-			b: string[]
-		}
+		type Alpha = { a: number; b: string[] }
 		const alpha = isly.object<Alpha>({ a: isly.number(), b: isly.string().array() })
-		type Beta = {
-			c: string
-		}
+		type Beta = { c: string }
 		const beta = isly.object<Beta>({ c: isly.string() })
 		type AlphaBeta = Alpha & Beta
 		const alphaBeta = isly.intersection(alpha, beta)
@@ -145,49 +97,25 @@ describe("isly.intersection", () => {
 		expect(alphaBeta.is(value)).toBe(true)
 	})
 	it("prune Foo & Bar", () => {
-		type Foo = {
-			foo: "foo"
-			nesting: {
-				foo: "foo"
-				array: number[]
-			}
-			array: { b: string }[]
-		}
+		type Foo = { foo: "foo"; nesting: { foo: "foo"; array: number[] }; array: { b: string }[] }
 		const fooType = isly.object<Foo>({
 			foo: isly.string("value", "foo"),
-			nesting: isly.object({
-				foo: isly.string("value", "foo"),
-				array: isly.number().array(),
-			}),
-			array: isly.array(isly.object({ b: isly.string() })),
+			nesting: isly.object({ foo: isly.string("value", "foo"), array: isly.number().array() }),
+			array: isly.array(isly.object({ b: isly.string() }))
 		})
-		type Bar = {
-			bar: "bar"
-			nesting: {
-				bar: "bar"
-				array: number[]
-			}
-			array: { test: string }[]
-		}
+		type Bar = { bar: "bar"; nesting: { bar: "bar"; array: number[] }; array: { test: string }[] }
 		const barType = isly.object<Bar>({
 			bar: isly.string("value", "bar"),
-			nesting: isly.object({
-				bar: isly.string("value", "bar"),
-				array: isly.number().array(),
-			}),
-			array: isly.array(isly.object({ test: isly.string() })),
+			nesting: isly.object({ bar: isly.string("value", "bar"), array: isly.number().array() }),
+			array: isly.array(isly.object({ test: isly.string() }))
 		})
 		type Intersection = Foo & Bar
 		const intersectionType = isly.intersection<Intersection, Foo, Bar>(fooType, barType)
 		const intersection: Intersection = {
 			foo: "foo",
 			bar: "bar",
-			nesting: {
-				foo: "foo",
-				bar: "bar",
-				array: [222],
-			},
-			array: [{ test: "a", b: "b" }],
+			nesting: { foo: "foo", bar: "bar", array: [222] },
+			array: [{ test: "a", b: "b" }]
 		}
 		expect(intersectionType.prune({ ...intersection, extra: "world" })).toEqual(intersection)
 	})

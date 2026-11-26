@@ -1,6 +1,6 @@
 import { isly } from "../index"
 
-export type Depth = typeof Depth.values[number]
+export type Depth = (typeof Depth.values)[number]
 export namespace Depth {
 	export const values = [1, 2, 3, 4]
 	export const { type, is, flawed } = isly.number<Depth>("value", values).rename("Report.Settings.Depth").bind()
@@ -24,6 +24,6 @@ describe("isly.Number.Depth", () => {
 		[-1, false],
 		[null, false],
 		[undefined, false],
-		["1", false],
+		["1", false]
 	])("is(%s) == %s", (value, expected) => expect(Depth.is(value)).toEqual(expected))
 })

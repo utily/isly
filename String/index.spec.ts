@@ -28,7 +28,7 @@ describe("isly.string", () => {
 	})
 	it("should work with array without unpacking", () => {
 		const values = ["A", "B", "C"] as const
-		type Value = typeof values[number]
+		type Value = (typeof values)[number]
 		const type = isly.string<Value>("value", values)
 		expect(values.reduce((result, v) => result && type.is(v), true)).toBe(true)
 	})
@@ -45,7 +45,7 @@ describe("isly.string", () => {
 		expect(type.flawed(42)).toEqual({ name: "'42'", condition: ["value: '42'"] })
 		expect(isly.string("value", ["42", "43"]).flawed("44")).toEqual({
 			name: "('42' | '43')",
-			condition: ["value: ['42', '43']"],
+			condition: ["value: ['42', '43']"]
 		})
 	})
 	it("regexp-simple", () => {
@@ -69,10 +69,7 @@ describe("isly.string", () => {
 		expect(type.is("13.37")).toBe(true)
 		expect(type.is("42")).toBe(false)
 		expect(type.flawed("42")).toEqual({ name: "string", condition: ["length: 5"] })
-		expect(isly.string("length", "value", 5).flawed("42")).toEqual({
-			name: "string",
-			condition: ["length.value: 5"],
-		})
+		expect(isly.string("length", "value", 5).flawed("42")).toEqual({ name: "string", condition: ["length.value: 5"] })
 	})
 	it('isly.string("value", "SE", "FI", "DE").prune("SE") == "SE"', () =>
 		expect(isly.string("value", "SE", "FI", "DE").prune("SE")).toEqual("SE"))

@@ -18,29 +18,13 @@ describe("isly.tuple", () => {
 		const type = isly.tuple(isly.string(), isly.string())
 		expect(type.is([])).toBe(false)
 		expect(type.is(["foo", "bar"])).toBe(true)
-		expect(type.flawed([5, "bar"])).toEqual({
-			name: "[string, string]",
-			flaws: [
-				{
-					index: 0,
-					name: "string",
-				},
-			],
-		})
+		expect(type.flawed([5, "bar"])).toEqual({ name: "[string, string]", flaws: [{ index: 0, name: "string" }] })
 	})
 	it("[object, string] prune", () => {
-		type User = {
-			email: string
-		}
+		type User = { email: string }
 		const userStringTupleType = isly.tuple(isly.object<User>({ email: isly.string() }), isly.string())
 
-		const value: [User, string] = [
-			{
-				email: `test@example.com`,
-				password: "shouldBeSecret",
-			} as User,
-			"abc",
-		]
+		const value: [User, string] = [{ email: `test@example.com`, password: "shouldBeSecret" } as User, "abc"]
 
 		const userStringTuple = userStringTupleType.prune(value)
 		expect(userStringTuple).toHaveLength(2)

@@ -10,7 +10,10 @@ export class Class<V, B extends Base<V>> extends Base<V | undefined> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.definition })
 	}
-	private constructor(readonly base: B, name?: string) {
+	private constructor(
+		readonly base: B,
+		name?: string
+	) {
 		super()
 		this._name = name
 	}

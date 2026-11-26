@@ -12,7 +12,10 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(readonly base: B[], name?: string) {
+	private constructor(
+		readonly base: B[],
+		name?: string
+	) {
 		super()
 		this._name = name
 	}
@@ -21,9 +24,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	}
 	override prune(value: V | any): V | undefined {
 		let result: V | undefined = undefined
-		for (const base of this.base)
-			if ((result = base.prune(value)))
-				break
+		for (const base of this.base) if ((result = base.prune(value))) break
 		return result
 	}
 	override flawed(value: V | any): Flaw | false {
@@ -31,7 +32,7 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		return (
 			result && {
 				...result,
-				flaws: this.base.map(t => t.flawed(value)).filter((v: Flaw | any): v is Flaw => v != false),
+				flaws: this.base.map(t => t.flawed(value)).filter((v: Flaw | any): v is Flaw => v != false)
 			}
 		)
 	}

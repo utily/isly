@@ -12,15 +12,18 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(readonly base: { [I in keyof V]: Base<V[I]> }, name?: string) {
+	private constructor(
+		readonly base: { [I in keyof V]: Base<V[I]> },
+		name?: string
+	) {
 		super()
 		this._name = name
 	}
 	override is(value: V | any): value is V {
 		return (
-			Array.isArray(value) &&
-			value.length == this.base.length &&
-			this.base.every((type, index) => type.is(value[index]))
+			Array.isArray(value)
+			&& value.length == this.base.length
+			&& this.base.every((type, index) => type.is(value[index]))
 		)
 	}
 	override flawed(value: V | any): Flaw | false {
@@ -31,7 +34,7 @@ export class Class<V extends any[] = unknown[]> extends Base<V> {
 				flaws: this.base
 					.map((type, index) => type.flawed(value?.[index]))
 					.map<false | (Flaw & { index: number })>((flaw, index) => (flaw ? { index, ...flaw } : flaw))
-					.filter((f: (Flaw & { index: number }) | false): f is Flaw & { index: number } => !!f),
+					.filter((f: (Flaw & { index: number }) | false): f is Flaw & { index: number } => !!f)
 			}
 		)
 	}

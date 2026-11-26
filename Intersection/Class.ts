@@ -12,7 +12,10 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { base: this.base.map(b => b.definition) })
 	}
-	private constructor(readonly base: B[], name?: string) {
+	private constructor(
+		readonly base: B[],
+		name?: string
+	) {
 		super()
 		this._name = name
 	}
@@ -23,15 +26,15 @@ export class Class<V = unknown, B extends Base<V> = Base<V>> extends Base<V> {
 		return !this.is(value)
 			? undefined
 			: value && typeof value == "object"
-			? (this.base.reduce((r, b) => merge(r, b.prune(value)), {}) as V)
-			: value
+				? (this.base.reduce((r, b) => merge(r, b.prune(value)), {}) as V)
+				: value
 	}
 	override flawed(value: V | any): Flaw | false {
 		const result: Flaw | false = super.flawed(value)
 		return (
 			result && {
 				...result,
-				flaws: this.base.map(t => t.flawed(value)).filter((v: Flaw | any): v is Flaw => v != false),
+				flaws: this.base.map(t => t.flawed(value)).filter((v: Flaw | any): v is Flaw => v != false)
 			}
 		)
 	}
@@ -67,16 +70,16 @@ function merge<T, S>(target: T, source: S): T & S {
 	return Array.isArray(target) && Array.isArray(source)
 		? (target.map((item, index) => merge(item, source[index])) as S & T)
 		: target && typeof target == "object" && source && typeof source == "object"
-		? Object.fromEntries([
-				...Object.entries(target),
-				...Object.entries(source).map(([key, value]) => [
-					key,
-					Object.getOwnPropertyDescriptor(target, key) &&
-					typeof target[key as keyof typeof target] == "object" &&
-					typeof value == "object"
-						? merge(target[key as keyof typeof target], value)
-						: value,
-				]),
-		  ])
-		: (target as T & S)
+			? Object.fromEntries([
+					...Object.entries(target),
+					...Object.entries(source).map(([key, value]) => [
+						key,
+						Object.getOwnPropertyDescriptor(target, key)
+						&& typeof target[key as keyof typeof target] == "object"
+						&& typeof value == "object"
+							? merge(target[key as keyof typeof target], value)
+							: value
+					])
+				])
+			: (target as T & S)
 }

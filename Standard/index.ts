@@ -24,7 +24,7 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 			{
 				byteLength: Base.isly.number(),
 				slice: Base.isly.function(),
-				[Symbol.toStringTag]: Base.isly.string("value", "ArrayBuffer"),
+				[Symbol.toStringTag]: Base.isly.string("value", "ArrayBuffer")
 			},
 			"ArrayBuffer"
 		),
@@ -37,11 +37,7 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 			.rename("ArrayBufferLike"),
 	ArrayBufferView: () =>
 		Base.isly.object<globalThis.ArrayBufferView>(
-			{
-				buffer: Base.isly.standard("ArrayBufferLike"),
-				byteLength: Base.isly.number(),
-				byteOffset: Base.isly.number(),
-			},
+			{ buffer: Base.isly.standard("ArrayBufferLike"), byteLength: Base.isly.number(), byteOffset: Base.isly.number() },
 			"ArrayBufferView"
 		),
 	Blob: () =>
@@ -53,16 +49,13 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				bytes: Base.isly.function().optional(), // not always available
 				slice: Base.isly.function(),
 				text: Base.isly.function(),
-				stream: Base.isly.function(),
+				stream: Base.isly.function()
 			} as any,
 			"Blob"
 		),
 	File: () =>
 		creator.Blob().extend<File>(
-			{
-				name: Base.isly.string(),
-				lastModified: Base.isly.number(),
-			} as any, // webkitRelativePath is not standard
+			{ name: Base.isly.string(), lastModified: Base.isly.number() } as any, // webkitRelativePath is not standard
 			"File"
 		),
 	FormData: () =>
@@ -75,6 +68,10 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				getAll: Base.isly.function(),
 				has: Base.isly.function(),
 				set: Base.isly.function(),
+				entries: Base.isly.function(),
+				keys: Base.isly.function(),
+				values: Base.isly.function(),
+				[Symbol.iterator]: Base.isly.function()
 			},
 			"FormData"
 		),
@@ -88,6 +85,10 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				getSetCookie: Base.isly.function(),
 				has: Base.isly.function(),
 				set: Base.isly.function(),
+				entries: Base.isly.function(),
+				keys: Base.isly.function(),
+				values: Base.isly.function(),
+				[Symbol.iterator]: Base.isly.function()
 			},
 			"Headers"
 		),
@@ -100,6 +101,8 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				pipeThrough: Base.isly.function(),
 				pipeTo: Base.isly.function(),
 				tee: Base.isly.function(),
+				[Symbol.asyncIterator]: Base.isly.function(),
+				values: Base.isly.function()
 			},
 			"ReadableStream"
 		),
@@ -127,7 +130,7 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				referrerPolicy: Base.isly.string(),
 				signal: Base.isly.any(),
 				text: Base.isly.function(),
-				url: Base.isly.string(),
+				url: Base.isly.string()
 			} as any, // bytes() not always available
 			"Request"
 		),
@@ -149,11 +152,11 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 						"no-referrer-when-downgrade",
 						"origin",
 						"origin-when-cross-origin",
-						"same-origin",
+						"same-origin"
 					])
 					.optional(),
 				signal: Base.isly.any().optional(),
-				window: Base.isly.any().optional(),
+				window: Base.isly.any().optional()
 			},
 			"RequestInit"
 		),
@@ -175,7 +178,7 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				statusText: Base.isly.string(),
 				text: Base.isly.function(),
 				type: Base.isly.string(),
-				url: Base.isly.string(),
+				url: Base.isly.string()
 			} as any, // bytes() not always available
 			"Response"
 		),
@@ -184,7 +187,7 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 			{
 				headers: Base.isly.standard("Headers").optional(),
 				status: Base.isly.number().optional(),
-				statusText: Base.isly.string().optional(),
+				statusText: Base.isly.string().optional()
 			},
 			"ResponseInit"
 		),
@@ -204,7 +207,7 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				searchParams: Base.isly.standard("URLSearchParams"),
 				toJSON: Base.isly.function(),
 				toString: Base.isly.function(),
-				username: Base.isly.string(),
+				username: Base.isly.string()
 			},
 			"URL"
 		),
@@ -220,10 +223,10 @@ const creator: { [P in Standard]: () => Mapping[P] } = {
 				set: Base.isly.function(),
 				size: Base.isly.number(),
 				sort: Base.isly.function(),
-				toString: Base.isly.function(),
+				toString: Base.isly.function()
 			} as any,
 			"URLSearchParams"
-		),
+		)
 } as const
 export namespace Standard {
 	export const values = Object.keys(creator)

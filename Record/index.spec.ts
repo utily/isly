@@ -26,18 +26,18 @@ describe("isly.record()", () => {
 		[
 			{ 1: "one", 2: "two", "-1": "minus one" },
 			false,
-			isly.record(isly.number("positive").restrict("integer"), isly.string()),
+			isly.record(isly.number("positive").restrict("integer"), isly.string())
 		],
 		[{ user: { email: "test@example.com" } }, true, isly.record(isly.string(), isly.object({ email: isly.string() }))],
 		[
 			{ user: { email: "test@example.com", password: "secret" } },
 			true,
-			isly.record(isly.string(), isly.object({ email: isly.string(), password: isly.string() })),
+			isly.record(isly.string(), isly.object({ email: isly.string(), password: isly.string() }))
 		],
 		[
 			{ email: "test@example.com", password: 123 },
 			false,
-			isly.record(isly.string(), isly.object({ email: isly.string(), password: isly.string() })),
+			isly.record(isly.string(), isly.object({ email: isly.string(), password: isly.string() }))
 		],
 		[
 			{ 1930: { opening: 0, period: 0, closing: 0 }, 1931: { opening: 0, period: 0, closing: 0 } },
@@ -45,20 +45,20 @@ describe("isly.record()", () => {
 			isly.record(
 				isly.number("positive").restrict("integer"),
 				isly.object({ opening: isly.number(), period: isly.number(), closing: isly.number() })
-			),
+			)
 		],
 		[
 			{
 				1930: { opening: 100, period: 50, closing: 150 },
 				1931: { opening: 30, period: -10, closing: 20 },
-				totals: { opening: 130, period: 40, closing: 170 },
+				totals: { opening: 130, period: 40, closing: 170 }
 			},
 			true,
 			isly.record(
 				isly.union(isly.number("positive").restrict("integer"), isly.string("value", "totals")),
 				isly.object({ opening: isly.number(), period: isly.number(), closing: isly.number() })
-			),
-		],
+			)
+		]
 	] as const)("is(%s) == %s", (value, expected, type) => expect(type.is(value)).toBe(expected))
 	it("record", () => {
 		const type = isly.record(isly.string(), isly.string())
@@ -69,7 +69,7 @@ describe("isly.record()", () => {
 		expect(type.is(undefined)).toBe(false)
 		expect(type.flawed({ currency: "SEK", a: 1 })).toEqual({
 			name: "Record<string, string>",
-			flaws: [{ property: "a", name: "string" }],
+			flaws: [{ property: "a", name: "string" }]
 		})
 	})
 	it("record, union as key", () => {
@@ -79,7 +79,7 @@ describe("isly.record()", () => {
 		expect(type.is({ id: "abc001", number: "1337" })).toBe(false)
 		expect(type.flawed({ c: "hej" })).toEqual({
 			name: "Record<('a' | 'b'), string>",
-			flaws: [{ property: "c", name: "('a' | 'b')", condition: ["value: ['a', 'b']"] }],
+			flaws: [{ property: "c", name: "('a' | 'b')", condition: ["value: ['a', 'b']"] }]
 		})
 	})
 	it("record, number as key", () => {
@@ -90,7 +90,7 @@ describe("isly.record()", () => {
 		expect(type.is({ 1: "abc001", 2: "1337", a: 42 })).toBe(false)
 		expect(type.flawed({ c: "hej" })).toEqual({
 			name: "Record<number, string>",
-			flaws: [{ property: "c", name: "number" }],
+			flaws: [{ property: "c", name: "number" }]
 		})
 	})
 	it("record, positive integer as key", () => {
@@ -100,7 +100,7 @@ describe("isly.record()", () => {
 		expect(type.is({ 1: "abc001", 2: "1337", "-1": "abc" })).toBe(false)
 		expect(type.flawed({ c: "hej" })).toEqual({
 			name: "Record<number, string>",
-			flaws: [{ property: "c", name: "number", condition: ["positive", "integer"] }],
+			flaws: [{ property: "c", name: "number", condition: ["positive", "integer"] }]
 		})
 	})
 	it("record.prune", () => {
@@ -128,7 +128,7 @@ describe("isly.record()", () => {
 		expect(isly.record(isly.string(), isly.object({})).is({ test: undefined })).toBe(false))
 	it("enumerable", () => {
 		const keys = ["key1", "key2", "key3"] as const
-		type Key = typeof keys[number]
+		type Key = (typeof keys)[number]
 		const Key = isly.string("value", ...keys)
 		type EnumerableRecord = Record<Key, string>
 		const EnumerableRecord = isly.record(Key, isly.string())

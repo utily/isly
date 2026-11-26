@@ -15,19 +15,22 @@ export class Class<
 	override get definition(): isly.Definition {
 		return Object.assign(super.definition, { key: this.key.definition, value: this.value.definition })
 	}
-	private constructor(readonly key: KType, readonly value: VType, name?: string) {
+	private constructor(
+		readonly key: KType,
+		readonly value: VType,
+		name?: string
+	) {
 		super()
 		this._name = name
 	}
 	override is(value: V | any): value is V {
 		let result: boolean
-		if (!value || typeof value != "object" || Array.isArray(value))
-			result = false
+		if (!value || typeof value != "object" || Array.isArray(value)) result = false
 		else if (
-			this.key.class == "string" &&
-			"allowed" in this.key &&
-			Array.isArray(this.key.allowed) &&
-			this.key.allowed.every(v => typeof v == "string")
+			this.key.class == "string"
+			&& "allowed" in this.key
+			&& Array.isArray(this.key.allowed)
+			&& this.key.allowed.every(v => typeof v == "string")
 		)
 			result =
 				Object.keys(value).length == this.key.allowed.length && this.key.allowed.every(key => this.value.is(value[key]))
@@ -39,8 +42,8 @@ export class Class<
 	}
 	override prune(value: V | any): V | undefined {
 		return (
-			this.is(value) &&
-			Object.fromEntries(Object.entries(value).map(([key, value]) => [this.key.prune(key), this.value.prune(value)]))
+			this.is(value)
+			&& Object.fromEntries(Object.entries(value).map(([key, value]) => [this.key.prune(key), this.value.prune(value)]))
 		)
 	}
 	override flawed(value: V | any): Flaw | false {
@@ -51,7 +54,7 @@ export class Class<
 				flaws: Object.entries(value)
 					.map(([key, value]) => [key, this.key.flawed(key) || this.value.flawed(value)] as const)
 					.map(([key, flaw]) => flaw && Object.assign(flaw, { property: key }))
-					.filter((flaw): flaw is Flaw & { property: string } => !!flaw),
+					.filter((flaw): flaw is Flaw & { property: string } => !!flaw)
 			}
 		)
 	}

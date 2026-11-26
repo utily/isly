@@ -15,7 +15,7 @@ describe("isly.Readonly", () => {
 		[true, true, isly.boolean()],
 		[false, true, isly.boolean()],
 		[[], true, isly.array(isly.number())],
-		[() => {}, true, isly.function()],
+		[() => {}, true, isly.function()]
 	] as const)("should validate %s as %s", (value, expected, base) => {
 		expect(isly.readonly(base).is(value)).toBe(expected)
 	})

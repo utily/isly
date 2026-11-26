@@ -4,7 +4,7 @@ describe("isly.Optional", () => {
 	const types = [
 		isly.boolean().optional().describe("Either true, false or undefined."),
 		isly.boolean(true).optional().describe("Either true or undefined."),
-		isly.boolean(false).optional("false?").describe("false or undefined"),
+		isly.boolean(false).optional("false?").describe("false or undefined")
 	] as const
 	it("", () => {
 		const t1 = isly.boolean().rename("t1")
@@ -12,18 +12,17 @@ describe("isly.Optional", () => {
 		expect(t2.name).toBe("not-required t1")
 		expect(t2.base.is(undefined)).toBe(false)
 		const v2: any = "test"
-		if (t2.base.is(v2))
-			expect(v2).toBe(true)
+		if (t2.base.is(v2)) expect(v2).toBe(true)
 	})
 	it.each([
 		["boolean | undefined", types[0]],
 		["true | undefined", types[1]],
-		["false?", types[2]],
+		["false?", types[2]]
 	] as const)("name == %s", (expected, type) => expect(type.name).toBe(expected))
 	it.each([
 		["Either true, false or undefined.", types[0]],
 		["Either true or undefined.", types[1]],
-		["false or undefined", types[2]],
+		["false or undefined", types[2]]
 	] as const)("description == %s", (expected, type) => expect(type.description).toBe(expected))
 	it.each([
 		[undefined, true],
@@ -36,19 +35,19 @@ describe("isly.Optional", () => {
 		["a", false],
 		[{}, false],
 		[[], false],
-		[() => {}, false],
+		[() => {}, false]
 	])("is(%s) == %s", (value, expected) => expect(isly.boolean().optional().is(value)).toBe(expected))
 	it.each(types)("definition", type => expect(() => type.definition).toMatchSnapshot())
 	it.each([
 		[true, true],
 		[false, false],
 		[undefined, undefined],
-		["invalid", undefined],
+		["invalid", undefined]
 	])("get(%s) == %s", (value, expected) => expect(isly.boolean().optional().get(value)).toBe(expected))
 	it.each([
 		[true, true],
 		[false, false],
 		[undefined, undefined],
-		["invalid", undefined],
+		["invalid", undefined]
 	])("extract(%s) == %s", (value, expected) => expect(isly.boolean().optional().prune(value)).toBe(expected))
 })

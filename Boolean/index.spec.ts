@@ -42,7 +42,7 @@ describe("isly.boolean", () => {
 	it.each([
 		[true, "true"],
 		[false, "false"],
-		[undefined, "boolean"],
+		[undefined, "boolean"]
 	])("isly.boolean(%s).name == %s", (allowed, expected) => expect(isly.boolean(allowed).name).toBe(expected))
 	it.each([
 		[true, true],
@@ -52,12 +52,12 @@ describe("isly.boolean", () => {
 		[null, false],
 		[undefined, false],
 		[{}, false],
-		[[], false],
+		[[], false]
 	])("is(%s) == %s", (input, expected) => expect(isly.boolean().is(input)).toBe(expected))
 	it.each([
 		[true, true],
 		[false, false],
-		[0, false],
+		[0, false]
 	])("true: is(%s) == %s", (input, expected) =>
 		expect(
 			isly
@@ -69,7 +69,7 @@ describe("isly.boolean", () => {
 	it.each([
 		[false, true],
 		[true, false],
-		[0, false],
+		[0, false]
 	])("false: is(%s) == %s", (input, expected) =>
 		expect(
 			isly
@@ -81,7 +81,7 @@ describe("isly.boolean", () => {
 	it.each([
 		[isly.boolean(), { class: "boolean", name: "boolean" }],
 		[isly.boolean(true), { class: "boolean", name: "true", condition: ["value: true"], allowed: true }],
-		[isly.boolean(false), { class: "boolean", name: "false", condition: ["value: false"], allowed: false }],
+		[isly.boolean(false), { class: "boolean", name: "false", condition: ["value: false"], allowed: false }]
 	] as const)("definition == %s", (type, expected) => expect(type.definition).toEqual(expected))
 	it.each([
 		[true, true],
@@ -91,7 +91,7 @@ describe("isly.boolean", () => {
 		[null, undefined],
 		[undefined, undefined],
 		[{}, undefined],
-		[[], undefined],
+		[[], undefined]
 	])("get(%s) == %s", (input, expected) => expect(isly.boolean().get(input)).toBe(expected))
 	it.each([
 		[true, true],
@@ -101,6 +101,6 @@ describe("isly.boolean", () => {
 		[null, undefined],
 		[undefined, undefined],
 		[{}, undefined],
-		[[], undefined],
+		[[], undefined]
 	])("extract(%s) == %s", (input, expected) => expect(isly.boolean().prune(input)).toBe(expected))
 })

@@ -42,6 +42,6 @@ export const creator = {
 	undefined: UndefinedClass.create,
 	union: UnionClass.create,
 	unknown: UnknownClass.create,
-	standard: Standard.create,
+	standard: Standard.create
 }
 Base.isly = creator

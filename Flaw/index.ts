@@ -20,7 +20,7 @@ export namespace Flaw {
 						Base.isly.object({ property: Base.isly.string() })
 					)
 				)
-				.optional() as unknown as isly.Type<Flaw["flaws"]>, // TODO: remove cast
+				.optional() as unknown as isly.Type<Flaw["flaws"]> // TODO: remove cast
 		},
 		"isly.Flaw"
 	)

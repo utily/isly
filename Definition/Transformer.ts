@@ -11,9 +11,7 @@ export class Transformer<R extends Record<Class, any>> {
 	}
 }
 export namespace Transformer {
-	export type Configuration<R extends Record<Class, any>> = Partial<
-		{
-			[K in Class]: (type: Definition.FromClass[K], transformer: Transformer<R>) => R[K]
-		}
-	>
+	export type Configuration<R extends Record<Class, any>> = Partial<{
+		[K in Class]: (type: Definition.FromClass[K], transformer: Transformer<R>) => R[K]
+	}>
 }

@@ -38,7 +38,7 @@ export namespace Card {
 				pan: isly.string("value", /^[\d]{16,19}$/),
 				expires: Expires.type,
 				csc: isly.string("length", "range", 3, 4),
-				holder: isly.string().optional(),
+				holder: isly.string().optional()
 			},
 			"Card"
 		)
@@ -53,11 +53,7 @@ describe("isly.Object.Card", () => {
 			{
 				description: "A card with a PAN, expiry date, CSC and optional holder name.",
 				flaws: [
-					{
-						property: "pan",
-						name: "string",
-						condition: ["value: /^[\\d]{16,19}$/"],
-					},
+					{ property: "pan", name: "string", condition: ["value: /^[\\d]{16,19}$/"] },
 					{
 						property: "expires",
 						name: "Expires",
@@ -67,39 +63,29 @@ describe("isly.Object.Card", () => {
 								condition: ["range: [1000, 2999]"],
 								description: "Expiry year of card as 4 digit.",
 								index: 0,
-								name: "Card.Expiry.Year",
+								name: "Card.Expiry.Year"
 							},
 							{
 								condition: ["range: [1, 12]"],
 								description: "Expiry month of card.",
 								index: 1,
-								name: "Card.Expiry.Month",
-							},
-						],
+								name: "Card.Expiry.Month"
+							}
+						]
 					},
-					{
-						property: "csc",
-						name: "string",
-						condition: ["length.range: [3, 4]"],
-					},
+					{ property: "csc", name: "string", condition: ["length.range: [3, 4]"] }
 				],
-				name: "Card",
-			},
+				name: "Card"
+			}
 		],
 		[
 			{ pan: "1234", expires: [2012, 12], csc: "987" },
 			{
 				name: "Card",
 				description: "A card with a PAN, expiry date, CSC and optional holder name.",
-				flaws: [
-					{
-						property: "pan",
-						name: "string",
-						condition: ["value: /^[\\d]{16,19}$/"],
-					},
-				],
-			},
-		],
+				flaws: [{ property: "pan", name: "string", condition: ["value: /^[\\d]{16,19}$/"] }]
+			}
+		]
 	] as const)("flawed(%j) == %j", (value, expected) => {
 		expect(Card.flawed(value)).toEqual(expected)
 	})

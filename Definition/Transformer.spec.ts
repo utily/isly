@@ -10,15 +10,15 @@ describe("isly.Definition.Transformer", () => {
 		const testObjectType = isly.object<TestObject>({
 			amount: isly.number(),
 			currency: isly.string("value", ["SEK", "EUR"]),
-			approved: isly.boolean().optional(),
+			approved: isly.boolean().optional()
 		})
 		expect(transformer.transform(testObjectType.definition)).toEqual({
 			name: "object node",
 			nested: {
 				amount: { condition: undefined, name: "number node" },
 				approved: { condition: undefined, name: "boolean node" },
-				currency: { condition: ["value: ['SEK', 'EUR']"], name: "string node" },
-			},
+				currency: { condition: ["value: ['SEK', 'EUR']"], name: "string node" }
+			}
 		})
 	})
 	it("transform 2", () => {
@@ -31,7 +31,7 @@ describe("isly.Definition.Transformer", () => {
 			.object<TestObject>({
 				amount: isly.number(),
 				currency: isly.string("value", ["SEK", "EUR"]),
-				approved: isly.boolean().array(),
+				approved: isly.boolean().array()
 			})
 			.optional()
 			.readonly()
@@ -42,10 +42,10 @@ describe("isly.Definition.Transformer", () => {
 				approved: {
 					condition: undefined,
 					name: "array node",
-					nested: { values: { condition: undefined, name: "boolean node" } },
+					nested: { values: { condition: undefined, name: "boolean node" } }
 				},
-				currency: { condition: ["value: ['SEK', 'EUR']"], name: "string node" },
-			},
+				currency: { condition: ["value: ['SEK', 'EUR']"], name: "string node" }
+			}
 		})
 	})
 })
@@ -59,13 +59,13 @@ const transformer = isly.Definition.Transformer.create({
 		condition: type.condition,
 		nested: Object.fromEntries(
 			Object.entries(type.properties).map(([key, value]) => [key, transformer.transform(value)])
-		),
+		)
 	}),
 	array: (type: isly.Array.Definition, transformer): Node => ({
 		name: "array node",
 		condition: type.condition,
-		nested: { values: transformer.transform(type.base) },
+		nested: { values: transformer.transform(type.base) }
 	}),
 	optional: (type: isly.Optional.Definition, transformer): Node => transformer.transform(type.base),
-	readonly: (type: isly.Readonly.Definition, transformer): Node => transformer.transform(type.base),
+	readonly: (type: isly.Readonly.Definition, transformer): Node => transformer.transform(type.base)
 })
